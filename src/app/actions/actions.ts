@@ -58,7 +58,9 @@ export async function createCategory(formData: FormData) {
             categoryName: categoryName,
             addedCategory: true
         }
-    })
+    });
+
+    console.log(data);
 
     return redirect(`/create/${homeId}/description`);
 }
@@ -99,6 +101,8 @@ export async function CreateDescription(formData: FormData) {
         }
     });
 
+    console.log(data);
+
     return redirect(`/create/${homeId}/addressEx`);
 }
 
@@ -118,6 +122,8 @@ export async function createLocation(formData: FormData) {
         }      
     });
 
+    console.log(data);
+
     return redirect("/");
 }
 
@@ -134,6 +140,8 @@ export async function addToFavorites(formData: FormData) {
             userId: userId
         }
     })
+
+    console.log(data);
 
     revalidatePath(pathName);
 }
@@ -152,6 +160,8 @@ export async function removeFromFavorites(formData: FormData) {
         }
     })
 
+    console.log(data);
+
     revalidatePath(pathName);
 }
 
@@ -169,6 +179,8 @@ export async function createReservation(formData: FormData) {
             endDate: endDate
         }
     })
+
+    console.log(data);
     
     return redirect("/");
 }

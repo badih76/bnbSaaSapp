@@ -14,7 +14,7 @@ const getFlagURL = ((countryCode: string) => {
 });
 
 function CreateAddAddress({ params }: { params: { id: string }}) {
-    const { getAllCountries, getCountryByValue } = useCountries();
+    const { getAllCountries } = useCountries();
     const [ selectedCountry, setSelectedCountry ] = useState("OM");
 
     const LazyMap = dynamic(() => import('@/app/my-components/Map'), {

@@ -4,7 +4,6 @@ import { redirect } from 'next/navigation';
 import React from 'react'
 import NoItemsFound from '../my-components/NoItemsFound';
 import ListingCard from '../my-components/ListingCard';
-import Home from '../page';
 
 const getFavoritesData = async (userId: string) => {
     const data = prisma.favorites.findMany({

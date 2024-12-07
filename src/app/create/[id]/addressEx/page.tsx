@@ -3,18 +3,16 @@
 import { createLocation } from '@/app/actions/actions';
 import AddressSearchInput from '@/app/my-components/AddressSearchInput';
 import CreateScreenBottomBar from '@/app/my-components/CreateScreenBottomBar'
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Skeleton } from '@/components/ui/skeleton';
 import { useCountries } from '@/data/getWorldCountries'
 import { getFlagURL } from '@/lib/utilsCode';
 import dynamic from 'next/dynamic';
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 
 
 function CreateAddAddressEx({ params }: { params: { id: string }}) {
-    const { getAllCountries, getCountryByValue } = useCountries();
+    const { getAllCountries } = useCountries();
     const [ selectedCountry, setSelectedCountry ] = useState("OM");
     const [ lon, setLon ] = useState<number | null>(-0.09);
     const [ lat, setLat ] = useState<number | null>(52.505);

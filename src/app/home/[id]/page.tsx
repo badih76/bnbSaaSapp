@@ -9,7 +9,7 @@ import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
 import { Bed, ShowerHead, Users } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import React from 'react'
+import React, { useEffect } from 'react'
 import HomeMap from './HomeMap';
 import CategoryShowCase from './CategoryShowCase';
 
@@ -51,7 +51,16 @@ const getHomeData = (homeId: string) => {
 }
 
 async function HomeRoute({ params }: { params: { id: string }}) {
-    const data = await getHomeData(params.id);
+    // const data = await getHomeData(params.id);
+    let data: any | null;
+
+    useEffect(() => {
+        const getMyData = async () => {
+            data = await getHomeData(params.id);
+        }
+
+        getMyData();
+    })
     const { getCountryByValue } = useCountries();
     const country = getCountryByValue(data?.country!);
     const { getUser } = getKindeServerSession();
