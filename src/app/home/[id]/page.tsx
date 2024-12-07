@@ -64,7 +64,7 @@ async function HomeRoute({ params }: { params: { id: string }}) {
 
         <div className='relative h-[550px]'>
             <Image 
-                alt={data?.title!}
+                alt={ data!.title! }
                 src={`https://vihbisloauhjiimyfhfu.supabase.co/storage/v1/object/public/esm-bnb-images/${data?.photo}`}
                 fill
                 className='rounded-lg h-full object-cover w-full'
@@ -75,7 +75,7 @@ async function HomeRoute({ params }: { params: { id: string }}) {
             <div className='w-2/3'>
                 <div className='w-full flex flex-row gap-5'>
                     <img  
-                        src={getFlagURL(country?.value!, FlagSize.FS36x27)}
+                        src={getFlagURL(country!.value!, FlagSize.FS36x27)}
                         width="5%"  
                         height="5%"  
                         alt={country?.label} /> 
