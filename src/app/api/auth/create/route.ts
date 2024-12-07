@@ -5,7 +5,7 @@ import prisma from "../../../../data/db";
 export async function GET(req: NextRequest) {
     const { getUser } = getKindeServerSession();
     const callingUrl = req.url;
-    console.log("Calling URL: ", req.nextUrl);
+    console.log("Calling URL: ", req.referrer);
 
     const user = await getUser();
     if(!user || user === null || !user.id) {
