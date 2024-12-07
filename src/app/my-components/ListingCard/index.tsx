@@ -21,7 +21,6 @@ interface IListingData {
 
 function ListingCard({ 
     imagePath, 
-    id, 
     price, 
     description, 
     country,

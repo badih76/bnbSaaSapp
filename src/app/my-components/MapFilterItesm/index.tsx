@@ -11,7 +11,7 @@ import { cn } from '@/lib/utils';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname, useSearchParams } from 'next/navigation';
-import React, { FunctionComponent, useCallback } from 'react'
+import React, { useCallback } from 'react'
 
 
 function MapFilterItems() {

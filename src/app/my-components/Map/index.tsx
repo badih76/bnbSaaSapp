@@ -20,12 +20,12 @@ interface IParams {
 }
 
 function Map({ country, lon = null, lat = null, zoom = null }: IParams) {
-    const { getCountryByValue, getCountryByName } = useCountries();
+    const { getCountryByValue } = useCountries();
     const defCoords = getCountryByValue(country ?? "OM");
     const [ markerLocation, setMarkerLocation ] = useState<LatLngExpression>(
         [ 
-            lat === null ? defCoords?.latLang[0]! : lat, 
-            lon === null ? defCoords?.latLang[1]! : lon
+            lat === null ? defCoords!.latLang[0]! : lat, 
+            lon === null ? defCoords!.latLang[1]! : lon
         ]); 
 
     console.log("Country: ", country);
@@ -38,6 +38,9 @@ function Map({ country, lon = null, lat = null, zoom = null }: IParams) {
                 setMarkerLocation([e.latlng.lat, e.latlng.lng]);
             },
         });
+
+        console.log(map);
+        
         return null;
     };
 

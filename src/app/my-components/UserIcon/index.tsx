@@ -1,4 +1,3 @@
-import { KindeUser } from '@kinde-oss/kinde-auth-nextjs/types'
 import { MenuIcon } from 'lucide-react'
 import React from 'react'
 

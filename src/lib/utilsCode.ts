@@ -26,7 +26,7 @@ export enum FlagSize {
 }
 
 export const getFlagURL = ((countryCode: string, size: FlagSize = FlagSize.FS20x15 ) => {
-    const arrSize: string[] = [ '20x15',  ]
+    // const arrSize: string[] = [ '20x15',  ]
     const cc: string = countryCode;
     return `https://flagcdn.com/${size}/${cc.toLowerCase()}.png`
 });

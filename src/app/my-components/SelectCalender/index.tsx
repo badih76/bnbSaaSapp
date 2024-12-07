@@ -6,10 +6,6 @@ import 'react-date-range/dist/theme/default.css'; // theme css file
 
 import { DateRange } from 'react-date-range';
 import { eachDayOfInterval } from 'date-fns';
-import { useFormStatus } from 'react-dom';
-import { Button } from '@/components/ui/button';
-import { Loader2 } from 'lucide-react';
-import Link from 'next/link';
 
 
 function SelectCalender({ reservation }: {

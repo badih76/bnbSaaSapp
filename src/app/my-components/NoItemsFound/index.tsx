@@ -1,10 +1,10 @@
 import { File } from 'lucide-react'
 import React from 'react'
 
-interface iParams {
-  title: string,
-  description: string
-}
+// interface iParams {
+//   title: string,
+//   description: string
+// }
 
 function NoItemsFound() {
   return (

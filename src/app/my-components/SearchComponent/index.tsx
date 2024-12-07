@@ -8,7 +8,6 @@ import { useCountries } from '@/data/getWorldCountries';
 import { getFlagURL } from '@/lib/utilsCode';
 import { Search } from 'lucide-react'
 import React, { useState } from 'react'
-import CreateScreenBottomBar from '../CreateScreenBottomBar';
 import { Card, CardHeader } from '@/components/ui/card';
 import Counter from '../Counter';
 import SubmitButtons from '../SubmitButtons';

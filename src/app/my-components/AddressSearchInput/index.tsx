@@ -117,7 +117,7 @@ const AddressSearchInput = ({ setMarker } : IParams) => {
                     <Command shouldFilter={false} className='w-full'>
                         <CommandInput placeholder="Search addresses..." className='w-full' onValueChange={
                             (value) => {
-                                let searchValue = value;
+                                const searchValue = value;
 
                                 setPending(true);
                                 clearTimeout(timer)
