@@ -9,50 +9,45 @@ import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
 import { Bed, ShowerHead, Users } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import React, { useEffect } from 'react'
+import React from 'react'
 import HomeMap from './HomeMap';
 import CategoryShowCase from './CategoryShowCase';
 
-const getHomeData = (homeId: string) => {
-    const getMyData = async () => {
-        const data = await prisma.home.findUnique({
-            where: {
-                id: homeId
+const getHomeData = async (homeId: string) => {
+    const data = await prisma.home.findUnique({
+        where: {
+            id: homeId
+        },
+        select: {
+            id: true,
+            description: true,
+            title: true,
+            price: true,
+            country: true,
+            address: true,
+            guests: true,
+            bedrooms: true,
+            bathrooms: true,
+            photo: true,
+            categoryName: true,
+            createdAT: true,
+            Reservations: {
+                where: {
+                    homeId: homeId
+                }
             },
-            select: {
-                id: true,
-                description: true,
-                title: true,
-                price: true,
-                country: true,
-                address: true,
-                guests: true,
-                bedrooms: true,
-                bathrooms: true,
-                photo: true,
-                categoryName: true,
-                createdAT: true,
-                Reservations: {
-                    where: {
-                        homeId: homeId
-                    }
-                },
-    
-                User: {
-                    select: {
-                        profileImage: true,
-                        firstName: true,
-                        lastName: true
-                    }
+
+            User: {
+                select: {
+                    profileImage: true,
+                    firstName: true,
+                    lastName: true
                 }
             }
-        });
-    
-        return data;
+        }
+    });
 
-    }
-
-    return getMyData();
+    return data;
 }
 
 async function HomeRoute({ params }: { params: { id: string }}) {
