@@ -2,7 +2,7 @@ import { Label } from '@/components/ui/label';
 import React, { useEffect, useState } from 'react'
 import { Loader2 } from 'lucide-react';
 
-import { Check, ChevronsUpDown } from "lucide-react"
+import { Check } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
   Command,
@@ -68,7 +68,7 @@ const AddressSearchInput = ({ setMarker } : IParams) => {
                 })
                 .then(json => {
                     // console.log(json);
-                    let foundAddresses: IAddress[] = [];
+                    const foundAddresses: IAddress[] = [];
 
                     json.results.map((r: any) => {
                         console.log(r.formatted);
