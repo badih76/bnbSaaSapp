@@ -1,9 +1,11 @@
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import prisma from "../../../../data/db";
 
-export async function GET() {
+export async function GET(req: NextRequest) {
     const { getUser } = getKindeServerSession();
+    const callingUrl = req.url;
+    console.log("Calling URL: ", callingUrl);
 
     const user = await getUser();
     if(!user || user === null || !user.id) {
@@ -32,7 +34,7 @@ export async function GET() {
         }
         else { console.log('User was found.'); }
     
-        return NextResponse.redirect("http://localhost:3000");
+        return NextResponse.redirect(callingUrl);
 
     }
 
