@@ -14,53 +14,50 @@ import HomeMap from './HomeMap';
 import CategoryShowCase from './CategoryShowCase';
 
 const getHomeData = (homeId: string) => {
-    const data = prisma.home.findUnique({
-        where: {
-            id: homeId
-        },
-        select: {
-            id: true,
-            description: true,
-            title: true,
-            price: true,
-            country: true,
-            address: true,
-            guests: true,
-            bedrooms: true,
-            bathrooms: true,
-            photo: true,
-            categoryName: true,
-            createdAT: true,
-            Reservations: {
-                where: {
-                    homeId: homeId
-                }
+    const getMyData = async () => {
+        const data = await prisma.home.findUnique({
+            where: {
+                id: homeId
             },
-
-            User: {
-                select: {
-                    profileImage: true,
-                    firstName: true,
-                    lastName: true
+            select: {
+                id: true,
+                description: true,
+                title: true,
+                price: true,
+                country: true,
+                address: true,
+                guests: true,
+                bedrooms: true,
+                bathrooms: true,
+                photo: true,
+                categoryName: true,
+                createdAT: true,
+                Reservations: {
+                    where: {
+                        homeId: homeId
+                    }
+                },
+    
+                User: {
+                    select: {
+                        profileImage: true,
+                        firstName: true,
+                        lastName: true
+                    }
                 }
             }
-        }
-    });
+        });
+    
+        return data;
 
-    return data;
+    }
+
+    return getMyData();
 }
 
 async function HomeRoute({ params }: { params: { id: string }}) {
-    // const data = await getHomeData(params.id);
-    let data: any | null;
+    const data = await getHomeData(params.id);
 
-    useEffect(() => {
-        const getMyData = async () => {
-            data = await getHomeData(params.id);
-        }
-
-        getMyData();
-    })
     const { getCountryByValue } = useCountries();
     const country = getCountryByValue(data?.country!);
     const { getUser } = getKindeServerSession();
