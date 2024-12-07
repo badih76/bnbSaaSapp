@@ -12,10 +12,10 @@ export default function Decription (
     return (
         <>
             <div className="w-3/5 mx-auto">
-                <h2 className="text-3xl font-semibold tracking-tight transaction-colors">
+                <h2 className="text-3xl font-semibold text-primary tracking-tight transaction-colors">
                     Please, describe your home as good as you can
                 </h2>
-                <form action={CreateDescription}>
+                <form action={CreateDescription} className="text-primary">
                     <input type="hidden" name="homeId" value={params.id} />
                     <div className="mx-auto w-full mt-10 flex flex-col gap-y-5 mb-36 ">
                         <div className="flex flex-col gap-y-2">

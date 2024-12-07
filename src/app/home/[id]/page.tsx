@@ -60,7 +60,7 @@ async function HomeRoute({ params }: { params: { id: string }}) {
 
   return (
     <div className='w-[75%] mx-auto mt-10 mb-32 '>
-        <h1 className='font-medium text-2xl mb-5'>{ data?.title }</h1>
+        <h1 className='font-bold text-2xl mb-5 text-primary'>{ data?.title }</h1>
 
         <div className='relative h-[550px]'>
             <Image 
@@ -128,7 +128,7 @@ async function HomeRoute({ params }: { params: { id: string }}) {
                 <HomeMap locationValue={ country?.value as string } />
                     
             </div>
-            <form action={createReservation}>
+            <form action={createReservation} className='flex flex-col items-center'>
                 <input type='hidden' name="homeId" value={params.id} />
                 <input type='hidden' name="userId" value={user?.id} />
 
