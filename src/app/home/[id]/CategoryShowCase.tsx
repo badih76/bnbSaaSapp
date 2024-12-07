@@ -7,8 +7,8 @@ const CategoryShowCase = ({ categoryName }: { categoryName: string }) => {
 
     return (
         <div className='flex items-center gap-2'>
-            <Image src={ category?.imageUrl! }
-                alt={category?.name!}
+            <Image src={ category ? category.imageUrl! : "" }
+                alt={ category ? category.name! : "Category Image" }
                 width={44} height={44}
             />
             { category?.title }

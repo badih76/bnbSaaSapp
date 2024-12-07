@@ -3,7 +3,7 @@ import SelectCalender from '@/app/my-components/SelectCalender';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import prisma from '@/data/db'
-import { getCountryByValue, useCountries } from '@/data/getWorldCountries';
+import { getCountryByValue } from '@/data/getWorldCountries';
 import { FlagSize, getFlagURL } from '@/lib/utilsCode';
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
 import { Bed, ShowerHead, Users } from 'lucide-react';
@@ -54,7 +54,7 @@ async function HomeRoute({ params }: { params: { id: string }}) {
     const data = await getHomeData(params.id);
 
     // const { getCountryByValue } = useCountries();
-    const country = getCountryByValue(data?.country!);
+    const country = getCountryByValue(data ? data.country! : "");        // data?.country!
     const { getUser } = getKindeServerSession();
     const user = await getUser();
 
