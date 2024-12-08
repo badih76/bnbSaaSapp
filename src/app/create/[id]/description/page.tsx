@@ -12,7 +12,7 @@ export default function Decription (
     return (
         <>
             <div className="w-3/5 mx-auto">
-                <h2 className="text-3xl font-semibold text-primary tracking-tight transaction-colors">
+                <h2 className="text-xl font-semibold text-primary tracking-tight transaction-colors lg:text-3xl">
                     Please, describe your home as good as you can
                 </h2>
                 <form action={CreateDescription} className="text-primary">
@@ -57,7 +57,7 @@ export default function Decription (
                                         <h3 className="underline font-medium">
                                             Guests:</h3>
                                         <p
-                                            className="text-muted-forground text-sm">
+                                            className="hidden lg:block text-muted-forground text-sm">
                                             How many guests for this property?</p>
                                     </div>
                                     <div>
@@ -69,7 +69,7 @@ export default function Decription (
                                         <h3 className="underline font-medium">
                                             Rooms:</h3>
                                         <p
-                                            className="text-muted-forground text-sm">
+                                            className="hidden lg:block text-muted-forground text-sm">
                                             How many rooms in this property?</p>
                                     </div>
                                     <div>
@@ -81,7 +81,7 @@ export default function Decription (
                                         <h3 className="underline font-medium">
                                             Bathrooms:</h3>
                                         <p
-                                            className="text-muted-forground text-sm">
+                                            className="hidden lg:block text-muted-forground text-sm">
                                             How many bathrooms in this property?</p>
                                     </div>
                                     <div>

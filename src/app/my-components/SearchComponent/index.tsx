@@ -51,7 +51,7 @@ function SearchModalComponent() {
                     step === 1 ? (
                         <>
                             <DialogHeader>
-                                <DialogTitle>
+                                <DialogTitle className='text-primary'>
                                     Select a Country
                                 </DialogTitle>
                                 <DialogDescription>
@@ -89,7 +89,7 @@ function SearchModalComponent() {
                     ) : (
                         <>
                             <DialogHeader>
-                                <DialogTitle>
+                                <DialogTitle className='text-primary'>
                                     What are you looking for?
                                 </DialogTitle>
                                 <DialogDescription>
