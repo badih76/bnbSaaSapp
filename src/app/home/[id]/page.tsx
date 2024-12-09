@@ -74,7 +74,7 @@ async function HomeRoute({ params }: { params: { id: string }}) {
         <div className='flex flex-col lg:flex-row justify-between gap-x-24 mt-8'>
             <div className='w-full lg:w-2/3'>
                 <div className='w-full flex flex-row gap-0 lg:gap-5'>
-                    <div className='w-10'>
+                    <div className='flex justify-center items-center w-10 mr-5'>
                         <img  
                             src={getFlagURL(country!.value!, FlagSize.FS36x27)}
                             width="100%"  
@@ -82,7 +82,7 @@ async function HomeRoute({ params }: { params: { id: string }}) {
                             alt={country?.label} /> 
 
                     </div>
-                    <div>
+                    <div className='flex justify-center items-center'>
                         <h3 className='text-xl font-medium'>{ country?.label + " / " + country?.region }</h3>
 
                     </div>
