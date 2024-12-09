@@ -33,39 +33,39 @@ export async function UserNave() {
             <DropdownMenuContent align="end" className="w-[200px">
                 { user ? 
                     <>
-                        <DropdownMenuItem>
+                        <DropdownMenuItem asChild>
                             <form action={createHomewithId} className="w-full">
                                 <button type="submit" className="w-full text-start">
                                     ESM-bnb Your Home
                                 </button>
                             </form>
                         </DropdownMenuItem>
-                        <DropdownMenuItem>
+                        <DropdownMenuItem asChild>
                             <Link href="/myHomes" className="w-full">
                                 My Listings
                             </Link>
                         </DropdownMenuItem>
-                        <DropdownMenuItem>
+                        <DropdownMenuItem asChild>
                             <Link href="/favorites" className="w-full">
                                 My Favorites
                             </Link>
                         </DropdownMenuItem>
-                        <DropdownMenuItem>
+                        <DropdownMenuItem asChild>
                             <Link href="/reservations" className="w-full">
                                 My Reservations
                             </Link>
                         </DropdownMenuItem>
                         <DropdownMenuSeparator className="mx-1 border-2" />
-                        <DropdownMenuItem>
+                        <DropdownMenuItem asChild>
                             <LogoutLink className="w-full">Logout</LogoutLink>
                         </DropdownMenuItem>
                     </>
                     :
                     <>
-                        <DropdownMenuItem>
+                        <DropdownMenuItem asChild>
                             <RegisterLink className="w-full">Register</RegisterLink>
                         </DropdownMenuItem>
-                        <DropdownMenuItem>
+                        <DropdownMenuItem asChild>
                             <LoginLink className="w-full">Login</LoginLink>
                         </DropdownMenuItem>
                     </>

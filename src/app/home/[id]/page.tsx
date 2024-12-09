@@ -62,25 +62,31 @@ async function HomeRoute({ params }: { params: { id: string }}) {
     <div className='w-[75%] mx-auto mt-10 mb-32 '>
         <h1 className='font-bold text-2xl mb-5 text-primary'>{ data?.title }</h1>
 
-        <div className='relative h-[550px]'>
+        <div className='relative h-[75vw] w-[75vw] lg:h-[550px]'>
             <Image 
                 alt={ data!.title! }
                 src={`https://vihbisloauhjiimyfhfu.supabase.co/storage/v1/object/public/esm-bnb-images/${data?.photo}`}
                 fill
-                className='rounded-lg h-full object-cover w-full'
+                className='rounded-lg  h-full object-cover w-full'
             />
         </div>
 
-        <div className='flex justify-between gap-x-24 mt-8'>
-            <div className='w-2/3'>
-                <div className='w-full flex flex-row gap-5'>
-                    <img  
-                        src={getFlagURL(country!.value!, FlagSize.FS36x27)}
-                        width="5%"  
-                        height="5%"  
-                        alt={country?.label} /> 
+        <div className='flex flex-col lg:flex-row justify-between gap-x-24 mt-8'>
+            <div className='w-full lg:w-2/3'>
+                <div className='w-full flex flex-row gap-0 lg:gap-5'>
+                    <div className='w-10'>
+                        <img  
+                            src={getFlagURL(country!.value!, FlagSize.FS36x27)}
+                            width="100%"  
+                            height="5%"  
+                            alt={country?.label} /> 
+
+                    </div>
+                    <div>
+                        <h3 className='text-xl font-medium'>{ country?.label + " / " + country?.region }</h3>
+
+                    </div>
                     
-                    <h3 className='text-xl font-medium'>{ country?.label + " / " + country?.region }</h3>
 
                 </div>
 
@@ -121,14 +127,14 @@ async function HomeRoute({ params }: { params: { id: string }}) {
 
                 <Separator className='my-7 w-full' />     
 
-                <p>{ data?.description as string }</p>      
+                <p className='w-fill'>{ data?.description as string }</p>      
 
                 <Separator className='my-7 w-full' /> 
 
                 <HomeMap locationValue={ country?.value as string } />
                     
             </div>
-            <form action={createReservation} className='flex flex-col items-center'>
+            <form action={createReservation} className='flex flex-col items-center mt-5 lg:mt-0'>
                 <input type='hidden' name="homeId" value={params.id} />
                 <input type='hidden' name="userId" value={user?.id} />
 

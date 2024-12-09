@@ -45,6 +45,7 @@ function SelectCalender({ reservation }: {
             minDate={new Date()}
             direction="vertical"
             disabledDates={disabledDates}
+
         />
     </>
   )
