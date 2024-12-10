@@ -7,7 +7,7 @@ import { createBnbSiteHome } from "@/app/actions/actions";
 import UserIcon from "../UserIcon";
 
 export async function UserNave() {
-    const { getUser, getAccessToken } = getKindeServerSession();
+    const { getUser } = getKindeServerSession();
     const user = await getUser();
     // const token = user ? await getAccessToken() : null;
     const userPicture = user?.picture ?? "https://cdn-icons-png.flaticon.com/512/149/149071.png";
