@@ -2,8 +2,9 @@ import { createCategory } from "@/app/actions/actions";
 import CreateScreenBottomBar from "@/app/my-components/CreateScreenBottomBar";
 import SelectCategory from "@/app/my-components/SelecteCategory";
 
+const useAPI = process.env.USE_API === "1" ? true : false;
+
 export default function StructureRoute({ params }: { params: { id: string } } ) {
-    console.log("create structure page");
 
     return (
         <>
@@ -13,7 +14,7 @@ export default function StructureRoute({ params }: { params: { id: string } } ) 
                 </h2>
             </div>
 
-            <form action={createCategory}>
+            <form action={useAPI ? "/api/createHome/addHomeCategory" : createCategory} method="POST">
                 <input type="hidden" name="homeId" value={params.id} />
                 <SelectCategory />
 

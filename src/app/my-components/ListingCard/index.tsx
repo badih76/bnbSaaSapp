@@ -19,6 +19,8 @@ interface IListingData {
     pathName: string
 }
 
+// const useAPI = process.env.USE_API === "1" ? true : false;
+
 function ListingCard({ 
     imagePath, 
     price, 
@@ -33,7 +35,6 @@ function ListingCard({
     const { getCountryByValue } = useCountries();
     const cntry = getCountryByValue(country);
 
-    console.log({ isInFavoriteList })
   return (
     <div className='flex flex-col border-2 rounded-lg border-gray-300 p-3 flex-shrink-0'>
         <div className='relative h-56'>
@@ -45,6 +46,8 @@ function ListingCard({
                 <div className='z-10 absolute top-2 right-2'>
                     {
                         isInFavoriteList ? (
+                            // <form action={useAPI ? "/api/handleFavorites/remove" : removeFromFavorites}
+                            //     method={useAPI ? "POST" : "GET"}>
                             <form action={removeFromFavorites}>
                                 <input type='hidden' name="favoriteId" value={favoriteId} />
                                 <input type='hidden' name="userId" value={userId} />
@@ -52,6 +55,8 @@ function ListingCard({
                                 <RemoveFromFavoriteButton />
                             </form>
                         ) : (
+                            // <form action={useAPI ? "/api/handleFavorites/add" : addToFavorites}
+                            //     method={useAPI ? "POST" : "GET"}>
                             <form action={addToFavorites}>
                                 <input type='hidden' name="homeId" value={homeId} />
                                 <input type='hidden' name="userId" value={userId} />

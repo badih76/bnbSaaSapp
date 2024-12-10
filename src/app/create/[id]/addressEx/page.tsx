@@ -10,6 +10,7 @@ import { getFlagURL } from '@/lib/utilsCode';
 import dynamic from 'next/dynamic';
 import React, { useState } from 'react'
 
+const useAPI = process.env.USE_API === "1" ? true : false;
 
 function CreateAddAddressEx({ params }: { params: { id: string }}) {
     const { getAllCountries } = useCountries();
@@ -37,7 +38,7 @@ function CreateAddAddressEx({ params }: { params: { id: string }}) {
             <h2 className="text-3xl font-semibold tracking-tight transaction-colors">
                 Where is this home located?
             </h2>
-            <form action={createLocation}>
+            <form action={useAPI ? "/api/createHome/addHomeLocation" : createLocation}>
                 <input type="hidden" name="homeId" value={params.id} />
                 <input type="hidden" name="countryValue" value={selectedCountry} />
                 <input type="hidden" name="addressValue" value={address ?? ''} />

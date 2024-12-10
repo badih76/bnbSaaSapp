@@ -16,7 +16,7 @@ function SelectCategory() {
                 return (
                     <div key={item.id} className='cursor-pointer'>
                         <Card 
-                            className={selectedCategory === item.name ? 'border-primary' : ''}
+                            className={selectedCategory === item.name ? 'border-primary border-4' : ''}
                             onClick={() => setSelectedCategory(item.name)}>
                             <CardHeader className='flex flex-col items-center'>
                                 <Image 

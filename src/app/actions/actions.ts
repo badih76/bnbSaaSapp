@@ -6,7 +6,6 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 export async function createBnbSiteHome({ userId}: { userId: string }) {
-    console.log('inside createBnbSiteHome action!')
     const data = await prisma.home.findFirst({
         where: {
             userId: userId
@@ -128,7 +127,6 @@ export async function createLocation(formData: FormData) {
 }
 
 export async function addToFavorites(formData: FormData) {
-    console.log("addToFavorites!!!");
 
     const homeId = formData.get("homeId") as string;
     const userId = formData.get("userId") as string;
@@ -147,7 +145,6 @@ export async function addToFavorites(formData: FormData) {
 }
 
 export async function removeFromFavorites(formData: FormData) {
-    console.log("addToFavorites!!!");
 
     const favoriteId = formData.get("favoriteId") as string;
     const userId = formData.get("userId") as string;

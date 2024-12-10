@@ -6,6 +6,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 
+const useAPI = process.env.USE_API === "1" ? true : false;
+
 export default function Decription (
     {params}: {params: {id: string}}
 ) {
@@ -15,7 +17,10 @@ export default function Decription (
                 <h2 className="text-xl font-semibold text-primary tracking-tight transaction-colors lg:text-3xl">
                     Please, describe your home as good as you can
                 </h2>
-                <form action={CreateDescription} className="text-primary">
+                <form action={useAPI ? "/api/createHome/addHomeDescription" : CreateDescription} 
+                    className="text-primary" method="POST"
+                    encType={useAPI ? "multipart/form-data" : "application/x-www-form-urlencoded"}>
+                {/* <form action={CreateDescription} className="text-primary" method="POST"> */}
                     <input type="hidden" name="homeId" value={params.id} />
                     <div className="mx-auto w-full mt-10 flex flex-col gap-y-5 mb-36 ">
                         <div className="flex flex-col gap-y-2">

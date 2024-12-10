@@ -11,12 +11,14 @@ export async function UserNave() {
     const user = await getUser();
     const token = user ? await getAccessToken() : null;
     const userPicture = user?.picture ?? "https://cdn-icons-png.flaticon.com/512/149/149071.png";
-    console.log("pricture: ", user ? user.picture : null);
-    console.log("token: ", token);
+    // console.log("pricture: ", user ? user.picture : null);
+    // console.log("token: ", token);
 
     const createHomewithId = createBnbSiteHome.bind(null, {
         userId: user?.id as string
     });
+
+    const useAPI = process.env.USE_API === "1" ? true : false;
 
     return (
         <DropdownMenu>
@@ -30,11 +32,13 @@ export async function UserNave() {
                 </div> */}
                 <UserIcon userPicture={userPicture} />
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-[200px">
+            <DropdownMenuContent align="end" className="w-[175px] text-primary font-medium">
                 { user ? 
                     <>
                         <DropdownMenuItem asChild>
-                            <form action={createHomewithId} className="w-full">
+                            {/* <form action={createHomewithId} className="w-full"> */}
+                            <form 
+                                action={useAPI ? "/api/createHome/addHomeData" : createHomewithId} method="POST" className="w-full">
                                 <button type="submit" className="w-full text-start">
                                     ESM-bnb Your Home
                                 </button>

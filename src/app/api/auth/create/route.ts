@@ -31,7 +31,7 @@ export async function GET() {
                 }
             })
         }
-        else { console.log('User was found.'); }
+        // else { console.log('User was found.'); }
     
         return NextResponse.redirect(returnUrl!);
 
