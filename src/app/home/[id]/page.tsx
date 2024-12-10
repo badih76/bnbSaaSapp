@@ -12,8 +12,11 @@ import Link from 'next/link';
 import React from 'react'
 import HomeMap from './HomeMap';
 import CategoryShowCase from './CategoryShowCase';
+import { unstable_noStore as noStore } from 'next/cache'
 
 const getHomeData = async (homeId: string) => {
+    noStore();
+
     const data = await prisma.home.findUnique({
         where: {
             id: homeId

@@ -4,10 +4,13 @@ import { redirect } from 'next/navigation';
 import React from 'react'
 import NoItemsFound from '../my-components/NoItemsFound';
 import ListingCard from '../my-components/ListingCard';
+import { unstable_noStore as noStore } from 'next/cache'
 
 const useAPI = process.env.USE_API === "1" ? true : false;
 
 const getMyHomesData = async (userId: string, accessToken: Object | undefined) => {
+    noStore();
+
     // return data;
     if(useAPI) {
         console.log("Using API calling from favorite page")

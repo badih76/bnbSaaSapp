@@ -1,8 +1,11 @@
 import prisma from "@/data/db";
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
+import { unstable_noStore as noStore } from 'next/cache'
 
 export async function POST(req: NextRequest) {
+    noStore();
+
     console.log("Using API Calls");
     // const formData = await req.formData();
     const { userId, accessToken } = await req.json();

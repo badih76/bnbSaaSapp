@@ -3,8 +3,11 @@ import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import { revalidatePath } from "next/cache";
 // import { redirect } from "next/navigation";
 import { NextRequest, NextResponse } from "next/server";
+import { unstable_noStore as noStore } from 'next/cache'
 
 export async function POST(req: NextRequest) {
+    noStore();
+
     console.log("Using API Calls");
     // console.log("Request ****: ", req)
     const formData = await req.formData()

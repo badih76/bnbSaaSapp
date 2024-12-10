@@ -4,10 +4,13 @@ import ListingCard from '../my-components/ListingCard';
 import prisma from '@/data/db';
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
 import { redirect } from 'next/navigation';
+import { unstable_noStore as noStore } from 'next/cache'
 
 const useAPI = process.env.USE_API === "1" ? true : false;
 
 async function getData(userId: string, accessToken: Object | undefined) {
+    noStore();
+
     if(useAPI) {
         console.log("Using API calling from favorite page")
 
@@ -58,6 +61,7 @@ async function getData(userId: string, accessToken: Object | undefined) {
 }
 
 async function Reservations() {
+
     const { getUser, getAccessToken } = getKindeServerSession();
     const user = await getUser();
     const accessToken = await getAccessToken();
