@@ -9,7 +9,7 @@ import UserIcon from "../UserIcon";
 export async function UserNave() {
     const { getUser, getAccessToken } = getKindeServerSession();
     const user = await getUser();
-    const token = user ? await getAccessToken() : null;
+    // const token = user ? await getAccessToken() : null;
     const userPicture = user?.picture ?? "https://cdn-icons-png.flaticon.com/512/149/149071.png";
     // console.log("pricture: ", user ? user.picture : null);
     // console.log("token: ", token);

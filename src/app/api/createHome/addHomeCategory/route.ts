@@ -31,7 +31,7 @@ export async function POST(req: NextRequest) {
         }
     });
 
-    // console.log(data);
+    console.log(data);
 
     return redirect(`/create/${homeId}/description`);
 }

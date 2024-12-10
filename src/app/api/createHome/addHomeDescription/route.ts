@@ -27,7 +27,7 @@ export async function POST(req: NextRequest) {
     const bathroomsCount = formData.get("bathrooms") as string;
     const homeId = formData.get("homeId") as string;
 
-    let arrayBuffer = await imageBlob.arrayBuffer();
+    const arrayBuffer = await imageBlob.arrayBuffer();
 
     console.log("ImageFile: ", imageFile, imageFile.type);
 
