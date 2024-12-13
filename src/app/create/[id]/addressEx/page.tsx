@@ -57,8 +57,8 @@ function CreateAddAddressEx({ params }: { params: { id: string }}) {
                                 const country = getAllCountries().find((c) => {
                                     return c.value == value;
                                 })
-                                setLon(country?.latLang[1]!);
-                                setLat(country?.latLang[0]!);
+                                setLon(country ? country.latLang[1] : -0.09);
+                                setLat(country ? country.latLang[0] : 52.505);
                                 setZoom(6);
                             }}>
                             <SelectTrigger className='w-full'>
