@@ -49,6 +49,8 @@ export async function createCategory(formData: FormData) {
     const categoryName = formData.get("categoryName") as string;
     const homeId = formData.get("homeId") as string;
 
+    console.log("I'm called from somewhere!!!!!!!!!!!");
+
     const data = await prisma.home.update({
         where: {
             id: homeId
@@ -123,7 +125,7 @@ export async function createLocation(formData: FormData) {
 
     console.log(data);
 
-    return redirect("/");
+    return redirect("/myHomes");
 }
 
 export async function addToFavorites(formData: FormData) {
@@ -179,5 +181,23 @@ export async function createReservation(formData: FormData) {
 
     console.log(data);
     
-    return redirect("/");
+    return redirect("/reservations");
+}
+
+export async function removeFromHomeListing(formData: FormData) {
+
+    const homeId = formData.get("homeId") as string;
+    const userId = formData.get("userId") as string;
+    // const pathName = formData.get("pathName") as string;
+
+    const data = await prisma.home.delete({
+        where: {
+            id: homeId,
+            userId: userId
+        }
+    })
+
+    console.log(data);
+
+    return redirect(`/myHomes`);
 }

@@ -1,5 +1,6 @@
 import prisma from "@/data/db";
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
+// import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { NextRequest, NextResponse } from "next/server";
 import { unstable_noStore as noStore } from 'next/cache'
@@ -8,8 +9,9 @@ export async function POST(req: NextRequest) {
     noStore();
 
     console.log("Using API Calls");
-    const formData = await req.formData();
-    
+    // console.log("Request ****: ", req)
+    const formData = await req.formData()
+
     const { getUser
         // , getIdToken, getAccessToken 
     } = getKindeServerSession();
@@ -19,22 +21,29 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ Error: "User not found or no user logged in." }, { status: 500 })
     }
 
-    const homeId = formData.get('homeId') as string;
-    const countryValue = formData.get('countryValue') as string;
-    const address = formData.get('addressValue') as string;
+    
+    const homeId = formData.get("homeId") as string;
+    const userId = formData.get("userId") as string;
+    
+    if(!homeId) {
+        return NextResponse.json({ Error: "No Home ID specified!" }, { status: 500 })
+    }
 
-    const data = await prisma.home.update({
+    console.log({ userId, homeId });
+
+    const data = await prisma.home.delete({
         where: {
-            id: homeId
-        },
-        data: {
-            addedLocation: true,
-            country: countryValue,
-            address: address
-        }      
-    });
+            id: homeId,
+            userId: userId
+        }
+    })
 
     console.log(data);
 
+    // return redirect(pathName);
     return redirect("/myHomes");
+
+    // return NextResponse.json({
+    //     message: "successful"
+    // }, { status: 200 });
 }

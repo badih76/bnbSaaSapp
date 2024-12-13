@@ -80,7 +80,7 @@ async function MyHomes() {
             data.length === 0 ? (
                 <NoItemsFound />
             ) : (
-                <div className='grid lg:grid-cols-5 sm:grid-cols-3 md-grid-cols-3 gap-8 mt-8'>
+                <div className='grid xl:grid-cols-5 lg:grid-cols-3 sm:grid-cols-3 md-grid-cols-3 gap-8 mt-8'>
                     {
                         data.map((item: any) => {
                             const { id, photo, description, country, price, Favorites } = item;
@@ -96,7 +96,9 @@ async function MyHomes() {
                                     isInFavoriteList={Favorites.length > 0 ? true : false}
                                     favoriteId={Favorites[0]?.id as string} 
                                     homeId={id as string} 
-                                    pathName={'/favorites'} 
+                                    pathName={'/favorites'}
+                                    deleteButton={true} 
+                                    enableButton={true}
                                 />
                             )
                         })

@@ -1,10 +1,19 @@
+'use client'
+
 import { createCategory } from "@/app/actions/actions";
 import CreateScreenBottomBar from "@/app/my-components/CreateScreenBottomBar";
 import SelectCategory from "@/app/my-components/SelecteCategory";
+// import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
+import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs"
+import { useState } from "react";
 
 const useAPI = process.env.USE_API === "1" ? true : false;
 
 export default function StructureRoute({ params }: { params: { id: string } } ) {
+    const { getUser } = useKindeBrowserClient();
+    const user = getUser();
+
+    const [ enableButton, setEnableButton ] = useState(false);
 
     return (
         <>
@@ -16,9 +25,9 @@ export default function StructureRoute({ params }: { params: { id: string } } ) 
 
             <form action={useAPI ? "/api/createHome/addHomeCategory" : createCategory} method="POST">
                 <input type="hidden" name="homeId" value={params.id} />
-                <SelectCategory />
+                <SelectCategory  setEnabled={setEnableButton} />
 
-                <CreateScreenBottomBar />
+                <CreateScreenBottomBar homeId={params.id} userId={user?.id} enabled={enableButton} />
             </form>
         </>
     )

@@ -33,5 +33,5 @@ export async function POST(req: NextRequest) {
 
     console.log(data);
     
-    return redirect("/");
+    return redirect("/reservations");
 }

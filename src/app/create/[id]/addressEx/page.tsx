@@ -7,12 +7,13 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrig
 import { Skeleton } from '@/components/ui/skeleton';
 import { useCountries } from '@/data/getWorldCountries'
 import { getFlagURL } from '@/lib/utilsCode';
+import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
 import dynamic from 'next/dynamic';
 import React, { useState } from 'react'
 
 const useAPI = process.env.USE_API === "1" ? true : false;
 
-function CreateAddAddressEx({ params }: { params: { id: string }}) {
+async function CreateAddAddressEx({ params }: { params: { id: string }}) {
     const { getAllCountries } = useCountries();
     const [ selectedCountry, setSelectedCountry ] = useState("OM");
     const [ lon, setLon ] = useState<number | null>(-0.09);
@@ -31,6 +32,9 @@ function CreateAddAddressEx({ params }: { params: { id: string }}) {
         setZoom(z);
         setAddress(add);
     }
+
+    const { getUser } = getKindeServerSession();
+    const user = await getUser();
 
   return (
     <>
@@ -75,7 +79,7 @@ function CreateAddAddressEx({ params }: { params: { id: string }}) {
                     
                 </div>
 
-            <CreateScreenBottomBar />
+            <CreateScreenBottomBar homeId={params.id} userId={user.id} enabled={true} />
             </form>
         </div>
     </>

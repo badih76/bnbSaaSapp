@@ -3,9 +3,9 @@
 import { Card, CardHeader } from '@/components/ui/card'
 import { categoryItems } from '@/data/categoryItems'
 import Image from 'next/image'
-import React, { useState } from 'react'
+import React, { Dispatch, SetStateAction, useState } from 'react'
 
-function SelectCategory() {
+function SelectCategory({ setEnabled }: { setEnabled?: Dispatch<SetStateAction<boolean>> }) {
     const [ selectedCategory, setSelectedCategory ] =useState<string | undefined>(undefined);
 
   return (
@@ -17,7 +17,10 @@ function SelectCategory() {
                     <div key={item.id} className='cursor-pointer'>
                         <Card 
                             className={selectedCategory === item.name ? 'border-primary border-4' : ''}
-                            onClick={() => setSelectedCategory(item.name)}>
+                            onClick={() => { 
+                                setSelectedCategory(item.name);
+                                setEnabled!(true);
+                                }}>
                             <CardHeader className='flex flex-col items-center'>
                                 <Image 
                                     src={item.imageUrl}

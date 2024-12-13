@@ -5,6 +5,8 @@ import Link from 'next/link'
 import React from 'react'
 import AddToFavoriteButton, { RemoveFromFavoriteButton } from '../AddToFavoriteButton'
 import { addToFavorites, removeFromFavorites } from '@/app/actions/actions'
+import { Lightbulb, LightbulbOff, Recycle, RecycleIcon, Trash, Trash2 } from 'lucide-react'
+import { Switch } from '@/components/ui/switch'
 
 interface IListingData {
     imagePath: string,
@@ -16,7 +18,9 @@ interface IListingData {
     isInFavoriteList: boolean,
     favoriteId: string,
     homeId: string,
-    pathName: string
+    pathName: string,
+    deleteButton?: boolean,
+    enableButton?: boolean
 }
 
 // const useAPI = process.env.USE_API === "1" ? true : false;
@@ -30,7 +34,9 @@ function ListingCard({
     favoriteId,
     isInFavoriteList,
     homeId,
-    pathName
+    pathName,
+    deleteButton,
+    enableButton
 }: IListingData) {
     const { getCountryByValue } = useCountries();
     const cntry = getCountryByValue(country);
@@ -87,9 +93,29 @@ function ListingCard({
             <p className='text-muted-foreground text-xs line-clamp-3'>
                 {description}
             </p>
-            <p className='pt-2 text-muted-foreground'>
-                {<span className='font-medium text-black'>{"AUD " + price}</span>} {" per night"}
-            </p>
+            <div className='flex flex-col justify-between mt-5'>
+                <div className='flex flex-col'>
+                    <p className='text-muted-foreground'>
+                        {<span className='font-medium text-black'>{"AUD " + price}</span>} {" per night"}
+                    </p>
+                </div>
+                <div className='flex flex-row justify-between mt-5'>
+                    {
+                        enableButton ? (
+                            <div className='flex flex-col justify-center items-center'>
+                                <Switch checked={true} />
+                            </div>
+                        ) : null 
+                    }
+                    {
+                        deleteButton ? (
+                            <div className='flex flex-col justify-center items-center text-red-500'>
+                                <Trash2 />
+                            </div>
+                        ) : null
+                    }
+                </div>
+            </div>
         </Link>
     </div>
   )

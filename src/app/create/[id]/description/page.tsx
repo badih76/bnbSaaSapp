@@ -5,12 +5,16 @@ import { Card, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 
 const useAPI = process.env.USE_API === "1" ? true : false;
 
-export default function Decription (
+export default async function Decription (
     {params}: {params: {id: string}}
 ) {
+    const { getUser } = getKindeServerSession();
+    const user = await getUser();
+    
     return (
         <>
             <div className="w-3/5 mx-auto">
@@ -97,7 +101,7 @@ export default function Decription (
                         </Card>
                     </div>
 
-                <CreateScreenBottomBar />
+                <CreateScreenBottomBar homeId={params.id} userId={user.id} enabled={true} />
                 </form>
             </div>
         </>

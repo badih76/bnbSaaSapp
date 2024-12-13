@@ -78,7 +78,7 @@ async function Reservations() {
             data.length === 0 ? (
                 <NoItemsFound />
             ) : (
-                <div className='grid lg:grid-cols-5 sm:grid-cols-3 md-grid-cols-3 gap-8 mt-8'>
+                <div className='grid xl:grid-cols-5 lg:grid-cols-3 sm:grid-cols-3 md-grid-cols-3 gap-8 mt-8'>
                     {
                         data.map((item: any) => {
                             const { id, photo, description, country, price, Favorites } = item.Home!;

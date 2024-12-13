@@ -5,7 +5,7 @@ import { Loader2 } from 'lucide-react';
 import React from 'react'
 import { useFormStatus } from 'react-dom';
 
-export function SubmitButtons() {
+export function SubmitButtons({ enabled }: { enabled: boolean }) {
     const { pending } = useFormStatus();
 
     return (
@@ -16,7 +16,7 @@ export function SubmitButtons() {
                     <Loader2 className='mr-2 h-4 w-4 animate-spin' />
                     Please, wait...
                 </Button>
-            : <Button type='submit' size={"lg"}>Next</Button>
+            : <Button type='submit' size={"lg"} disabled={!enabled}>Next</Button>
         }
     </>
   )
