@@ -201,3 +201,20 @@ export async function removeFromHomeListing(formData: FormData) {
 
     return redirect(`/myHomes`);
 }
+
+export async function removeFromCompleteHomeListing(formData: FormData) {
+
+    const homeId = formData.get("homeId") as string;
+    const userId = formData.get("userId") as string;
+
+    const data = await prisma.home.delete({
+        where: {
+            id: homeId,
+            userId: userId
+        }
+    })
+
+    console.log(data);
+
+    revalidatePath("/myHomes");
+}

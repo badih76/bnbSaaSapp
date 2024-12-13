@@ -51,7 +51,16 @@ function CreateAddAddressEx({ params }: { params: { id: string }}) {
 
                 <div className="mx-auto w-full mt-10 flex flex-col gap-y-5 mb-36 ">
                     <div className="flex flex-col gap-y-2">
-                        <Select required onValueChange={(value) => setSelectedCountry(value)}>
+                        <Select required onValueChange={(value) => 
+                            {
+                                setSelectedCountry(value);
+                                const country = getAllCountries().find((c) => {
+                                    return c.value == value;
+                                })
+                                setLon(country?.latLang[1]!);
+                                setLat(country?.latLang[0]!);
+                                setZoom(6);
+                            }}>
                             <SelectTrigger className='w-full'>
                                 <SelectValue placeholder='Select a country' />
                             </SelectTrigger>

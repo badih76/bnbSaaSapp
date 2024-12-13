@@ -4,7 +4,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
 import AddToFavoriteButton, { RemoveFromFavoriteButton } from '../AddToFavoriteButton'
-import { addToFavorites, removeFromFavorites } from '@/app/actions/actions'
+import { addToFavorites, removeFromCompleteHomeListing, removeFromFavorites } from '@/app/actions/actions'
 import { Trash2 } from 'lucide-react'
 import { Switch } from '@/components/ui/switch'
 
@@ -110,13 +110,19 @@ function ListingCard({
                             </div>
                         ) : null 
                     }
-                    {
-                        deleteButton ? (
-                            <div className='flex flex-col justify-center items-center text-red-500'>
-                                <Trash2 />
-                            </div>
-                        ) : null
-                    }
+                        {
+                            deleteButton ? (
+                                <>
+                                    <form action={removeFromCompleteHomeListing}>
+                                        <input type='hidden' name="homeId" value={homeId} />
+                                        <input type='hidden' name="userId" value={userId} />
+                                        <div className='flex flex-col justify-center items-center text-red-500'>
+                                            <Trash2 />
+                                        </div>
+                                    </form>     
+                                </>
+                            ) : null
+                        }
                 </div>
             </div>
         </Link>

@@ -39,10 +39,12 @@ function Map({ country, lon = null, lat = null, zoom = null }: IParams) {
             },
         });
 
-        console.log(map);
+        console.log("Map: ", map);
         
         return null;
     };
+
+    console.log("MarkLocation: ", markerLocation);
 
   return (
     <MapContainer scrollWheelZoom={false}
