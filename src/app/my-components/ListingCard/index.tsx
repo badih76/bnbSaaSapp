@@ -42,7 +42,7 @@ function ListingCard({
     const cntry = getCountryByValue(country);
 
   return (
-    <div className='flex flex-col border-2 rounded-lg border-gray-300 p-3 flex-shrink-0'>
+    <div className='flex flex-col border-2 rounded-lg border-gray-300 p-3 flex-shrink-0 justify-between'>
         <div className='relative h-56'>
             <Image src={`https://vihbisloauhjiimyfhfu.supabase.co/storage/v1/object/public/esm-bnb-images/${imagePath}`} 
                 alt={description} fill 
@@ -76,20 +76,23 @@ function ListingCard({
         </div>
 
         <Link href={`/home/${homeId}`}>
-            <h3 className='font-medium text-base mt-2 p-2'>
-                {
-                    <div className='w-full flex flex-row gap-2'>
-                        <div className='flex flex-col justify-center items-center'>
-                            <img  
-                                src={getFlagURL(country)}
-                                width="20"  
-                                height="8"  
-                                alt={"Country Flag"} /> 
+            <div className='flex flex-col justify-between border'>
+                <h3 className='font-medium text-base mt-2 p-2'>
+                    {
+                        <div className='w-full flex flex-row gap-2'>
+                            <div className='flex flex-col justify-center items-center'>
+                                <img  
+                                    src={getFlagURL(country)}
+                                    width="20"  
+                                    height="8"  
+                                    alt={"Country Flag"} /> 
+                            </div>
+                            { cntry?.label } 
+                            {/* + " / " + cntry?.region  */}
                         </div>
-                        { cntry?.label + " / " + cntry?.region }
-                    </div>
-                }
-            </h3>
+                    }
+                </h3>
+            </div>
             <p className='text-muted-foreground text-xs line-clamp-3'>
                 {description}
             </p>
