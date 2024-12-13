@@ -27,7 +27,7 @@ function SearchModalComponent() {
             )
         } else if(step === 2) {
             return (
-                <SubmitButtons />
+                <SubmitButtons enabled={true}  />
             )
         }
     }

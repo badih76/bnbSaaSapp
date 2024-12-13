@@ -5,7 +5,7 @@ import Link from 'next/link'
 import React from 'react'
 import AddToFavoriteButton, { RemoveFromFavoriteButton } from '../AddToFavoriteButton'
 import { addToFavorites, removeFromFavorites } from '@/app/actions/actions'
-import { Lightbulb, LightbulbOff, Recycle, RecycleIcon, Trash, Trash2 } from 'lucide-react'
+import { Trash2 } from 'lucide-react'
 import { Switch } from '@/components/ui/switch'
 
 interface IListingData {

@@ -7,13 +7,13 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrig
 import { Skeleton } from '@/components/ui/skeleton';
 import { useCountries } from '@/data/getWorldCountries'
 import { getFlagURL } from '@/lib/utilsCode';
-import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
 import dynamic from 'next/dynamic';
 import React, { useState } from 'react'
+import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
 
 const useAPI = process.env.USE_API === "1" ? true : false;
 
-async function CreateAddAddressEx({ params }: { params: { id: string }}) {
+function CreateAddAddressEx({ params }: { params: { id: string }}) {
     const { getAllCountries } = useCountries();
     const [ selectedCountry, setSelectedCountry ] = useState("OM");
     const [ lon, setLon ] = useState<number | null>(-0.09);
@@ -33,8 +33,10 @@ async function CreateAddAddressEx({ params }: { params: { id: string }}) {
         setAddress(add);
     }
 
-    const { getUser } = getKindeServerSession();
-    const user = await getUser();
+    // const { getUser } = getKindeServerSession();
+    // const user = await getUser();
+    const { getUser } = useKindeBrowserClient();
+    const user = getUser();
 
   return (
     <>
@@ -79,7 +81,7 @@ async function CreateAddAddressEx({ params }: { params: { id: string }}) {
                     
                 </div>
 
-            <CreateScreenBottomBar homeId={params.id} userId={user.id} enabled={true} />
+            <CreateScreenBottomBar homeId={params.id} userId={user?.id} enabled={true} />
             </form>
         </div>
     </>

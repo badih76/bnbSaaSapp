@@ -62,7 +62,7 @@ function CreateAddAddress({ params }: { params: { id: string }}) {
                     
                 </div>
 
-            <CreateScreenBottomBar />
+            <CreateScreenBottomBar userId='' homeId='' enabled={true} />
             </form>
         </div>
     </>
