@@ -2,11 +2,15 @@
 
 import { Button } from '@/components/ui/button'
 import { Minus, Plus } from 'lucide-react'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
-function Counter({ name }: {name: string}) {
+function Counter({ name, defaultValue=undefined }: {name: string, defaultValue?: number | undefined}) {
     const [ amount, setAmount ] = useState(0);
 
+    useEffect(() => {
+        if(defaultValue) setAmount(defaultValue);
+    }, []);
+    
     const increase = () => {
         setAmount(amount + 1);
     }

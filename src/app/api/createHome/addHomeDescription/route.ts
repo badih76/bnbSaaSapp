@@ -25,19 +25,21 @@ export async function POST(req: NextRequest) {
     const price = formData.get("price");
     const imageFile = formData.get("image") as File;
     const imageBlob = formData.get("image") as Blob;
-    const guestsCount = formData.get("guests") as string;
-    const roomsCount = formData.get("rooms") as string;
-    const bathroomsCount = formData.get("bathrooms") as string;
+    const guestsCount = parseInt(formData.get("guests") as string);
+    const roomsCount = parseInt(formData.get("rooms") as string);
+    const bathroomsCount = parseInt(formData.get("bathrooms") as string);
     const homeId = formData.get("homeId") as string;
+    const selectedFacilities = formData.get("selectedFacilities") as string;
 
     const arrayBuffer = await imageBlob.arrayBuffer();
 
-    console.log("ImageFile: ", imageFile, imageFile.type);
+    // console.log("ImageFile: ", imageFile.name, imageFile.type);
+    const fileName = homeId + '_' + imageFile.name;
 
     // console.log("Type: ", imageFile.type)
     const { data: imageData } = await supabase.storage
         .from('esm-bnb-images')
-        .upload(`${imageFile.name}`, arrayBuffer,
+        .upload(`${fileName}`, arrayBuffer,
             {
                 cacheControl: '86400',      // one day
                 contentType: imageFile.type
@@ -56,7 +58,8 @@ export async function POST(req: NextRequest) {
             bedrooms: roomsCount,
             bathrooms: bathroomsCount,
             photo: imageData?.path,
-            addedDescription: true
+            addedDescription: true,
+            facilities: selectedFacilities
         }
     });
 

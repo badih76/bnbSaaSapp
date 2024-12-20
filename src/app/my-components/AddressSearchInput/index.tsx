@@ -18,78 +18,45 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 import { cn } from '@/lib/utils';
-
-interface IAddress {
-    value: string,
-    label: string,
-    lon: number,
-    lat: number,
-}
+import { SearchAddress } from '@/lib/utilsCode';
+import { IAddress } from '@/lib/interfaces';
 
 interface IParams {
-    setMarker: (lon: number, lat: number, z: number | null, add: string) => void
+    setMarker: (lon: number, lat: number, z: number | null, add: string) => void,
+    defaultValue?: string | undefined
 }
 
-const AddressSearchInput = ({ setMarker } : IParams) => {
+const AddressSearchInput = ({ setMarker, defaultValue } : IParams) => {
     const [ address, setAddress ] = useState('');
     const [ pending, setPending ] = useState(false);
-
     const [open, setOpen] = React.useState(false);
     const [ foundAddresses, setFoundAddresses ] = useState<IAddress[]>([]);
-
     const [ timer, setTimer ] = useState<NodeJS.Timeout>();
 
-    useEffect(() => {
-        console.log('Address changed', address);
-    }, [address]);
+    useEffect(()=> {
+        // console.log("Default value: ", defaultValue);
+        if(defaultValue) {
+            setAddress(defaultValue);
 
-    
-    useEffect(() => {
-        console.log('Addresses found:', foundAddresses);
-    }, [foundAddresses]);
-
-
-    const SearchAddress = (address: string, country: string | null=null) => {
-        console.log(address);
-        const apiKey = process.env.GEOAPIFY_API_KEY!;
-        console.log(apiKey);
-        const url = `https://api.geoapify.com/v1/geocode/search?text=${address}${country !== null ? '&country='+country : ''}&limit=50&format=json&apiKey=${apiKey}`;
-        console.log('URL: ', url);
-
-        try {
-            fetch(url,
-                {
-                  method: 'get',
-                  cache: "no-cache" 
-                })
-                .then(res => {
-                    return res.json();
-    
-                })
-                .then(json => {
-                    // console.log(json);
-                    const foundAddresses: IAddress[] = [];
-
-                    json.results.map((r: any) => {
-                        console.log(r.formatted);
-                        foundAddresses.push({ value: r.formatted, label: r.formatted, lon: parseFloat(r.lon), lat: parseFloat(r.lat) });
-                    })
-                    
-                    setFoundAddresses(foundAddresses);
-                    return json
-                    
-                })
-                .catch (err => {
-                    console.log("Error: ", (err as any).message);
-                    return false;
-                });
-        } catch(err) {
-            console.log("Error: ", (err as any).message);
-            return false;
+            // console.log("Look for the address: ", defaultValue);
+            // find the address and get coordinates
+            SearchAddress(defaultValue, setFoundAddresses);
         }
+    }, []);
 
-        setPending(false);
-    }
+    useEffect(() => {
+        let foundAddress: IAddress | undefined;
+
+        if(defaultValue) {
+            foundAddress = foundAddresses.find(a => a.value == defaultValue.trim());
+            
+        if(foundAddress) 
+            setMarker(foundAddress.lon, foundAddress.lat, 15, foundAddress.label);
+        else 
+            if(foundAddresses.length === 1) setMarker(foundAddresses[0].lon, foundAddresses[0].lat, 15, foundAddresses[0].label);
+
+        }
+    }, [ foundAddresses ]);
   
     return (
         <div className="flex flex-col gap-y-2">
@@ -103,7 +70,7 @@ const AddressSearchInput = ({ setMarker } : IParams) => {
                     className="w-full justify-between"
                     >
                     {address != ''
-                        ? foundAddresses.find((a) => a.value === address)?.label
+                        ? defaultValue ? address : foundAddresses.find((a) => a.value === address)?.label
                         : "Search for the address..."}
                     {/* <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" /> */}
                     {
@@ -115,8 +82,8 @@ const AddressSearchInput = ({ setMarker } : IParams) => {
                 </PopoverTrigger>
                 <PopoverContent className="w-full p-0">
                     <Command shouldFilter={false} className='w-full'>
-                        <CommandInput placeholder="Search addresses..." className='w-full' onValueChange={
-                            (value) => {
+                        <CommandInput placeholder="Search addresses..." className='w-full' name='address'
+                        onValueChange={(value) => {
                                 const searchValue = value;
 
                                 setPending(true);
@@ -124,7 +91,7 @@ const AddressSearchInput = ({ setMarker } : IParams) => {
 
                                 const newTimer = setTimeout(() => {
                                     // call Api to check the name
-                                    SearchAddress(searchValue);
+                                    SearchAddress(searchValue, setFoundAddresses);
 
                                 }, 1000);
 

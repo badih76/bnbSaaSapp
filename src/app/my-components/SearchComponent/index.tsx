@@ -11,21 +11,31 @@ import React, { useState } from 'react'
 import { Card, CardHeader } from '@/components/ui/card';
 import Counter from '../Counter';
 import SubmitButtons from '../SubmitButtons';
+import { DateRange } from 'react-date-range';
+
+import 'react-date-range/dist/styles.css'; // main style file
+import 'react-date-range/dist/theme/default.css'; // theme css file
+
 
 function SearchModalComponent() {
     const [ step, setStep ] = useState(1);
     const [ selectedCountry, setSelectedCountry ] = useState("OM");
+    const [ state1, setState1 ] = useState([{
+        startDate: new Date(),
+        endDate: new Date(),
+        key: "selection"
+    }]);
 
     const { getAllCountries } = useCountries();
 
     const LocalSubmitButton = () => {
-        if(step === 1) {
+        if(step === 1 || step === 2) {
             return (
                 <Button onClick={() => setStep(step + 1)} type='button'>
                     Next
                 </Button>
             )
-        } else if(step === 2) {
+        } else if(step === 3) {
             return (
                 <SubmitButtons enabled={true}  />
             )
@@ -47,6 +57,8 @@ function SearchModalComponent() {
         <DialogContent className='sm:max-x-[425px]'>
             <form className='gap-4 flex flex-col'>
                 <input type='hidden' name="country" value={selectedCountry} />
+                <input type='hidden' name='startDate' value={state1[0].startDate.toISOString()} />
+                <input type='hidden' name='endDate' value={state1[0].endDate.toISOString()} />
                 {
                     step === 1 ? (
                         <>
@@ -86,7 +98,28 @@ function SearchModalComponent() {
 
                             <HomeMap locationValue={selectedCountry} zoom={5}/>
                         </>
+                    ) : step === 2 ? (
+                        <>
+                            <DialogHeader>
+                                <DialogTitle className='text-primary w-full'>
+                                    Select dates
+                                </DialogTitle>
+                                <DialogDescription>
+                                    Please, select the dates you want to reserv.
+                                </DialogDescription>
+                            </DialogHeader>
+                            <DateRange date={ new Date()}
+                                showDateDisplay={false}
+                                rangeColors={["#FF5A5F"]}
+                                ranges={state1}
+                                onChange={(item) => setState1([item.selection as any])}
+                                minDate={new Date()}
+                                direction="vertical"
+                                // disabledDates={disabledDates}
+                            />
+                        </>
                     ) : (
+                        // step 3
                         <>
                             <DialogHeader>
                                 <DialogTitle className='text-primary'>

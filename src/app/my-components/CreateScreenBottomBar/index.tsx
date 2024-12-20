@@ -36,9 +36,7 @@ function CreateScreenBottomBar({ userId, homeId, enabled }: IParams) {
                 </Link>
             </Button>        
               
-            <Dialog 
-              // open={dialogOpen} onOpenChange={setDialogOpen}
-              >
+            <Dialog>
               <DialogTrigger asChild>
                 <Button variant={"destructive"} size="lg">
                   {/* <Link href="/"> */}

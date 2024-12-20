@@ -5,6 +5,7 @@ import React from 'react'
 import NoItemsFound from '../my-components/NoItemsFound';
 import ListingCard from '../my-components/ListingCard';
 import { unstable_noStore as noStore } from 'next/cache'
+// import GetFacilityIconById from '../my-components/getFacilityIcon';
 
 const useAPI = process.env.USE_API === "1" ? true : false;
 
@@ -39,7 +40,9 @@ const getMyHomesData = async (userId: string, accessToken: Object | undefined) =
                 userId: userId,
                 addedCategory: true,
                 addedDescription: true,
-                addedLocation: true
+                addedLocation: true,
+                deleted: false,
+                
             },
             select: {
                 photo: true,
@@ -52,6 +55,8 @@ const getMyHomesData = async (userId: string, accessToken: Object | undefined) =
                 price: true,
                 country: true,
                 description: true,
+                deleted: true,
+                enabled: true
             },
             orderBy: {
                 createdAT: "desc"
@@ -73,7 +78,7 @@ async function MyHomes() {
     const data = await getMyHomesData(user?.id, accessToken);
 
   return (
-    <section className='container mx-auto px-5 lg:px-10 mt-10'>
+    <section className='container mx-auto px-5 lg:px-10 mt-10 mb-10'>
         <h2 className='text-3xl font-semibold tracking-tight text-primary'>My Homes</h2>
 
         {
@@ -83,7 +88,7 @@ async function MyHomes() {
                 <div className='grid xl:grid-cols-5 lg:grid-cols-3 sm:grid-cols-3 md-grid-cols-3 gap-8 mt-8'>
                     {
                         data.map((item: any) => {
-                            const { id, photo, description, country, price, Favorites } = item;
+                            const { id, photo, description, country, price, Favorites, enabled } = item;
                             return (
                                 <ListingCard 
                                     key={id}
@@ -95,10 +100,12 @@ async function MyHomes() {
                                     userId={user.id} 
                                     isInFavoriteList={Favorites.length > 0 ? true : false}
                                     favoriteId={Favorites[0]?.id as string} 
+                                    enabled={enabled as boolean}
                                     homeId={id as string} 
                                     pathName={'/favorites'}
                                     deleteButton={true} 
                                     enableButton={true}
+                                    editButton={true}
                                 />
                             )
                         })
@@ -106,6 +113,35 @@ async function MyHomes() {
                 </div>
             )
         }
+        {/* <div className='flex flex-row justify-between w-full'>
+            <div>
+                <GetFacilityIconById facilityIconId={1} />
+            </div>
+            <div>
+                <GetFacilityIconById facilityIconId={2} />
+            </div>
+            <div>
+                <GetFacilityIconById facilityIconId={3} />
+            </div>
+            <div>
+                <GetFacilityIconById facilityIconId={4} />
+            </div>
+            <div>
+                <GetFacilityIconById facilityIconId={5} />
+            </div>
+            <div>
+                <GetFacilityIconById facilityIconId={6} />
+            </div>
+            <div>
+                <GetFacilityIconById facilityIconId={7} />
+            </div>
+            <div>
+                <GetFacilityIconById facilityIconId={8} />
+            </div>
+            <div>
+                <GetFacilityIconById facilityIconId={9} />
+            </div>
+        </div> */}
     </section>
   )
 }

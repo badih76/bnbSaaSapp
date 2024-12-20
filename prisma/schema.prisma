@@ -33,9 +33,9 @@ model Home {
 
   title String?
   description String?
-  guests String?
-  bedrooms String?
-  bathrooms String?
+  guests Int?
+  bedrooms Int?
+  bathrooms Int?
   country String?
   address String?
   photo String?
@@ -48,11 +48,15 @@ model Home {
   addedLocation Boolean @default(false)
   
   createdAT DateTime @default(now())
+  deleted Boolean @default(false)
+  enabled Boolean @default(true)
+  facilities String @default("")
 
   Reservations Reservations[]
   User User? @relation(fields: [userId], references: [id])
   Favorites Favorites[]
   userId String?
+  Facilities HomeFacilities[]
 }
 
 model Favorites {
@@ -80,4 +84,22 @@ model Reservations {
 
   Home Home? @relation(fields: [homeId], references: [id])
   homeId String
+}
+
+model HomeFacilities {
+  id String @id @default(uuid())
+  facilityId Int
+
+  Home Home? @relation(fields: [homeId], references: [id])
+  homeId String
+  FacilityMaster FacilityMaster? @relation(fields: [facilityId], references: [id])
+}
+
+model FacilityMaster {
+  id Int @id @default(autoincrement())
+  facilityTitle String
+  facilityDescription String
+  facilityIconId Int
+
+  HomeFacility HomeFacilities[] 
 }

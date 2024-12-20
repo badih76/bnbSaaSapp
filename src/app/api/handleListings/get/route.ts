@@ -24,7 +24,8 @@ export async function POST(req: NextRequest) {
             userId: userId,
             addedCategory: true,
             addedDescription: true,
-            addedLocation: true
+            addedLocation: true,
+            deleted: false
         },
         select: {
             photo: true,
@@ -37,6 +38,8 @@ export async function POST(req: NextRequest) {
             price: true,
             country: true,
             description: true,
+            deleted: true,
+            enabled: true
         },
         orderBy: {
             createdAT: "desc"

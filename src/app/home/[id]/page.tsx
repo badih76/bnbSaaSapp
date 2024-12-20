@@ -13,6 +13,7 @@ import React from 'react'
 import HomeMap from './HomeMap';
 import CategoryShowCase from './CategoryShowCase';
 import { unstable_noStore as noStore } from 'next/cache'
+import FacilitiesBlock from './FacilitiesBlock';
 
 const getHomeData = async (homeId: string) => {
     noStore();
@@ -34,6 +35,7 @@ const getHomeData = async (homeId: string) => {
             photo: true,
             categoryName: true,
             createdAT: true,
+            facilities: true,
             Reservations: {
                 where: {
                     homeId: homeId
@@ -60,6 +62,7 @@ async function HomeRoute({ params }: { params: { id: string }}) {
     const country = getCountryByValue(data ? data.country! : "");        // data?.country!
     const { getUser } = getKindeServerSession();
     const user = await getUser();
+    const facilities: number[] = data ? data?.facilities ? JSON.parse(data.facilities) : [] : [];
 
   return (
     <div className='w-[75%] mx-auto mt-10 mb-32 '>
@@ -109,6 +112,8 @@ async function HomeRoute({ params }: { params: { id: string }}) {
                     <CategoryShowCase categoryName={data?.categoryName as string} />
                 </div>
 
+                <FacilitiesBlock facilities={facilities} />
+                
                 <div className='flex flex-row mt-5'>
                     <div className="rounded-full border px-2 py-2 lg:px-4 lg-py-2 flex items-center gap-x-3">
                         <img src={ data?.User?.profileImage ?? "https://cdn-icons-png.flaticon.com/512/149/149071.png" }
@@ -134,7 +139,7 @@ async function HomeRoute({ params }: { params: { id: string }}) {
 
                 <Separator className='my-7 w-full' /> 
 
-                <HomeMap locationValue={ country?.value as string } />
+                <HomeMap locationValue={ country?.value as string } defaultValue={data ? data.address : null} zoom={13} />
                     
             </div>
             <form action={createReservation} className='flex flex-col items-center mt-5 lg:mt-0'>

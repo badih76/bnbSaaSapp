@@ -18,7 +18,6 @@ export async function createBnbSiteHome({ userId}: { userId: string }) {
     console.log("Data: ", data);
 
     if(data === null) {
-        console.log('Data is null')
         const data = await prisma.home.create({
             data: {
                 userId: userId
@@ -49,8 +48,6 @@ export async function createCategory(formData: FormData) {
     const categoryName = formData.get("categoryName") as string;
     const homeId = formData.get("homeId") as string;
 
-    console.log("I'm called from somewhere!!!!!!!!!!!");
-
     const data = await prisma.home.update({
         where: {
             id: homeId
@@ -71,15 +68,20 @@ export async function CreateDescription(formData: FormData) {
     const description = formData.get("description") as string;
     const price = formData.get("price");
     const imageFile = formData.get("image") as File;
-    const guestsCount = formData.get("guests") as string;
-    const roomsCount = formData.get("rooms") as string;
-    const bathroomsCount = formData.get("bathrooms") as string;
+    const guestsCount = parseInt(formData.get("guests") as string);
+    const roomsCount = parseInt(formData.get("rooms") as string);
+    const bathroomsCount = parseInt(formData.get("bathrooms") as string);
     const homeId = formData.get("homeId") as string;
+    const selectedFacilities = formData.get("selectedFacilities") as string;
 
-    console.log("Type: ", imageFile.type)
+    // console.log("Image Name: ", imageFile.name);
+    // console.log("Type: ", imageFile.type)
+
+    const fileName = homeId + '_' + imageFile.name;
+
     const { data: imageData } = await supabase.storage
         .from('esm-bnb-images')
-        .upload(`${imageFile.name}`, imageFile,
+        .upload(`${fileName}`, imageFile,
             {
                 cacheControl: '86400',      // one day
                 contentType: imageFile.type
@@ -98,7 +100,8 @@ export async function CreateDescription(formData: FormData) {
             bedrooms: roomsCount,
             bathrooms: bathroomsCount,
             photo: imageData?.path,
-            addedDescription: true
+            addedDescription: true,
+            facilities: selectedFacilities
         }
     });
 
@@ -203,11 +206,14 @@ export async function removeFromHomeListing(formData: FormData) {
 }
 
 export async function removeFromCompleteHomeListing(formData: FormData) {
-
     const homeId = formData.get("homeId") as string;
     const userId = formData.get("userId") as string;
-
-    const data = await prisma.home.delete({
+    console.log('Delet home', homeId, userId);
+    
+    const data = await prisma.home.update({
+        data: {
+            deleted: true
+        },
         where: {
             id: homeId,
             userId: userId
@@ -217,4 +223,87 @@ export async function removeFromCompleteHomeListing(formData: FormData) {
     console.log(data);
 
     revalidatePath("/myHomes");
+}
+
+export async function enableDisableCompleteHomeListing(formData: FormData) {
+    const homeId = formData.get("homeId") as string;
+    const userId = formData.get("userId") as string;
+    const checked = formData.get("checked") as string;
+    
+    const data = await prisma.home.update({
+        data: {
+            enabled: checked == "1" ? false : true
+        },
+        where: {
+            id: homeId,
+            userId: userId
+        }
+    })
+
+    console.log(data);
+
+    revalidatePath("/myHomes");
+}
+
+export async function getHomeDetailsSSF(homeId: string) {
+    const data = await prisma.home.findUnique({
+        where: {
+            id: homeId,
+        },
+        select: {
+            categoryName: true,
+            title: true,
+            photo: true,
+            id: true,
+            price: true,
+            country: true,
+            description: true,
+            deleted: true,
+            enabled: true,
+            guests: true,
+            bedrooms: true,
+            bathrooms: true,
+            facilities: true,
+            address: true
+        }
+    });
+
+    return data;
+
+}
+
+export async function updateHomeDetails(formData: FormData) {
+    const homeId = formData.get("homeId") as string;
+    const categoryName = formData.get("categoryName") as string;
+    const title = formData.get("title") as string;
+    const description = formData.get("description") as string;
+    const price = formData.get("price") as string;
+    const guests = formData.get("guests") as string;
+    const bedrooms = formData.get("bedrooms") as string;
+    const bathrooms = formData.get("bathrooms") as string;
+    const country = formData.get("countryValue") as string;
+    const address = formData.get("addressValue") as string;
+    const facilities = formData.get("selectedFacilities") as string;
+
+    const data = await prisma.home.update({
+        data: {
+            categoryName, 
+            title, 
+            description, 
+            price: parseFloat(price), 
+            guests: parseInt(guests), 
+            bedrooms: parseInt(bedrooms), 
+            bathrooms: parseInt(bathrooms), 
+            facilities, 
+            country, 
+            address 
+        },
+        where: {
+            id: homeId
+        }
+    });
+
+    console.log(data);
+
+    return redirect(`/home/${homeId}`);
 }

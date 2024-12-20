@@ -31,6 +31,7 @@ export async function POST(req: NextRequest) {
                     photo: true,
                     description: true,
                     price: true,
+                    deleted: false,
                     Favorites: {
                         where: {
                             userId: userId

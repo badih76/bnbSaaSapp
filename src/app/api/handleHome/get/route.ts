@@ -8,11 +8,7 @@ export async function POST(req: NextRequest) {
 
     console.log("Using API Calls");
     // const formData = await req.formData();
-    const { userId, accessToken } = await req.json();
-
-    console.log({
-        userId, accessToken
-    })
+    const { userId, accessToken, homeId } = await req.json();
     
     const { getUser
         // , getIdToken, getAccessToken 
@@ -22,34 +18,29 @@ export async function POST(req: NextRequest) {
     if((!user || !user.id) && !accessToken) {
         return NextResponse.json({ Error: "User not found or no user logged in." }, { status: 200 })
     }
-
-    // const data = await prisma.reservations.findMany({
-    //     where: {
-    //         userId: userId
-    //     }
-    // })
     
-    const data = await prisma.favorites.findMany({
+    const data = await prisma.home.findUnique({
         where: {
-            userId: userId
+            id: homeId,
+            userId: userId,
         },
         select: {
-            Home: {
-                select: {
-                    photo: true,
-                    id: true,
-                    Favorites: true,
-                    price: true,
-                    country: true,
-                    description: true,
-                    deleted: false,
-                    enabled: true
-                }
-            }
+            categoryName: true,
+            title: true,
+            photo: true,
+            id: true,
+            price: true,
+            country: true,
+            description: true,
+            deleted: true,
+            enabled: true,
+            guests: true,
+            bedrooms: true,
+            bathrooms: true,
+            facilities: true,
+            address: true
         }
     });
-
-    console.log("Data in API: ", data);
 
     return NextResponse.json({
         data: data

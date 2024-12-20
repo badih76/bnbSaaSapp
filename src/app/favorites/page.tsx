@@ -45,7 +45,9 @@ const getFavoritesData = async (userId: string, accessToken: Object | undefined)
                         Favorites: true,
                         price: true,
                         country: true,
-                        description: true
+                        description: true,
+                        deleted: false,
+                        enabled: true
                     }
                 }
             }

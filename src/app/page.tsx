@@ -15,21 +15,25 @@ async function getListingsData({
     country?: string,
     guests?: string,
     rooms?: string,
-    bathrooms?: string
+    bathrooms?: string,
+    startDate?: Date,
+    endDate?: Date
   }
  }) {
+  const { filter, country, rooms, bathrooms, guests } = searchParams!;
   noStore();
 
-  const data = prisma.home.findMany({
+  const data = await prisma.home.findMany({
     where: {
       addedCategory: true,
       addedDescription: true,
       addedLocation: true,
-      categoryName: searchParams?.filter ?? undefined,
-      country: searchParams?.country ?? undefined,
-      bedrooms: searchParams?.rooms ?? undefined,
-      bathrooms: searchParams?.bathrooms ?? undefined,
-      guests: searchParams?.guests ?? undefined
+      categoryName: filter ?? undefined,
+      country: country ?? undefined,
+      bedrooms: rooms ? parseInt(rooms) : undefined,
+      bathrooms: bathrooms ? parseInt(bathrooms) : undefined,
+      guests: guests ? parseInt(guests) : undefined,
+      deleted: false
     },
     select: {
       photo: true,
@@ -37,6 +41,8 @@ async function getListingsData({
       price: true,
       description: true,
       country: true,
+      deleted: false,
+      enabled: true,
       Favorites: {
         where: {
           userId: userId ?? undefined
@@ -45,7 +51,36 @@ async function getListingsData({
     }
   });
 
-  return data;
+  if(searchParams?.startDate) {
+    const filteredData = data.filter(async d => {
+      const resData = await prisma.reservations.findMany({
+        where: {
+          homeId: d.id,
+          startDate: {
+            lte: new Date(searchParams.startDate!)
+          },
+          endDate: {
+            gte: new Date(searchParams.endDate!)
+          }
+        },
+        select: {
+          id: true,
+          startDate: true,
+          endDate: true
+        }
+      })
+
+
+      return resData.length == 0;
+    });
+
+    return filteredData;
+
+  } else {
+    return data;
+
+  }
+
 }
 
 export default function Home({
@@ -56,7 +91,9 @@ export default function Home({
       country?: string,
       guests?: string,
       rooms?: string,
-      bathrooms?: string
+      bathrooms?: string,
+      startDate?: Date,
+      endDate?: Date
     }
   }
 ) {
@@ -80,7 +117,9 @@ async function ShowItems({
       country?: string,
       guests?: string,
       rooms?: string,
-      bathrooms?: string
+      bathrooms?: string,
+      startDate?: Date,
+      endDate?: Date
    }
  }) {
   
@@ -94,7 +133,7 @@ async function ShowItems({
           {data.length === 0 ? (
             <NoItemsFound />
           ) : (
-          <div className="grid xl:grid-cols-5 lg:grid-cols-3 sm:grid-cols-3 md-grid-cols-3 gap-8 mt-8 mb-20">
+          <div className="grid grid-cols-3 xl:grid-cols-5 lg:grid-cols-3 md:grid-cols-3 gap-8 mt-8 pb-52 border-red-600">
             {data.map(item => {
               return (
                 <ListingCard 
