@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import SelectFacilities from "./facilities";
+import ThumnailsComponent from "@/app/my-components/ThumbnailsComponent";
 
 const useAPI = process.env.USE_API === "1" ? true : false;
 
@@ -52,10 +53,11 @@ export default async function Decription (
                         </div>
                         <div className="flex flex-col gap-y-2">
                             <Label>Image</Label>
-                            <Input name="image" 
+                            {/* <Input name="image" 
                                 type="file"
                                 required 
-                            />
+                            /> */}
+                            <ThumnailsComponent />
                         </div>
                         
                         <Card>

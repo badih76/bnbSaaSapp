@@ -7,13 +7,14 @@ import { getCountryByValue } from '@/data/getWorldCountries';
 import { FlagSize, getFlagURL } from '@/lib/utilsCode';
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
 import { Bed, ShowerHead, Users } from 'lucide-react';
-import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react'
 import HomeMap from './HomeMap';
 import CategoryShowCase from './CategoryShowCase';
 import { unstable_noStore as noStore } from 'next/cache'
 import FacilitiesBlock from './FacilitiesBlock';
+import { IHomeImages } from '@/lib/thumnailsInterface';
+import HomeImagesCarousel from '@/app/my-components/HomeImagesCarousel';
 
 const getHomeData = async (homeId: string) => {
     noStore();
@@ -64,18 +65,28 @@ async function HomeRoute({ params }: { params: { id: string }}) {
     const user = await getUser();
     const facilities: number[] = data ? data?.facilities ? JSON.parse(data.facilities) : [] : [];
 
+    const imgFiles: string[] = [];
+    const photos: IHomeImages[] = data ? JSON.parse(data.photo!) : [];
+
+    photos.map(d => {
+        imgFiles.push(d.thumbnailImagePath);
+    })
+
   return (
-    <div className='w-[75%] mx-auto mt-10 mb-32 '>
+    <div className='w-[75%] mx-auto mt-10 pb-10'>
         <h1 className='font-bold text-2xl mb-5 text-primary'>{ data?.title }</h1>
 
-        <div className='relative h-[75vw] w-[75vw] lg:h-[550px]'>
+        {/* <div className='relative h-[75vw] w-[75vw] lg:h-[550px]'>
             <Image 
                 alt={ data!.title! }
                 src={`https://vihbisloauhjiimyfhfu.supabase.co/storage/v1/object/public/esm-bnb-images/${data?.photo}`}
                 fill
                 className='rounded-lg  h-full object-cover w-full'
             />
-        </div>
+        </div> */}
+        <HomeImagesCarousel images={imgFiles} />
+
+        <Separator />
 
         <div className='flex flex-col lg:flex-row justify-between gap-x-24 mt-8'>
             <div className='w-full lg:w-2/3'>
