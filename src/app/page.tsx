@@ -133,7 +133,7 @@ async function ShowItems({
           {data.length === 0 ? (
             <NoItemsFound />
           ) : (
-          <div className="grid grid-cols-3 xl:grid-cols-5 lg:grid-cols-3 md:grid-cols-3 gap-8 mt-8 pb-52 border-red-600">
+          <div className="grid grid-cols-1 xl:grid-cols-5 lg:grid-cols-3 md:grid-cols-3 gap-8 mt-8 pb-52 border-red-600">
             {data.map(item => {
               return (
                 <ListingCard 
