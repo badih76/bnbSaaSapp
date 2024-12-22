@@ -1,13 +1,16 @@
+'use client'
+
 import { useCountries } from '@/data/getWorldCountries'
 import { getFlagURL } from '@/lib/utilsCode'
-import Image from 'next/image'
+// import Image from 'next/image'
 import Link from 'next/link'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import AddToFavoriteButton, { RemoveFromFavoriteButton } from '../AddToFavoriteButton'
 import { addToFavorites, removeFromFavorites } from '@/app/actions/actions'
 import DeleteHomeListing from './deleteHomeListing'
 import EnableHomeListing from './enableHomeListing'
 import EditHome from '@/app/myHomes/EditHome'
+import { IHomeImages } from '@/lib/thumnailsInterface'
 
 interface IListingData {
     imagePath: string,
@@ -46,6 +49,33 @@ function ListingCard({
     const { getCountryByValue } = useCountries();
     const cntry = getCountryByValue(country);
 
+    const [ imageFiles ] = useState<IHomeImages[]>(JSON.parse(imagePath));
+    const [ imgNumber, setImgNumber ] = useState<number>(0);
+
+    useEffect(() => {
+        if(imgNumber === imageFiles.length - 1) setImgNumber(0);
+    }, [imgNumber]);
+
+    useEffect(() => {
+        console.log(imageFiles); 
+        if(process.env.USE_IMAGE_ROTATOR && parseInt(process.env.USE_IMAGE_ROTATOR) == 1) {
+            const imageRotator = setInterval(() => {
+                const imgCount = imageFiles.length;
+
+                if(imgNumber === imgCount - 1) {
+                    setImgNumber(0);
+                } else {
+                    setImgNumber(prevNum => prevNum + 1);
+                }
+                
+                // console.log("Image number ", imgNumber, imgCount, imgNumber == imgCount - 1, imgNumber === imgCount - 1);                
+
+            }, 5000);
+
+            return () => clearInterval(imageRotator);
+        }
+    }, [])
+
   return (
     <div className='flex flex-col border-2 rounded-lg border-gray-300 p-3 flex-shrink-0 justify-between'>
         <div className='relative h-56'>
@@ -75,11 +105,16 @@ function ListingCard({
                 </div>
             )}
 
-            <Link href={`/home/${homeId}`}>
-                <Image src={`https://vihbisloauhjiimyfhfu.supabase.co/storage/v1/object/public/esm-bnb-images/${imagePath}`} 
-                    alt={description} fill 
-                    className='rounded-lg h-full object-cover mb-3'/>
+            <Link href={`/home/${homeId}`} key={imageFiles[imgNumber].thumbnailImagePath}>
+                {/* <Image src={`https://vihbisloauhjiimyfhfu.supabase.co/storage/v1/object/public/esm-bnb-images/thumbnails/${imageFiles[imgNumber].thumbnailImagePath}`} 
+                    alt={description} fill sizes="100px"
+                    className='rounded-lg h-full object-cover mb-3 animate-fade'/> */}
+
+                <img src={`https://vihbisloauhjiimyfhfu.supabase.co/storage/v1/object/public/esm-bnb-images/thumbnails/${imageFiles[imgNumber].thumbnailImagePath}`} 
+                    alt={description} sizes="100px"
+                    className='rounded-lg h-full object-cover mb-3 animate-fade'/>
             </Link>
+            
         </div>
 
         <Link href={`/home/${homeId}`}>

@@ -57,7 +57,29 @@ const config: Config = {
   			lg: 'var(--radius)',
   			md: 'calc(var(--radius) - 2px)',
   			sm: 'calc(var(--radius) - 4px)'
-  		}
+  		},
+		  animation: {
+			fadeIn: 'fadeIn 1s ease-in-out',
+			fadeout: 'fadeOut 1s ease-in-out',
+			fade: 'fade 5s ease-in-out'
+		},
+
+		keyframes: {
+			fadeIn: {
+				from: { opacity: "0" },
+				to: { opacity: "1" },
+			},
+			fadeOut: {
+				from: { opacity: "1" },
+				to: { opacity: "0" },
+			},
+			fade: {
+				"0%": { opacity: "0" },
+				"20%": { opacity: "1" },
+				"80%": { opacity: "1" },
+				"100%": { opacity: "0" }
+			},
+		},
   	}
   },
   plugins: [require("tailwindcss-animate"),nextui()],
