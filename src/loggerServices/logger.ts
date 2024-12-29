@@ -2,7 +2,10 @@ import { createLogger, format, transports,  } from 'winston';
 import 'winston-daily-rotate-file';
 import { ELogLevel, ILogObject } from './loggerInterfaces';
 
-const getLogger = (fileName = 'application') => {
+const getLogger = (
+    // fileName = 'application'
+    ) => {
+        
     // const fileLogTransport = new transports.DailyRotateFile({
     //     filename: `logs/${fileName}-%DATE%.log`,
     //     datePattern: 'YYYY-MM-DD',
