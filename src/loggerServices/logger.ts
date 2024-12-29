@@ -3,13 +3,13 @@ import 'winston-daily-rotate-file';
 import { ELogLevel, ILogObject } from './loggerInterfaces';
 
 const getLogger = (fileName = 'application') => {
-    const fileLogTransport = new transports.DailyRotateFile({
-        filename: `logs/${fileName}-%DATE%.log`,
-        datePattern: 'YYYY-MM-DD',
-        zippedArchive: true,
-        maxSize: '20m',
-        maxFiles: '30d'
-    });
+    // const fileLogTransport = new transports.DailyRotateFile({
+    //     filename: `logs/${fileName}-%DATE%.log`,
+    //     datePattern: 'YYYY-MM-DD',
+    //     zippedArchive: true,
+    //     maxSize: '20m',
+    //     maxFiles: '30d'
+    // });
 
     const consoleLogTransport = new transports.Console({
         level: process.env.LOG_LEVEL,
