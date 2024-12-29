@@ -13,9 +13,7 @@ const HomeMap = ({ locationValue, zoom, defaultValue }: { locationValue: string,
 
     // get the lat & long of the address
     useEffect(()=> {
-        // console.log("Default value: ", defaultValue);
         if(defaultValue) {
-            // console.log("Look for the address: ", defaultValue);
             // find the address and get coordinates
             SearchAddress(defaultValue, setFoundAddresses);
         }

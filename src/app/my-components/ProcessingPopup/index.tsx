@@ -6,7 +6,6 @@ import ProcessingGIF from '@/../public/loading.gif';
 function ProcessingPopup({ state }: { state:boolean }) {
   return (
     <Dialog open={state}>
-        {/* <DialogTrigger>Open</DialogTrigger> */}
         <DialogContent className='w-2/3'>
             <DialogHeader>
                 <DialogTitle>

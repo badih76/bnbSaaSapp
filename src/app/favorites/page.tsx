@@ -1,10 +1,16 @@
-import prisma from '@/data/db'
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
 import { redirect } from 'next/navigation';
 import React from 'react'
 import NoItemsFound from '../my-components/NoItemsFound';
 import ListingCard from '../my-components/ListingCard';
 import { unstable_noStore as noStore } from 'next/cache'
+import { drizzle } from 'drizzle-orm/mysql2';
+import { Favorites, Homes } from '@/drizzle/schema';
+import { eq, and } from 'drizzle-orm';
+import { ELogLevel, ILogObject } from '@/loggerServices/loggerInterfaces';
+import { Logger } from '@/loggerServices/logger';
+
+const db = drizzle({ connection: { uri: process.env.DATABASE_URL }});
 
 const useAPI = process.env.USE_API === "1" ? true : false;
 
@@ -26,34 +32,75 @@ const getFavoritesData = async (userId: string, accessToken: Object | undefined)
     
             const data = await res.json();
 
+            const logObj: ILogObject = {
+                level: ELogLevel.Info,
+                message: `Favorites fetched for userId: ${userId}`,
+                metaData: {
+                  service: "ESM-bnb-14",
+                  module: "Favorites Page",
+                  category: "Favorites",
+                },
+              };
+            Logger.log(logObj);
+
             return data.data;
                 
         } catch(err) {
-            console.log("Error: ", (err as any).message);
+            const logObj: ILogObject = {
+                level: ELogLevel.Error,
+                message: `Error: ${(err as Error).message}`,
+                metaData: {
+                    service: "ESM-bnb-14",
+                    module: "Favorites Page",
+                    category: "Favorites",
+                    stackdump: (err as Error).stack,
+            }};
+            Logger.log(logObj);
+
             return {};
         }
     } else {
-        const data = await prisma.favorites.findMany({
-            where: {
-                userId: userId
-            },
-            select: {
-                Home: {
-                    select: {
-                        photo: true,
-                        id: true,
-                        Favorites: true,
-                        price: true,
-                        country: true,
-                        description: true,
-                        deleted: false,
-                        enabled: true
-                    }
-                }
-            }
-        });
+        try {
+            const data = await db.select({
+                    photo: Homes.photo,
+                    id: Homes.id,
+                    favId: Favorites.id,
+                    price: Homes.price,
+                    country: Homes.country,
+                    description: Homes.description,
+                    deleted: Homes.deleted,
+                    enabled: Homes.enabled
+                })
+                .from(Favorites)
+                .innerJoin(Homes, and(eq(Homes.id, Favorites.homeId), eq(Favorites.userId, userId)))
+                .where(eq(Favorites.userId, userId))
+    
+            const logObj: ILogObject = {
+                level: ELogLevel.Info,
+                message: `Favorites fetched for userId: ${userId}`,
+                metaData: {
+                    service: "ESM-bnb-14",
+                    module: "Favorites Page",
+                    category: "Favorites",
+                }};
+            Logger.log(logObj);
+    
+            return data;
 
-        return data;
+        } catch(ex) {
+            const logObj: ILogObject = {
+                level: ELogLevel.Error,
+                message: `Error: ${(ex as Error).message}`,
+                metaData: {
+                    service: "ESM-bnb-14",
+                    module: "Favorites Page",
+                    category: "Favorites",
+                    stackdump: (ex as Error).stack,
+            }};
+            Logger.log(logObj);
+
+            return [];
+        }
 
     }    
     
@@ -64,7 +111,8 @@ async function FavoritesRoute() {
     const user = await getUser();
     const accessToken = await getAccessToken();
 
-    if(!user) return redirect("/");
+    // if(!user) return redirect("/");
+    if(!user || !user.id) redirect("api/auth/login?");
 
     const data = await getFavoritesData(user?.id, accessToken);
     // console.log("Data: !!!", data);
@@ -81,7 +129,7 @@ async function FavoritesRoute() {
                 <div className='grid xl:grid-cols-5 lg:grid-cols-3 sm:grid-cols-3 md-grid-cols-3 gap-8 mt-8'>
                     {
                         data.map((item: any) => {
-                            const { id, photo, description, country, price, Favorites } = item.Home!;
+                            const { id, photo, description, country, price, favId } = item;
                             return (
                                 <ListingCard 
                                     key={id}
@@ -91,8 +139,8 @@ async function FavoritesRoute() {
                                     description={description as string} 
                                     country={country as string} 
                                     userId={user.id} 
-                                    isInFavoriteList={Favorites.length > 0 ? true : false}
-                                    favoriteId={Favorites[0].id as string} 
+                                    isInFavoriteList={favId !== null ? true : false}
+                                    favoriteId={favId} 
                                     homeId={id as string} 
                                     pathName={'/favorites'} 
                                 />

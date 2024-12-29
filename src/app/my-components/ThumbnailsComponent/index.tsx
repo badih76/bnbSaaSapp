@@ -20,6 +20,11 @@ function ThumnailsComponent({
     // const [ resizeImageFilesStringify, setResizeImageFilesStringify ] = useState('');
     const [ imagesCount, setImagesCount ] = useState<number>(0);
 
+    let thumbNailHeight = 224;
+    if(process.env) {
+      if(process.env.THUMBNAIL_HEIGHT) thumbNailHeight = parseInt(process.env.THUMBNAIL_HEIGHT);
+    }
+
   return (
     <div className={customComponentClassName}>
         <input type='hidden' name='imagesCount' value={imagesCount} />
@@ -32,26 +37,21 @@ function ThumnailsComponent({
                   hover:file:text-blue-700'
         required 
         onChange={async (e) => {
-          // imgDivRef.current!.style.visibility = "hidden";
-
           const files = e.currentTarget.files //fileInput.files;
 
           if(!files || files.length === 0) return;
 
-          // displaying the uploaded image
-          // const imageToResize = document.querySelector("#imgToResize");
+          // displaying the uploaded image          
           imgToResizeRef.current!.src = await fileToDataUri(files![0]) as string;
 
         }}
       />
-
-        {/* <input type='hidden' name='uploadedFiles' value={resizeImageFilesStringify} /> */}
         <div id="images" ref={imgDivRef} >
             <img id="imgToResize" ref={imgToResizeRef} hidden={true}
             onLoad={(e) => {
-                const { naturalWidth } = e.currentTarget;
-                const thumnailWidth = 200;
-                const newResizeFactor = thumnailWidth / naturalWidth;
+                const { naturalHeight } = e.currentTarget;
+                const thumnailHeight = thumbNailHeight;
+                const newResizeFactor = thumnailHeight / naturalHeight;
                 let fileName = '';
                 let fileType = '';
 

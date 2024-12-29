@@ -6,13 +6,11 @@ import 'react-date-range/dist/theme/default.css'; // theme css file
 
 import { DateRange } from 'react-date-range';
 import { eachDayOfInterval } from 'date-fns';
+import { Reservations } from '@/drizzle/schema';
 
 
 function SelectCalender({ reservation }: {
-    reservation: {
-        startDate: Date,
-        endDate: Date
-    }[] | undefined}) {
+    reservation: typeof Reservations.$inferInsert[] | undefined | null}) {
 
     const [ state, setState ] = useState([{
         startDate: new Date(),
@@ -22,14 +20,19 @@ function SelectCalender({ reservation }: {
 
     let disabledDates: Date[] = [];
 
-    reservation?.forEach((reservationItem) => {
-        const dateRange = eachDayOfInterval({
-            start: new Date(reservationItem.startDate), 
-            end: new Date(reservationItem.endDate)
-        });
+    if(reservation && reservation !== null) {
+        reservation.forEach((reservationItem) => {
+            if(reservationItem !== null) {
+                const dateRange = eachDayOfInterval({
+                    start: new Date(reservationItem.startDate!), 
+                    end: new Date(reservationItem.endDate!)
+                });
 
-        disabledDates = [...disabledDates, ...dateRange];
-    })
+                disabledDates = [...disabledDates, ...dateRange];
+            }
+
+        })
+    }
 
   return (
     <>

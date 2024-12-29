@@ -2,15 +2,17 @@
 
 import { useCountries } from '@/data/getWorldCountries'
 import { getFlagURL } from '@/lib/utilsCode'
-// import Image from 'next/image'
 import Link from 'next/link'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import AddToFavoriteButton, { RemoveFromFavoriteButton } from '../AddToFavoriteButton'
 import { addToFavorites, removeFromFavorites } from '@/app/actions/actions'
 import DeleteHomeListing from './deleteHomeListing'
 import EnableHomeListing from './enableHomeListing'
 import EditHome from '@/app/myHomes/EditHome'
 import { IHomeImages } from '@/lib/thumnailsInterface'
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel'
+import Autoplay from 'embla-carousel-autoplay'
+import { Card, CardContent } from '@/components/ui/card'
 
 interface IListingData {
     imagePath: string,
@@ -50,37 +52,13 @@ function ListingCard({
     const cntry = getCountryByValue(country);
 
     const [ imageFiles ] = useState<IHomeImages[]>(JSON.parse(imagePath));
-    const [ imgNumber, setImgNumber ] = useState<number>(0);
-
-    useEffect(() => {
-        if(imgNumber === imageFiles.length - 1) setImgNumber(0);
-    }, [imgNumber]);
-
-    useEffect(() => {
-        console.log(imageFiles); 
-        if(process.env.USE_IMAGE_ROTATOR && parseInt(process.env.USE_IMAGE_ROTATOR) == 1) {
-            const imageRotator = setInterval(() => {
-                const imgCount = imageFiles.length;
-
-                if(imgNumber === imgCount - 1) {
-                    setImgNumber(0);
-                } else {
-                    setImgNumber(prevNum => prevNum + 1);
-                }
-                
-                // console.log("Image number ", imgNumber, imgCount, imgNumber == imgCount - 1, imgNumber === imgCount - 1);                
-
-            }, 5000);
-
-            return () => clearInterval(imageRotator);
-        }
-    }, [])
+    const [ imgNumber ] = useState<number>(0);
 
   return (
     <div className='flex flex-col border-2 rounded-lg border-gray-300 p-3 flex-shrink-0 justify-between'>
         <div className='relative h-56'>
             { userId && (
-                <div className='z-10 absolute top-2 right-2'>
+                <div className='z-10 absolute right-0'>
                     {
                         isInFavoriteList ? (
                             // <form action={useAPI ? "/api/handleFavorites/remove" : removeFromFavorites}
@@ -105,15 +83,55 @@ function ListingCard({
                 </div>
             )}
 
-            <Link href={`/home/${homeId}`} key={imageFiles[imgNumber].thumbnailImagePath}>
-                {/* <Image src={`https://vihbisloauhjiimyfhfu.supabase.co/storage/v1/object/public/esm-bnb-images/thumbnails/${imageFiles[imgNumber].thumbnailImagePath}`} 
-                    alt={description} fill sizes="100px"
-                    className='rounded-lg h-full object-cover mb-3 animate-fade'/> */}
-
-                <img src={`https://vihbisloauhjiimyfhfu.supabase.co/storage/v1/object/public/esm-bnb-images/thumbnails/${imageFiles[imgNumber].thumbnailImagePath}`} 
-                    alt={description} sizes="100px"
-                    className='rounded-lg h-full object-cover mb-3 animate-fade'/>
-            </Link>
+            <div className='w-full flex flex-col justify-center items-center'>
+                <Carousel
+                    opts={{
+                        align: "start",
+                        loop: true
+                    }}
+                    plugins={ process.env.USE_IMAGE_ROTATOR === "1" ? [
+                        Autoplay({
+                            delay: 4000,
+                        }),
+                    ] : []}
+                    className="w-[224px] max-w-xs"
+                >
+                    <Link href={`/home/${homeId}`} key={imageFiles[imgNumber].thumbnailImagePath}>
+                        <CarouselContent>
+                            {imageFiles.map((img, index) => (
+                            <CarouselItem key={index} 
+                                // className="md:basis-1/2 lg:basis-1/2"
+                            >
+                                <div className="p-1">
+                                <Card>
+                                    <CardContent className="flex aspect-square items-center justify-center p-2">
+                                        <img src={`https://vihbisloauhjiimyfhfu.supabase.co/storage/v1/object/public/esm-bnb-images/thumbnails/${homeId}/${img.thumbnailImagePath}`} 
+                                        alt={`Image ${index}`}
+                                        className='h-full w-auto' />
+                                    </CardContent>
+                                </Card>
+                                </div>
+                            </CarouselItem>
+                            ))}
+                        </CarouselContent>
+                    </Link>
+                    {
+                        process.env.USE_IMAGE_ROTATOR !== "1" 
+                            ? (
+                                <>
+                                    <div className="absolute top-1/2 left-[-12px] flex items-center justify-center">
+                                        <CarouselPrevious className="relative left-0 translate-x-0 hover:translate-x-0 hover:bg-primary/90" />
+                                    </div>
+                                    <div className="absolute top-1/2 right-[-12px] flex items-center justify-center">
+                                        <CarouselNext className="relative right-0 translate-x-0 hover:translate-x-0 hover:bg-primary/90" />
+                                    </div>
+                                </>
+                            ) : null
+                        
+                    }
+                </Carousel>
+            </div>
+            {/* </Link> */}
             
         </div>
 

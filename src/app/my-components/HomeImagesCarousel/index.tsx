@@ -11,8 +11,9 @@ import {
 } from "@/components/ui/carousel"
 import { useState } from 'react';
 
-function HomeImagesCarousel({ images } : {
-    images: string[]
+function HomeImagesCarousel({ images, homeId } : {
+    images: string[],
+    homeId: string
 }) {
     const [ selectedImage, setSelectedImage ] = useState(images[0]);
 
@@ -21,7 +22,7 @@ function HomeImagesCarousel({ images } : {
         <div className='relative h-[60vw] w-[60vw] lg:h-[550px]'>
             <Image 
                 alt={ selectedImage }
-                src={`https://vihbisloauhjiimyfhfu.supabase.co/storage/v1/object/public/esm-bnb-images/${selectedImage}`}
+                src={`https://vihbisloauhjiimyfhfu.supabase.co/storage/v1/object/public/esm-bnb-images/${homeId}/${selectedImage}`}
                 fill
                 className='rounded-lg  h-full object-cover w-full'
             />
@@ -41,7 +42,7 @@ function HomeImagesCarousel({ images } : {
                     }}>
                         <CardContent className="flex aspect-square items-center justify-center p-2">
                         {/* <span className="text-3xl font-semibold">{index + 1}</span> */}
-                            <img src={`https://vihbisloauhjiimyfhfu.supabase.co/storage/v1/object/public/esm-bnb-images/thumbnails/${img}`} 
+                            <img src={`https://vihbisloauhjiimyfhfu.supabase.co/storage/v1/object/public/esm-bnb-images/thumbnails/${homeId}/${img}`} 
                             alt={`Image ${index}`} />
                         </CardContent>
                     </Card>

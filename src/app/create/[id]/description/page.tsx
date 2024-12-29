@@ -1,21 +1,45 @@
-import { CreateDescription } from "@/app/actions/actions";
+'use client'
+
+import { CreateDescription, log } from "@/app/actions/actions";
 import Counter from "@/app/my-components/Counter";
 import CreateScreenBottomBar from "@/app/my-components/CreateScreenBottomBar";
 import { Card, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import SelectFacilities from "./facilities";
 import ThumnailsComponent from "@/app/my-components/ThumbnailsComponent";
+import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
+import { KindeUser } from "@kinde-oss/kinde-auth-nextjs/types";
+import { redirect } from "next/navigation";
+import { ELogLevel, ILogObject } from "@/loggerServices/loggerInterfaces";
 
 const useAPI = process.env.USE_API === "1" ? true : false;
 
-export default async function Decription (
+export default function Decription (
     {params}: {params: {id: string}}
 ) {
-    const { getUser } = getKindeServerSession();
-    const user = await getUser();
+    const { getUser } = useKindeBrowserClient();
+    let user: KindeUser<Record<string, string>> | null = null
+
+    try {
+        user = getUser();
+        if(!user || !user.id) redirect("api/auth/login?");
+
+    } catch(ex) {
+        const logObj: ILogObject = {
+        level: ELogLevel.Error,
+        message: `Error: ${(ex as Error).message}`,
+        metaData: {
+            service: "ESM-bnb-14",
+            module: "New Home Listing Creation - description",
+            category: "Home Listing",
+            stackdump: (ex as Error).stack,
+        },
+        };
+        log(logObj);
+    }
+
     return (
         <>
             <div className="w-3/5 mx-auto">
@@ -27,7 +51,7 @@ export default async function Decription (
                     encType={useAPI ? "multipart/form-data" : "application/x-www-form-urlencoded"}>
                 {/* <form action={CreateDescription} className="text-primary" method="POST"> */}
                     <input type="hidden" name="homeId" value={params.id} />
-                    <div className="mx-auto w-full mt-10 flex flex-col gap-y-5 mb-36 ">
+                    <div className="mx-auto w-full mt-10 flex flex-col gap-y-5 pb-36 ">
                         <div className="flex flex-col gap-y-2">
                             <Label>Title</Label>
                             <Input name="title" 
@@ -52,11 +76,7 @@ export default async function Decription (
                             />
                         </div>
                         <div className="flex flex-col gap-y-2">
-                            <Label>Image</Label>
-                            {/* <Input name="image" 
-                                type="file"
-                                required 
-                            /> */}
+                            <Label>Image</Label>                           
                             <ThumnailsComponent />
                         </div>
                         
@@ -104,7 +124,7 @@ export default async function Decription (
                         <SelectFacilities />
                     </div>
 
-                <CreateScreenBottomBar homeId={params.id} userId={user.id} enabled={true} />
+                <CreateScreenBottomBar homeId={params.id} userId={user?.id} enabled={true} />
                 </form>
             </div>
         </>

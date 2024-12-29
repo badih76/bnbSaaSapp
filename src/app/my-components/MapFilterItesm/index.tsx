@@ -63,26 +63,13 @@ function MapFilterItems() {
                                     </TooltipContent>
                                 </Tooltip>
                             </TooltipProvider>
-                        
-                        {/* <p className='text-xs font-medium'>
-                            {item.title}
-                        </p> */}
-                    </Link>
+                    
+                        </Link>
                     })
                 
             }
         </div>
-        <div className="flex justify-center items-center border-l pl-3 text-primary"> 
-            {/* <TooltipProvider>
-                <Tooltip>
-                    <TooltipTrigger>
-                        <SlidersHorizontal size={30}/>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                        Filter
-                    </TooltipContent>
-                </Tooltip>
-            </TooltipProvider> */}
+        <div className="flex justify-center items-center border-l pl-3 text-primary">             
             <FilterDialog />
             
         </div>

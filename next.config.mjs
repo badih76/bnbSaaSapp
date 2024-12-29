@@ -6,7 +6,8 @@ const nextConfig = {
 
     env: {
         GEOAPIFY_API_KEY: "91d279c8ff464a518a59585456b179be",
-        USE_IMAGE_ROTATOR: 1
+        USE_IMAGE_ROTATOR: "0",
+        THUMBNAIL_HEIGHT: "224"
     },
 
     images: {

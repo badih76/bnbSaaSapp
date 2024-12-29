@@ -34,11 +34,9 @@ const AddressSearchInput = ({ setMarker, defaultValue } : IParams) => {
     const [ timer, setTimer ] = useState<NodeJS.Timeout>();
 
     useEffect(()=> {
-        // console.log("Default value: ", defaultValue);
         if(defaultValue) {
             setAddress(defaultValue);
 
-            // console.log("Look for the address: ", defaultValue);
             // find the address and get coordinates
             SearchAddress(defaultValue, setFoundAddresses);
         }
@@ -72,7 +70,6 @@ const AddressSearchInput = ({ setMarker, defaultValue } : IParams) => {
                     {address != ''
                         ? defaultValue ? address : foundAddresses.find((a) => a.value === address)?.label
                         : "Search for the address..."}
-                    {/* <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" /> */}
                     {
                         pending ? 
                         <Loader2 className='mr-2 h-4 w-4 animate-spin' />

@@ -14,7 +14,7 @@ function SelectCategory({ setEnabled, isEditing=false, defaultValue=undefined }:
     const iconSize = 25;
     const iconStyle = 'w-5 h-5'
     const labelStyle = 'text-xs font-medium text-center';
-
+    
     useEffect(() => {
         if(defaultValue) setSelectedCategory(defaultValue);
     }, []);

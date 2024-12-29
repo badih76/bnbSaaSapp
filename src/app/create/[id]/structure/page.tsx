@@ -1,17 +1,37 @@
 'use client'
 
-import { createCategory } from "@/app/actions/actions";
+import { createCategory, log } from "@/app/actions/actions";
 import CreateScreenBottomBar from "@/app/my-components/CreateScreenBottomBar";
 import SelectCategory from "@/app/my-components/SelecteCategory";
-// import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
+import { ELogLevel, ILogObject } from "@/loggerServices/loggerInterfaces";
 import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs"
+import { KindeUser } from "@kinde-oss/kinde-auth-nextjs/types";
+import { redirect } from "next/navigation";
 import { useState } from "react";
 
 const useAPI = process.env.USE_API === "1" ? true : false;
 
 export default function StructureRoute({ params }: { params: { id: string } } ) {
     const { getUser } = useKindeBrowserClient();
-    const user = getUser();
+    let user: KindeUser<Record<string, string>> | null = null
+
+    try {
+        user = getUser();
+        if(!user || !user.id) redirect("api/auth/login?");
+
+    } catch(ex) {
+        const logObj: ILogObject = {
+            level: ELogLevel.Error,
+            message: `Error: ${(ex as Error).message}`,
+            metaData: {
+                service: "ESM-bnb-14",
+                module: "New Home Listing Creation - structure",
+                category: "Home Listing",
+                stackdump: (ex as Error).stack,
+        },
+        };
+        log(logObj);
+    }
 
     const [ enableButton, setEnableButton ] = useState(false);
 

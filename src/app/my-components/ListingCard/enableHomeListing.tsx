@@ -2,14 +2,12 @@
 
 import React from 'react'
 import { Dialog, DialogHeader, DialogTitle, DialogContent, DialogTrigger, 
-    // DialogDescription, 
     DialogClose} from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
-import { Loader2 } from 'lucide-react'
 import { enableDisableCompleteHomeListing } from '@/app/actions/actions'
 import { cn } from '@/lib/utils'
-import { useFormStatus } from 'react-dom'
 import { Switch } from '@/components/ui/switch'
+import { HomeListingButton } from './HomeListingButtons'
 
 function EnableHomeListing({ userId, homeId, checked }: {
     userId: string,
@@ -28,10 +26,7 @@ function EnableHomeListing({ userId, homeId, checked }: {
                     <DialogHeader>
                         <DialogTitle>
                             { `Are you sure want to ${checked ? 'disable' : ' enable'} this Home Listing?` }
-                        </DialogTitle>
-                        {/* <DialogDescription>
-                            This will tag this Home Listing as deleted to prevent it from appearing. It will not delete it from our system.
-                        </DialogDescription> */}
+                        </DialogTitle>                        
                     </DialogHeader>
                     <form action={enableDisableCompleteHomeListing}>
                         <input type='hidden' name="homeId" value={homeId} />
@@ -41,12 +36,11 @@ function EnableHomeListing({ userId, homeId, checked }: {
                             <DialogClose>
                                 <Button variant={"outline"} 
                                 size={"lg"} className={cn('w-[10vw]')}
-                                // onClick={() => { setDialogOpen(false) }}
                                 type='button'>
                                 No
                                 </Button>
                             </DialogClose>
-                            <HomeListingEnableButton buttonLabel={checked ? "Disable" : "Enable"}/>
+                            <HomeListingButton buttonLabel={checked ? "Disable" : "Enable"}/>
                         </div>
                     </form>     
                 </DialogContent>
@@ -57,32 +51,3 @@ function EnableHomeListing({ userId, homeId, checked }: {
 
 export default EnableHomeListing
 
-export function HomeListingEnableButton ({ buttonLabel }: {
-    buttonLabel: string
-}) {
-    const { pending } = useFormStatus();
-
-    return (
-    <>
-        {
-            pending ? (
-              <Button variant={"destructive"} 
-                size={"lg"} className={cn('w-[10vw]')}
-                type='submit' disabled>
-                    <Loader2 className='mr-2 h-4 w-4 animate-spin' />
-                    Please, wait...
-                </Button>
-            )
-            : (
-              <Button variant={buttonLabel == "Disable" ? "destructive" : "default"} 
-                size={"lg"} className={cn('w-[10vw]')}
-                type='submit'>
-                <DialogClose>
-                    { buttonLabel }
-                </DialogClose>
-            </Button>
-            )
-        }
-    </>
-    )
-}

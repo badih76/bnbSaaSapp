@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useState } from 'react'
-import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet'
+import { MapContainer, TileLayer, Marker } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css'
 import { useCountries } from '@/data/getWorldCountries'
 import { icon, LatLngExpression } from 'leaflet'
@@ -22,29 +22,11 @@ interface IParams {
 function Map({ country, lon = null, lat = null, zoom = null }: IParams) {
     const { getCountryByValue } = useCountries();
     const defCoords = getCountryByValue(country ?? "OM");
-    const [ markerLocation, setMarkerLocation ] = useState<LatLngExpression>(
+    const [ markerLocation ] = useState<LatLngExpression>(
         [ 
             lat === null ? defCoords!.latLang[0]! : lat, 
             lon === null ? defCoords!.latLang[1]! : lon
         ]); 
-
-    console.log("Country: ", country);
-
-    const LocationFinderDummy = () => {
-        const map = useMapEvents({
-            click(e) {
-                console.log(e.latlng);
-                console.log("Map Event: ", e);
-                setMarkerLocation([e.latlng.lat, e.latlng.lng]);
-            },
-        });
-
-        console.log("Map: ", map);
-        
-        return null;
-    };
-
-    console.log("MarkLocation: ", markerLocation);
 
   return (
     <MapContainer scrollWheelZoom={false}
@@ -56,7 +38,6 @@ function Map({ country, lon = null, lat = null, zoom = null }: IParams) {
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
         <Marker position={markerLocation ?? [52.505, -0.09]}
             icon={ICON}/>
-        <LocationFinderDummy />
     </MapContainer>
   )
 }

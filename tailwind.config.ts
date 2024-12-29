@@ -75,8 +75,8 @@ const config: Config = {
 			},
 			fade: {
 				"0%": { opacity: "0" },
-				"20%": { opacity: "1" },
-				"80%": { opacity: "1" },
+				"30%": { opacity: "1" },
+				"70%": { opacity: "1" },
 				"100%": { opacity: "0" }
 			},
 		},

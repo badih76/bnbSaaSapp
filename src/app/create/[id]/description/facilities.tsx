@@ -2,7 +2,6 @@
 
 import GetFacilityIconById, { FacilityTooltip } from '@/app/my-components/getFacilityIcon';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
-// import { TooltipProvider } from '@/components/ui/tooltip';
 import React, { useEffect, useState } from 'react'
 
 function SelectFacilities({ defaultValue }: {

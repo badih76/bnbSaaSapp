@@ -1,63 +1,109 @@
 import React from 'react'
 import NoItemsFound from '../my-components/NoItemsFound';
 import ListingCard from '../my-components/ListingCard';
-import prisma from '@/data/db';
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
 import { redirect } from 'next/navigation';
 import { unstable_noStore as noStore } from 'next/cache'
+import { drizzle } from 'drizzle-orm/mysql2';
+import { Favorites, Homes, Reservations as tblReservations } from '@/drizzle/schema';
+import { eq, and } from 'drizzle-orm'
+import { ELogLevel, ILogObject } from '@/loggerServices/loggerInterfaces';
+import { Logger } from '@/loggerServices/logger';
 
 const useAPI = process.env.USE_API === "1" ? true : false;
+const db = drizzle({ connection: { uri: process.env.DATABASE_URL }});
 
 async function getData(userId: string, accessToken: Object | undefined) {
     noStore();
 
-    if(useAPI) {
-        console.log("Using API calling from favorite page")
-
-        try {
-            const domain = process.env.KINDE_SITE_URL //getDomainName();
+    try {
+        if(useAPI) {
+            console.log("Using API calling from Reservations page")
     
-            const res = await fetch(domain + '/api/reservations/get',
-                {
-                  method: 'post',
-                  cache: "no-cache",
-                  body: JSON.stringify({ userId, accessToken })
-                });
-    
-            const data = await res.json();
-
-            return data.data;
+            try {
+                const domain = process.env.KINDE_SITE_URL //getDomainName();
+        
+                const res = await fetch(domain + '/api/reservations/get',
+                    {
+                      method: 'post',
+                      cache: "no-cache",
+                      body: JSON.stringify({ userId, accessToken })
+                    });
+        
+                const data = await res.json();
                 
-        } catch(err) {
-            console.log("Error: ", (err as any).message);
-            return {};
-        }
-    } else {
-        const data = await prisma.reservations.findMany({
-            where: {
-                userId: userId
-            },
-            select: {
-                Home: {
-                    select: {
-                        id: true,
-                        country: true,
-                        photo: true,
-                        description: true,
-                        price: true,
-                        Favorites: {
-                            where: {
-                                userId: userId
-                            }
-                        }
-                    }
-                }
+                const logObj: ILogObject = {
+                    level: ELogLevel.Info,
+                    message: `Reservations fetched for userId: ${userId}`,
+                    metaData: {
+                        service: "ESM-bnb-14",
+                        module: "Reservations Page - getData",
+                        category: "Reservations",
+                    },
+                };
+                Logger.log(logObj);
+                
+                return data.data;
+                
+            } catch(ex) {
+                const logObj: ILogObject = {
+                    level: ELogLevel.Error,
+                    message: `Error: ${(ex as Error).message}`,
+                    metaData: {
+                        service: "ESM-bnb-14",
+                        module: "Reservations Page - getData",
+                        category: "Reservations",
+                        stackdump: (ex as Error).stack,
+                }};
+                Logger.log(logObj);
+        
+                return [];
             }
+        } else {
+            
+            const data = await db.select({
+                    id: tblReservations.id,
+                    homeId: Homes.id,
+                    country: Homes.country,
+                    photo: Homes.photo,
+                    description: Homes.description,
+                    price: Homes.price,
+                    deleted: Homes.deleted,
+                    favId: Favorites.id
+                }).from(tblReservations)
+                .innerJoin(Homes, eq(Homes.id, tblReservations.homeId))
+                .leftJoin(Favorites, and(eq(Homes.id, Favorites.homeId), eq(Favorites.userId, userId)))
+                .where(eq(tblReservations.userId, userId))
 
-        });
+            const logObj: ILogObject = {
+                level: ELogLevel.Info,
+                message: `Reservations fetched for userId: ${userId}`,
+                metaData: {
+                    service: "ESM-bnb-14",
+                    module: "Reservations Page - getData",
+                    category: "Reservations",
+                },
+            };
+            Logger.log(logObj);
+    
+            return data;
+        }
 
-        return data;
+    } catch(ex) {
+        const logObj: ILogObject = {
+            level: ELogLevel.Error,
+            message: `Error: ${(ex as Error).message}`,
+            metaData: {
+                service: "ESM-bnb-14",
+                module: "Reservations Page - getData",
+                category: "Reservations",
+                stackdump: (ex as Error).stack,
+        }};
+        Logger.log(logObj);
+
+        return [];
     }
+
 }
 
 async function Reservations() {
@@ -66,7 +112,7 @@ async function Reservations() {
     const user = await getUser();
     const accessToken = await getAccessToken();
     
-    if(!user) return redirect("/");
+    if(!user || !user.id) redirect("api/auth/login?");
 
     const data = await getData(user?.id, accessToken);
 
@@ -81,19 +127,21 @@ async function Reservations() {
                 <div className='grid xl:grid-cols-5 lg:grid-cols-3 sm:grid-cols-3 md-grid-cols-3 gap-8 mt-8'>
                     {
                         data.map((item: any) => {
-                            const { id, photo, description, country, price, Favorites } = item.Home!;
+                            const { id, homeId, photo, description, country, price, favId } = item!;
+                            console.log("Photo: ", JSON.parse(photo));
+
                             return (
                                 <ListingCard 
                                     key={id}
-                                    imagePath={photo as string} 
-                                    id={id!} 
+                                    imagePath={photo} 
+                                    id={id} 
                                     price={price as number} 
                                     description={description as string} 
                                     country={country as string} 
                                     userId={user.id} 
-                                    isInFavoriteList={Favorites.length > 0 ? true : false}
-                                    favoriteId={Favorites[0]?.id as string} 
-                                    homeId={id as string} 
+                                    isInFavoriteList={favId !== null ? true : false}
+                                    favoriteId={favId as string} 
+                                    homeId={homeId} 
                                     pathName={'/favorites'} 
                                 />
                             )

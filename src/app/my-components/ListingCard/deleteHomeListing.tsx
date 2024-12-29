@@ -3,11 +3,10 @@
 import React from 'react'
 import { Dialog, DialogHeader, DialogTitle, DialogContent, DialogTrigger, DialogDescription, DialogClose} from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
-import { Loader2, Trash2 } from 'lucide-react'
+import { Trash2 } from 'lucide-react'
 import { removeFromCompleteHomeListing } from '@/app/actions/actions'
 import { cn } from '@/lib/utils'
-import { useFormStatus } from 'react-dom'
-
+import { HomeListingButton } from './HomeListingButtons'
 
 function DeleteHomeListing({ userId, homeId }: {
     userId: string,
@@ -43,7 +42,7 @@ function DeleteHomeListing({ userId, homeId }: {
                             No
                             </Button>
                         </DialogClose>
-                        <HomeListingDeleteButton />
+                        <HomeListingButton buttonLabel='Delete' />
                     </div>
                 </form>     
             </DialogContent>
@@ -53,31 +52,3 @@ function DeleteHomeListing({ userId, homeId }: {
 }
 
 export default DeleteHomeListing
-
-export function HomeListingDeleteButton () {
-    const { pending } = useFormStatus();
-
-    return (
-    <>
-        {
-            pending ? (
-              <Button variant={"destructive"} 
-                size={"lg"} className={cn('w-[10vw]')}
-                type='submit' disabled>
-                    <Loader2 className='mr-2 h-4 w-4 animate-spin' />
-                    Please, wait...
-                </Button>
-            )
-            : (
-              <Button variant={"destructive"} 
-                size={"lg"} className={cn('w-[10vw]')}
-                type='submit'>
-                <DialogClose>
-                    Delete
-                </DialogClose>
-            </Button>
-            )
-        }
-    </>
-    )
-}

@@ -1,0 +1,16 @@
+2024-12-29 13:58:50 [development] info: All Homes Listings retrieved.
+2024-12-29 13:58:50 [development] info: All Homes Listings retrieved.
+2024-12-29 13:59:00 [development] info: All Homes Listings retrieved.
+2024-12-29 14:00:22 [development] info: All Homes Listings retrieved.
+2024-12-29 14:00:26 [development] info: All Homes Listings retrieved.
+2024-12-29 14:02:00 [development] info: User already exists in Users table. userID: kp_10f2a641e2f14a38a6e4e672c288e5dd
+2024-12-29 14:02:02 [development] info: All Homes Listings retrieved.
+2024-12-29 14:02:48 [development] info: User listings selected for userId: kp_10f2a641e2f14a38a6e4e672c288e5dd.
+2024-12-29 14:02:48 [development] info: My Home Details fetched for userId: kp_10f2a641e2f14a38a6e4e672c288e5dd
+2024-12-29 14:02:48 [development] info: Collecting Listings Statistics. userId: kp_10f2a641e2f14a38a6e4e672c288e5dd
+2024-12-29 14:02:48 [development] error: Error: NEXT_REDIRECT
+2024-12-29 14:02:48 [development] error: Error: NEXT_REDIRECT
+2024-12-29 14:02:48 [development] error: Error: NEXT_REDIRECT
+2024-12-29 14:02:49 [development] info: Home Details retrieved. homeId: 5a2b37d6-ccea-4061-941b-06649e3d31fc
+2024-12-29 14:02:49 [development] info: Home Details retrieved. homeId: a4a950d0-d843-4060-a20e-601392dfcf88
+2024-12-29 14:02:49 [development] info: Home Details retrieved. homeId: cd8c2025-696c-407f-833f-5563edb8fa0e

@@ -21,40 +21,62 @@ import AddressSearchInput from '../my-components/AddressSearchInput'
 import { getFlagURL } from '@/lib/utilsCode'
 import { DialogClose } from '@radix-ui/react-dialog'
 import { useKindeBrowserClient,  } from '@kinde-oss/kinde-auth-nextjs'
-import { KindeAccessToken } from '@kinde-oss/kinde-auth-nextjs/types'
+import { KindeAccessToken, KindeUser } from '@kinde-oss/kinde-auth-nextjs/types'
 import { IHome } from '@/lib/interfaces'
-import { getHomeDetailsSSF, updateHomeDetails } from '../actions/actions'
+import { getHomeDetailsSSF, log, updateHomeDetails } from '../actions/actions'
+import { unstable_noStore as noStore } from 'next/cache'
+import { ELogLevel, ILogObject } from '@/loggerServices/loggerInterfaces'
+import { redirect } from 'next/navigation'
+
 
 const useAPI = process.env.USE_API === "1" ? true : false;
 
 const getHomeDetails = async (userId: string | undefined, accessToken: KindeAccessToken | null,homeId: string) => {
-    if(useAPI) {
-        console.log("Using API calling from favorite page")
-
-        try {
-            const domain = process.env.KINDE_SITE_URL //getDomainName();
+    noStore();
     
-            const res = await fetch(domain + '/api/handleHome/get',
-                {
-                  method: 'post',
-                  cache: "no-cache",
-                  body: JSON.stringify({ userId, accessToken, homeId })
-                });
+    try {
+        if(useAPI) {
+            console.log("Using API calling from Edit Home page")
     
-            const data = await res.json();
+            try {
+                const domain = process.env.KINDE_SITE_URL //getDomainName();
+        
+                const res = await fetch(domain + '/api/handleHome/get',
+                    {
+                      method: 'post',
+                      cache: "no-cache",
+                      body: JSON.stringify({ userId, accessToken, homeId })
+                    });
+        
+                const data = await res.json();
+    
+                return data.data;
+                    
+            } catch(err) {
+                console.log("Error: ", (err as any).message);
+                return {};
+            }
+        } else {
+            const data = await getHomeDetailsSSF(homeId);
+    
+            return data;
+    
+        }    
 
-            return data.data;
-                
-        } catch(err) {
-            console.log("Error: ", (err as any).message);
-            return {};
-        }
-    } else {
-        const data = await getHomeDetailsSSF(homeId);
+    } catch(ex) {
+        const logObj: ILogObject = {
+            level: ELogLevel.Error,
+            message: `Error: ${(ex as Error).message}`,
+            metaData: {
+                service: "ESM-bnb-14",
+                module: "Favorites Page",
+                category: "Favorites",
+                stackdump: (ex as Error).stack,
+        }};
 
-        return data;
-
-    }    
+        log(logObj);
+        return [];
+    }
     
 }
 
@@ -74,8 +96,29 @@ function EditHome({ homeId }: { homeId: string }) {
     })
 
     const { getUser, getAccessToken } = useKindeBrowserClient();
-    const user = getUser();
-    const accessToken = getAccessToken();
+    let accessToken: KindeAccessToken | null = null;
+    let user: KindeUser<Record<string, string>> | null = null
+
+    try {
+        user = getUser();
+        if(!user || !user.id) redirect("api/auth/login?");
+
+        accessToken = getAccessToken();
+
+    } catch(ex) {
+        const logObj: ILogObject = {
+            level: ELogLevel.Error,
+            message: `Error: ${(ex as Error).message}`,
+            metaData: {
+                service: "ESM-bnb-14",
+                module: "My Home Page - EditHome",
+                category: "My Home",
+                stackdump: (ex as Error).stack,
+        },
+        };
+        log(logObj);
+    }
+
 
     const setMarker = (ln: number | null, lt: number | null, z: number | null, add: string | null) => {
         setLon(ln);
@@ -87,7 +130,7 @@ function EditHome({ homeId }: { homeId: string }) {
     useEffect(() => {
         getHomeDetails(user?.id, accessToken, homeId)
         .then(data => {
-            setHomeData(data);
+            setHomeData(data[0]);
         });
 
     }, []);
@@ -130,7 +173,7 @@ function EditHome({ homeId }: { homeId: string }) {
                             </div>
                             <div className='w-full'>
 
-                                <SelectCategory isEditing={true} defaultValue={homeData ? homeData.categoryName! : "OM"} />
+                                <SelectCategory isEditing={true} defaultValue={homeData ? homeData.categoryName! : ""} />
                             </div>
 
                             <Separator />

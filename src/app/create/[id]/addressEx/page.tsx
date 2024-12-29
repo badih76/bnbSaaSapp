@@ -1,6 +1,6 @@
 "use client"
 
-import { createLocation } from '@/app/actions/actions';
+import { createLocation, log } from '@/app/actions/actions';
 import AddressSearchInput from '@/app/my-components/AddressSearchInput';
 import CreateScreenBottomBar from '@/app/my-components/CreateScreenBottomBar'
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select'
@@ -10,6 +10,9 @@ import { getFlagURL } from '@/lib/utilsCode';
 import dynamic from 'next/dynamic';
 import React, { useState } from 'react'
 import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
+import { redirect } from 'next/navigation';
+import { KindeUser } from '@kinde-oss/kinde-auth-nextjs/types';
+import { ELogLevel, ILogObject } from '@/loggerServices/loggerInterfaces';
 
 const useAPI = process.env.USE_API === "1" ? true : false;
 
@@ -20,7 +23,7 @@ function CreateAddAddressEx({ params }: { params: { id: string }}) {
     const [ lat, setLat ] = useState<number | null>(52.505);
     const [ zoom, setZoom ] = useState<number | null>(6);
     const [ address, setAddress ] = useState<string | null>('');
-
+    
     const LazyMap = dynamic(() => import('@/app/my-components/Map'), {
         ssr: false,
         loading: () => <Skeleton className='h-[50vh] w-full' />
@@ -36,7 +39,26 @@ function CreateAddAddressEx({ params }: { params: { id: string }}) {
     // const { getUser } = getKindeServerSession();
     // const user = await getUser();
     const { getUser } = useKindeBrowserClient();
-    const user = getUser();
+    let user: KindeUser<Record<string, string>> | null = null
+
+    try {
+        user = getUser();
+        if(!user || !user.id) redirect("api/auth/login?");
+
+    } catch(ex) {
+        const logObj: ILogObject = {
+        level: ELogLevel.Error,
+        message: `Error: ${(ex as Error).message}`,
+        metaData: {
+            service: "ESM-bnb-14",
+            module: "New Home Listing Creation - addressEx",
+            category: "Home Listing",
+            stackdump: (ex as Error).stack,
+        },
+        };
+        log(logObj);
+    }
+
 
   return (
     <>
@@ -49,7 +71,7 @@ function CreateAddAddressEx({ params }: { params: { id: string }}) {
                 <input type="hidden" name="countryValue" value={selectedCountry} />
                 <input type="hidden" name="addressValue" value={address ?? ''} />
 
-                <div className="mx-auto w-full mt-10 flex flex-col gap-y-5 mb-36 ">
+                <div className="mx-auto w-full mt-10 flex flex-col gap-y-5 pb-36 ">
                     <div className="flex flex-col gap-y-2">
                         <Select required onValueChange={(value) => 
                             {
