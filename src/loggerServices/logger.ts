@@ -48,7 +48,7 @@ const getLogger = (fileName = 'application') => {
         });
 
         logger.add(dbLogTransport);
-        logger.add(fileLogTransport);
+        // logger.add(fileLogTransport);
 
         // if(process.env.NODE_ENV === 'development') {
             
