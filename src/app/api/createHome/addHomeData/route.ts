@@ -22,6 +22,7 @@ export async function POST() {
         const user = await getUser();
     
         if(!user || !user.id) {
+            console.log('ERROR: No User Found!!!');
             const logObj: ILogObject = {
                 level: ELogLevel.Info,
                 message: `User not found or no user logged in. This action cannot be performed.`,
@@ -82,6 +83,8 @@ export async function POST() {
         }
 
     } catch(ex) {
+        console.log('ERROR: ', ex);
+
         const logObj: ILogObject = {
             level: ELogLevel.Error,
             message: `Error: ${(ex as Error).message}`,
