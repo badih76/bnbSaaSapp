@@ -20,6 +20,8 @@ export default function StructureRoute({ params }: { params: { id: string } } ) 
         if(!user || !user.id) redirect("api/auth/login?");
 
     } catch(ex) {
+        console.log('ERROR: ', ex);
+        
         const logObj: ILogObject = {
             level: ELogLevel.Error,
             message: `Error: ${(ex as Error).message}`,
