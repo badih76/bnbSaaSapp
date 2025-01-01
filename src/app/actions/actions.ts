@@ -1,44 +1,20 @@
 "use server";
 
 import { supabase } from "@/data/supabase";
+import { db } from "@/drizzle";
 import { Favorites, Homes, Reservations } from "@/drizzle/schema";
 import { IFilesUploadType, IHomeImages } from "@/lib/thumnailsInterface";
 import { dataURItoBlob } from "@/lib/utilsCode";
 import { Logger } from "@/loggerServices/logger";
 import { ELogLevel, ILogObject } from "@/loggerServices/loggerInterfaces";
 import { count, desc, eq, sql } from "drizzle-orm";
-import {
-  AnyMySql2Connection,
-  drizzle,
-  MySql2Database,
-} from "drizzle-orm/mysql2";
 import { revalidatePath } from "next/cache";
+import { isRedirectError } from "next/dist/client/components/redirect";
 import { redirect } from "next/navigation";
-
-let db: MySql2Database<Record<string, never>> & {
-  $client: AnyMySql2Connection;
-};
-
-try {
-  db = drizzle({ connection: { uri: process.env.DATABASE_URL } });
-} catch (ex) {
-  const logObj: ILogObject = {
-    level: ELogLevel.Error,
-    message: `Error: ${(ex as Error).message}`,
-    metaData: {
-      service: "ESM-bnb-14",
-      module: "Server Actions - Database Connection",
-      category: "Database",
-      stackdump: (ex as Error).stack,
-    },
-  };
-  Logger.log(logObj);
-
-  redirect(`/Error`);
-}
 
 export async function createBnbSiteHome({ userId }: { userId: string }) {
   try {
+
     const data = await db
       .select()
       .from(Homes)
@@ -65,21 +41,30 @@ export async function createBnbSiteHome({ userId }: { userId: string }) {
       };
       Logger.log(logObj);
 
+      
+
       return redirect(`/create/${homeId}/structure`);
+
     } else if (
       !data[0].addedCategory &&
       !data[0].addedDescription &&
       !data[0].addedLocation
     ) {
+      
       return redirect(`/create/${data[0].id}/structure`);
+
     } else if (data[0].addedCategory && !data[0].addedDescription) {
+      
       return redirect(`/create/${data[0].id}/description`);
+
     } else if (
       data[0].addedCategory &&
       data[0].addedDescription &&
       !data[0].addedLocation
     ) {
+      
       return redirect(`/create/${data[0].id}/addressEx`);
+
     } else if (
       data[0].addedCategory &&
       data[0].addedDescription &&
@@ -104,22 +89,27 @@ export async function createBnbSiteHome({ userId }: { userId: string }) {
       };
       Logger.log(logObj);
       
+      
       return redirect(`/create/${homeId}/structure`);
+
     }
 } catch (ex) {
-    const logObj: ILogObject = {
-        level: ELogLevel.Error,
-        message: `Error: ${(ex as Error).message}`,
-        metaData: {
-        service: "ESM-bnb-14",
-        module: "Server Actions - createBnbSiteHome",
-        category: "Home Listing",
-        stackdump: (ex as Error).stack,
-      },
-    };
-    Logger.log(logObj);
-
-    return redirect(`/Error`);
+    if (isRedirectError(ex)) throw ex;
+    else {
+      const logObj: ILogObject = {
+          level: ELogLevel.Error,
+          message: `Error: ${(ex as Error).message}`,
+          metaData: {
+          service: "ESM-bnb-14",
+          module: "Server Actions - createBnbSiteHome",
+          category: "Home Listing",
+          stackdump: (ex as Error).stack,
+        },
+      };
+      Logger.log(logObj);
+  
+      return redirect(`/Error`);
+    }
   }
 }
 
@@ -146,6 +136,8 @@ export async function createCategory(formData: FormData) {
     },
     };
     Logger.log(logObj);
+
+    
 
   } catch (ex) {
     const logObj: ILogObject = {
@@ -243,7 +235,6 @@ export async function CreateDescription(formData: FormData) {
         });
 
         stringifiedHomeImages = JSON.stringify(homeImages);
-        console.log(stringifiedHomeImages);
       })
     );
 
@@ -283,6 +274,8 @@ export async function CreateDescription(formData: FormData) {
         },
       };
     Logger.log(logObj);
+
+    
 
   } catch (ex) {
     const logObj: ILogObject = {
@@ -329,6 +322,8 @@ export async function createLocation(formData: FormData) {
       };
     Logger.log(logObj);
 
+    
+
   } catch (ex) {
     const logObj: ILogObject = {
         level: ELogLevel.Error,
@@ -371,6 +366,8 @@ export async function addToFavorites(formData: FormData) {
       };
     Logger.log(logObj);
 
+    
+
   } catch (ex) {
     const logObj: ILogObject = {
 		level: ELogLevel.Error,
@@ -409,6 +406,8 @@ export async function removeFromFavorites(formData: FormData) {
         },
       };
     Logger.log(logObj);
+    
+    
 
   } catch (ex) {
     const logObj: ILogObject = {
@@ -454,6 +453,8 @@ export async function createReservation(formData: FormData) {
       };
     Logger.log(logObj);
 
+    
+
   } catch (ex) {
     const logObj: ILogObject = {
 		level: ELogLevel.Error,
@@ -479,7 +480,17 @@ export async function removeFromHomeListing(formData: FormData) {
     // const userId = formData.get("userId") as string;
     // const pathName = formData.get("pathName") as string;
 
+    // delete the added home row in Homes table
     await db.delete(Homes).where(eq(Homes.id, homeId));
+
+    // delete any uploaded images and thumbnails
+    const delTNFiles = await supabase.storage.from('esm-bnb-images').list(`thumbnails/${homeId}`);
+    let filesToRemove = delTNFiles.data!.map((x) => `thumbnails/${homeId}/${x.name}`);
+    await supabase.storage.from('esm-bnb-images').remove(filesToRemove);
+
+    const delHomeFiles = await supabase.storage.from('esm-bnb-images').list(`${homeId}`);
+    filesToRemove = delHomeFiles.data!.map((x) => `${homeId}/${x.name}`);
+    await supabase.storage.from('esm-bnb-images').remove(filesToRemove);
 
     const logObj: ILogObject = {
         level: ELogLevel.Info,
@@ -491,6 +502,9 @@ export async function removeFromHomeListing(formData: FormData) {
         },
       };
     Logger.log(logObj);
+
+    
+
 
   } catch (ex) {
     const logObj: ILogObject = {
@@ -514,8 +528,7 @@ export async function removeFromHomeListing(formData: FormData) {
 export async function removeFromCompleteHomeListing(formData: FormData) {
   try {
     const homeId = formData.get("homeId") as string;
-    const userId = formData.get("userId") as string;
-    console.log("Delet home", homeId, userId);
+    // const userId = formData.get("userId") as string;
 
     await db.update(Homes).set({ deleted: true }).where(eq(Homes.id, homeId));
     const logObj: ILogObject = {
@@ -528,6 +541,8 @@ export async function removeFromCompleteHomeListing(formData: FormData) {
         },
       };
     Logger.log(logObj);
+
+    
 
   } catch (ex) {
     const logObj: ILogObject = {
@@ -569,6 +584,8 @@ export async function enableDisableCompleteHomeListing(formData: FormData) {
         },
       };
     Logger.log(logObj);
+
+    
 
   } catch (ex) {
     const logObj: ILogObject = {
@@ -621,6 +638,8 @@ export async function getHomeDetailsSSF(homeId: string) {
         },
       };
     Logger.log(logObj);
+
+    
 
     return data;
   } catch (ex) {
@@ -681,6 +700,9 @@ export async function updateHomeDetails(formData: FormData) {
         },
       };
     Logger.log(logObj);
+
+    
+
   } catch (ex) {
     const logObj: ILogObject = {
 		level: ELogLevel.Error,
@@ -722,6 +744,8 @@ export async function getReservationsStatistics(userId: string) {
         },
       };
       Logger.log(logObj);
+
+      
 
     // console.log(homesStat);
 

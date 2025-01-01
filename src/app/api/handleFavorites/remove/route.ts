@@ -1,17 +1,14 @@
 
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import { revalidatePath } from "next/cache";
-// import { redirect } from "next/navigation";
 import { NextRequest, NextResponse } from "next/server";
 import { unstable_noStore as noStore } from 'next/cache'
-import { drizzle } from "drizzle-orm/mysql2";
 import { Favorites } from "@/drizzle/schema";
 import { and, eq } from "drizzle-orm";
 import { ELogLevel, ILogObject } from "@/loggerServices/loggerInterfaces";
 import { Logger } from "@/loggerServices/logger";
 import { redirect } from "next/navigation";
-
-const db = drizzle({ connection: { uri: process.env.DATABASE_URL }});
+import { db } from "@/drizzle";
 
 export async function POST(req: NextRequest) {
     noStore();

@@ -4,12 +4,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { unstable_noStore as noStore } from 'next/cache'
 import { redirect } from "next/navigation";
 import { KindeAccessToken } from "@kinde-oss/kinde-auth-nextjs/types";
-import { drizzle } from "drizzle-orm/mysql2";
 import { Homes } from "@/drizzle/schema";
 import { ELogLevel, ILogObject } from "@/loggerServices/loggerInterfaces";
 import { Logger } from "@/loggerServices/logger";
-
-const db = drizzle({ connection: { uri: process.env.DATABASE_URL }});
+import { db } from "@/drizzle";
 
 export async function POST(req: NextRequest) {
     noStore();

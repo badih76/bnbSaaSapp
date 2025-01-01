@@ -4,13 +4,11 @@ import React from 'react'
 import NoItemsFound from '../my-components/NoItemsFound';
 import ListingCard from '../my-components/ListingCard';
 import { unstable_noStore as noStore } from 'next/cache'
-import { drizzle } from 'drizzle-orm/mysql2';
 import { Favorites, Homes } from '@/drizzle/schema';
 import { eq, and } from 'drizzle-orm';
 import { ELogLevel, ILogObject } from '@/loggerServices/loggerInterfaces';
 import { Logger } from '@/loggerServices/logger';
-
-const db = drizzle({ connection: { uri: process.env.DATABASE_URL }});
+import { db } from '@/drizzle';
 
 const useAPI = process.env.USE_API === "1" ? true : false;
 
@@ -60,7 +58,9 @@ const getFavoritesData = async (userId: string, accessToken: Object | undefined)
             return {};
         }
     } else {
+
         try {
+
             const data = await db.select({
                     photo: Homes.photo,
                     id: Homes.id,
@@ -119,7 +119,7 @@ async function FavoritesRoute() {
 
 
   return (
-    <section className='container mx-auto px-5 lg:px-10 mt-10'>
+    <section className='container mx-auto pb-16 px-5 lg:px-10 mt-10'>
         <h2 className='text-3xl font-semibold tracking-tight text-primary'>My Favorites</h2>
 
         {

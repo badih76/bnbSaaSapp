@@ -6,13 +6,11 @@ import { NextRequest, NextResponse } from "next/server";
 import { unstable_noStore as noStore } from 'next/cache'
 import { IFilesUploadType, IHomeImages } from "@/lib/thumnailsInterface";
 import { dataURItoBlob } from "@/lib/utilsCode";
-import { drizzle } from "drizzle-orm/mysql2";
 import { Homes } from "@/drizzle/schema";
 import { eq } from "drizzle-orm";
 import { ELogLevel, ILogObject } from "@/loggerServices/loggerInterfaces";
 import { Logger } from "@/loggerServices/logger";
-
-const db = drizzle({ connection: { uri: process.env.DATABASE_URL }});
+import { db } from "@/drizzle";
 
 export async function POST(req: NextRequest) {
     noStore();
@@ -141,9 +139,7 @@ export async function POST(req: NextRequest) {
                 category: "API Call",
             }};
         Logger.log(logObj);
-    
-        // console.log(data);
-    
+        
         return redirect(`/create/${homeId}/addressEx`);
 
     } catch(ex) {

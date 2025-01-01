@@ -1,19 +1,21 @@
+'use server'
+
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
-import { redirect } from "next/navigation";
 import { NextResponse } from "next/server";
 import { unstable_noStore as noStore } from 'next/cache'
-import { drizzle } from "drizzle-orm/mysql2";
 import { Homes } from "@/drizzle/schema";
 import { eq, desc } from "drizzle-orm";
 import { ELogLevel, ILogObject } from "@/loggerServices/loggerInterfaces";
 import { Logger } from "@/loggerServices/logger";
-
-const db = drizzle({ connection: { uri: process.env.DATABASE_URL }});
+import { isRedirectError } from "next/dist/client/components/redirect";
+import { db } from "@/drizzle";
 
 export async function POST() {
     noStore();
 
     console.log("Using API Calls");
+
+    let redirectPath = '';
 
     try {
         const { getUser
@@ -55,15 +57,18 @@ export async function POST() {
                 },
               };
             Logger.log(logObj);
-            
-            return redirect(`/create/${newHome[0].id}/structure`);
+
+            redirectPath = `/create/${newHome[0].id}/structure`;
             
         } else if(!data[0].addedCategory && !data[0].addedDescription && !data[0].addedLocation){
-            return redirect(`/create/${data[0].id}/structure`);
+            redirectPath = `/create/${data[0].id}/structure`;
+            
         } else if(data[0].addedCategory && !data[0].addedDescription){
-            return redirect(`/create/${data[0].id}/description`);
+            redirectPath = `/create/${data[0].id}/description`;
+
         } else if(data[0].addedCategory && data[0].addedDescription && !data[0].addedLocation) {
-            return redirect(`/create/${data[0].id}/addressEx`);
+            redirectPath = `/create/${data[0].id}/addressEx`;
+
         } else if(data[0].addedCategory && data[0].addedDescription && data[0].addedLocation) {
             
             const newHome = await db.insert(Homes).values({ userId: user.id, title: "" }).$returningId();
@@ -79,10 +84,15 @@ export async function POST() {
               };
             Logger.log(logObj);
     
-            return redirect(`/create/${newHome[0].id}/structure`);
+            redirectPath = `/create/${newHome[0].id}/structure`;
         }
 
+        return NextResponse.redirect(new URL("http://localhost:3000/"+redirectPath));
+
     } catch(ex) {
+        
+        if(isRedirectError(ex)) throw ex;
+
         console.log('ERROR: ', ex);
 
         const logObj: ILogObject = {
@@ -97,8 +107,10 @@ export async function POST() {
           };
         Logger.log(logObj);
 
-        return redirect("/Error");
-    }
-    
+        redirectPath = "/Error";
+        
+        return NextResponse.redirect("http://localhost:3000/"+redirectPath);
+
+    }     
  
 }

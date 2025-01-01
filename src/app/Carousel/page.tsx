@@ -1,10 +1,8 @@
 import React from 'react'
 import HomeImagesCarousel from '../my-components/HomeImagesCarousel'
 import { IHomeImages } from '@/lib/thumnailsInterface';
-import { drizzle } from 'drizzle-orm/mysql2';
 import { Homes } from '@/drizzle/schema';
-
-const db = drizzle({ connection: { uri: process.env.DATABASE_URL }});
+import { db } from '@/drizzle';
 
 const getData = async () => {
     const data = await db.select({ photo: Homes.photo }).from(Homes).limit(1)

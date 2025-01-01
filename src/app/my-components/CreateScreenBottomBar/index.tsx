@@ -16,9 +16,6 @@ import { cn } from '@/lib/utils'
 import { removeFromHomeListing } from '@/app/actions/actions'
 import { useFormStatus } from 'react-dom'
 import { Loader2 } from 'lucide-react'
-// import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
-
-// const useAPI = process.env.USE_API === "1" ? true : false;
 
 interface IParams {
   userId?: string,
@@ -28,7 +25,7 @@ interface IParams {
 function CreateScreenBottomBar({ userId, homeId, enabled }: IParams) {
  
   return (
-    <div className="fixed w-full bottom-0 left-0 z-10 bg-white border-t h-24">
+    <div className="sticky w-full bottom-0 left-0 z-10 bg-white border-t h-24">
         <div className="flex items-center justify-between mx-auto px-5 lg:px-10 h-full">
             <Button variant={"secondary"} size="lg" asChild>
                 <Link href="/">

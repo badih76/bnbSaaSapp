@@ -14,19 +14,18 @@ import { unstable_noStore as noStore } from 'next/cache'
 import FacilitiesBlock from './FacilitiesBlock';
 import { IHomeImages } from '@/lib/thumnailsInterface';
 import HomeImagesCarousel from '@/app/my-components/HomeImagesCarousel';
-import { drizzle } from 'drizzle-orm/mysql2';
 import { Homes, Reservations, Users as tblUsers } from '@/drizzle/schema';
 import { eq } from 'drizzle-orm';
 import NoItemsFound from '@/app/my-components/NoItemsFound';
 import { ELogLevel, ILogObject } from '@/loggerServices/loggerInterfaces';
 import { Logger } from '@/loggerServices/logger';
-
-const db = drizzle({ connection: { uri: process.env.DATABASE_URL }});
+import { db } from '@/drizzle';
 
 const getHomeData = async (homeId: string) => {
     noStore();
 
     try {
+
         const data = await db.select()
             .from(Homes)
             .leftJoin(Reservations, eq(Homes.id, Reservations.homeId))
@@ -69,6 +68,7 @@ const getHomeData = async (homeId: string) => {
                 stackdump: (ex as Error).stack,
             }};
         Logger.log(logObj);
+
     }
 
 }

@@ -5,14 +5,13 @@ import SkeletonLoading from "./my-components/SkeletonCard";
 import NoItemsFound from "./my-components/NoItemsFound";
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import { unstable_noStore as noStore } from 'next/cache'
-import { drizzle } from "drizzle-orm/mysql2";
 import { Favorites, Homes, Reservations } from "@/drizzle/schema";
 import { and, eq, gte, like, lte, not, gt } from "drizzle-orm";
 import { Logger } from "@/loggerServices/logger";
 import { ELogLevel, ILogObject } from "@/loggerServices/loggerInterfaces";
+import { db } from "@/drizzle";
 // import { redirect } from "next/navigation";
 
-const db = drizzle({ connection: { uri: process.env.DATABASE_URL }});
 
 async function getListingsData({
   userId, searchParams }: {
@@ -31,6 +30,7 @@ async function getListingsData({
   noStore();
 
   try {
+
     const data = await db.select()
       .from(Homes)
       .leftJoin(Favorites, and(eq(Homes.id, Favorites.homeId), eq(Favorites.userId, userId!)))
@@ -69,7 +69,6 @@ async function getListingsData({
             lte(Reservations.startDate, new Date(searchParams.startDate!)),
             gte(Reservations.endDate, new Date(searchParams.endDate!))
           ))
-  
   
         return resData.length == 0;
       });
@@ -164,7 +163,7 @@ async function ShowItems({
             {data.length === 0 ? (
               <NoItemsFound />
             ) : (
-            <div className="grid grid-cols-1 xl:grid-cols-5 lg:grid-cols-3 md:grid-cols-3 gap-8 mt-8 pb-52 border-red-600">
+            <div className="grid grid-cols-1 xl:grid-cols-5 lg:grid-cols-3 md:grid-cols-3 gap-8 mt-8 pb-16 border-red-600">
               {data.map(item => {
                 return (
                   <ListingCard 

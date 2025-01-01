@@ -4,14 +4,13 @@ import ListingCard from '../my-components/ListingCard';
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
 import { redirect } from 'next/navigation';
 import { unstable_noStore as noStore } from 'next/cache'
-import { drizzle } from 'drizzle-orm/mysql2';
 import { Favorites, Homes, Reservations as tblReservations } from '@/drizzle/schema';
 import { eq, and } from 'drizzle-orm'
 import { ELogLevel, ILogObject } from '@/loggerServices/loggerInterfaces';
 import { Logger } from '@/loggerServices/logger';
+import { db } from '@/drizzle';
 
 const useAPI = process.env.USE_API === "1" ? true : false;
-const db = drizzle({ connection: { uri: process.env.DATABASE_URL }});
 
 async function getData(userId: string, accessToken: Object | undefined) {
     noStore();
@@ -60,7 +59,6 @@ async function getData(userId: string, accessToken: Object | undefined) {
                 return [];
             }
         } else {
-            
             const data = await db.select({
                     id: tblReservations.id,
                     homeId: Homes.id,
@@ -117,7 +115,7 @@ async function Reservations() {
     const data = await getData(user?.id, accessToken);
 
   return (
-    <section className='container mx-auto px-5 lg:px-10 mt-10'>
+    <section className='container mx-auto pb-16 px-5 lg:px-10 mt-10'>
         <h2 className='text-3xl font-semibold tracking-tight text-primary'>My Reservations</h2>
 
         {

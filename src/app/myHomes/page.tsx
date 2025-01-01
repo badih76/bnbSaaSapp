@@ -5,17 +5,15 @@ import NoItemsFound from '../my-components/NoItemsFound';
 import ListingCard from '../my-components/ListingCard';
 import { unstable_noStore as noStore } from 'next/cache'
 import DashboardBarChart from '../my-components/DashboardBarChart';
-import { drizzle } from 'drizzle-orm/mysql2';
 import { Homes } from '@/drizzle/schema';
 import { and, eq, not, desc } from 'drizzle-orm';
 import { getReservationsStatistics } from '../actions/actions';
 import { ELogLevel, ILogObject } from '@/loggerServices/loggerInterfaces';
 import { Logger } from '@/loggerServices/logger';
+import { db } from '@/drizzle';
   
 
 const useAPI = process.env.USE_API === "1" ? true : false;
-const db = drizzle({ connection: { uri: process.env.DATABASE_URL }});
-
 
 const getStatistics = async (userId: string) => {
     noStore();
@@ -93,7 +91,6 @@ const getMyHomesData = async (userId: string, accessToken: Object | undefined) =
                 return [];
             }
         } else {
-            
             const data = await db.select({
                     photo: Homes.photo,
                     id: Homes.id,

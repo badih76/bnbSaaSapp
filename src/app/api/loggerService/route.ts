@@ -1,11 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { unstable_noStore as noStore } from 'next/cache'
-import { drizzle } from "drizzle-orm/mysql2";
 import { Logger } from "@/loggerServices/logger";
 import { Logs } from "@/drizzle/schema";
 import { ELogLevel, ILogObject } from "@/loggerServices/loggerInterfaces";
-
-const db = drizzle({ connection: { uri: process.env.DATABASE_URL }});
+import { isRedirectError } from "next/dist/client/components/redirect";
+import { db } from "@/drizzle";
 
 export async function POST(req: NextRequest) {
     noStore();
@@ -26,6 +25,8 @@ export async function POST(req: NextRequest) {
         })
 
     } catch(ex) {
+        if(isRedirectError(ex)) throw ex;
+        
         console.log('Error: ', (ex as Error).message);
         const logObj: ILogObject = {
             level: ELogLevel.Error,

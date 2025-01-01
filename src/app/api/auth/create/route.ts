@@ -1,14 +1,13 @@
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import { NextResponse } from "next/server";
 import { unstable_noStore as noStore } from 'next/cache'
-import { drizzle } from "drizzle-orm/mysql2";
 import { Users } from "@/drizzle/schema";
 import { eq } from "drizzle-orm";
 import { Logger } from "@/loggerServices/logger";
 import { ELogLevel, ILogObject } from "@/loggerServices/loggerInterfaces";
 import { redirect } from "next/navigation";
-
-const db = drizzle({ connection: { uri: process.env.DATABASE_URL }});
+import { isRedirectError } from "next/dist/client/components/redirect";
+import { db } from "@/drizzle";
 
 export async function GET() {
     noStore();
@@ -72,26 +71,30 @@ export async function GET() {
                   };
                 Logger.log(logObj);
             }
-        
+            
             return NextResponse.redirect(returnUrl!);
     
         }
 
     }
     catch(ex) {
-        const logObj: ILogObject = {
-            level: ELogLevel.Error,
-            message: `Error: ${(ex as Error).message}`,
-            metaData: {
-              service: "ESM-bnb-14",
-              module: "api/auth/create",
-              category: "User Authentication",
-              stackdump: (ex as Error).stack,
-            },
-          };
-        Logger.log(logObj);
+        if(isRedirectError(ex)) throw ex;
+        else {
+          const logObj: ILogObject = {
+              level: ELogLevel.Error,
+              message: `Error: ${(ex as Error).message}`,
+              metaData: {
+                service: "ESM-bnb-14",
+                module: "api/auth/create",
+                category: "User Authentication",
+                stackdump: (ex as Error).stack,
+              },
+            };
+          Logger.log(logObj);
+  
+          return redirect("/Error");
 
-        return redirect("/Error");
+        }
     }
     
 
