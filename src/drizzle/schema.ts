@@ -53,6 +53,8 @@ export const Reservations = mysqlTable('reservations', {
 
     startDate: datetime().default(new Date()),
     endDate: datetime().default(new Date()),
+    rate: float().default(0),
+    totalCharged: float().default(0),
 
     createdAt: datetime().default(new Date()),
 

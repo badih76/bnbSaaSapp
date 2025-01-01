@@ -5,9 +5,9 @@ import Link from 'next/link'
 
 function PageFooter() {
   return (
-    <div className='w-full h-[25vh] 
+    <div className='w-full lg:h-[25vh] 
         bg-primary text-white 
-        grid grid-cols-4 justify-center items-center
+        grid grid-cols-1 lg:grid-cols-3 justify-center items-center
         border-t-5 border-gray-500'>
         <div className='h-full flex flex-col items-center'>
             <div className='flex justify-center items-center w-full'>
@@ -28,7 +28,7 @@ function PageFooter() {
             </div>
 
         </div>
-        <div className='h-full flex flex-col gap-3 pt-4'>
+        <div className='h-full flex flex-col gap-3 justify-center lg:items-start items-center pt-4 text-sm'>
             <div>
                 <Link href="#">
                     About Us
@@ -50,7 +50,7 @@ function PageFooter() {
                 </Link>
             </div>
         </div>
-        <div className='h-full flex flex-col gap-3 pt-4'>
+        <div className='h-full flex flex-col gap-3 justify-center lg:items-start items-center pt-4 text-sm'>
             <div>
                 <Link href="#">
                     Site Map

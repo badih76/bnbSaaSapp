@@ -166,6 +166,7 @@ async function HomeRoute({ params }: { params: { id: string }}) {
                   <form action={createReservation} className='flex flex-col items-center mt-5 lg:mt-0'>
                       <input type='hidden' name="homeId" value={params.id} />
                       <input type='hidden' name="userId" value={user?.id} />
+                      <input type='hidden' name="rate" value={data.home.price?.toString()} />
       
                       <SelectCalender reservation={data.reservations} />
                       {

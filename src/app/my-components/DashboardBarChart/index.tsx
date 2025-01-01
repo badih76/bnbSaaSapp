@@ -42,8 +42,8 @@ function DashboardBarChart({chartData }: {chartData: {monthyear: string, count: 
                   tickFormatter={(value) => value}
                   />
                   <ChartTooltip
-                  cursor={false}
-                  content={<ChartTooltipContent hideLabel />}
+                    cursor={false}
+                    content={<ChartTooltipContent hideLabel />}
                   />
                   <Bar dataKey="count" fill="hsl(var(--primary))" radius={8} />
               </BarChart>
@@ -63,3 +63,5 @@ function DashboardBarChart({chartData }: {chartData: {monthyear: string, count: 
 }
 
 export default DashboardBarChart
+
+

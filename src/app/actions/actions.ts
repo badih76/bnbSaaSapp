@@ -7,7 +7,7 @@ import { IFilesUploadType, IHomeImages } from "@/lib/thumnailsInterface";
 import { dataURItoBlob } from "@/lib/utilsCode";
 import { Logger } from "@/loggerServices/logger";
 import { ELogLevel, ILogObject } from "@/loggerServices/loggerInterfaces";
-import { count, desc, eq, sql } from "drizzle-orm";
+import { count, sum, desc, eq, sql } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { isRedirectError } from "next/dist/client/components/redirect";
 import { redirect } from "next/navigation";
@@ -434,12 +434,18 @@ export async function createReservation(formData: FormData) {
     const homeId = formData.get("homeId") as string;
     const startDate = formData.get("startDate") as string;
     const endDate = formData.get("endDate") as string;
+    const rate = parseFloat(formData.get("rate") as string);
+
+    const nightsCount = Math.round((new Date(endDate).getTime() - new Date(startDate).getTime()) / (1000 * 3600 * 24));
+    const totalCharged = rate * nightsCount;
 
     await db.insert(Reservations).values({
       homeId: homeId,
       userId: userId,
       startDate: new Date(startDate),
       endDate: new Date(endDate),
+      rate: rate,
+      totalCharged: totalCharged
     });
 
     const logObj: ILogObject = {
@@ -724,7 +730,7 @@ export async function updateHomeDetails(formData: FormData) {
 
 export async function getReservationsStatistics(userId: string) {
   try {
-    const homesStat = db
+    const homesStat = await db
       .select({
         month: sql`date_format(reservations.createdAt, '%m-%y')`,
         resCount: count(Reservations.id),
@@ -772,4 +778,118 @@ export const log = (logObj: ILogObject) => {
   
   Logger.log(logObj);
 
+}
+
+export async function getReservationsStatisticsEx(userId: string) {
+  try {
+    const homesStat = await db
+      .select({
+        month: sql`date_format(reservations.createdAt, '%m-%y')`,
+        resCount: count(Reservations.id),
+        resSales: sum(Reservations.totalCharged)
+      })
+      .from(Homes)
+      .innerJoin(Reservations, eq(Homes.id, Reservations.homeId))
+      .where(eq(Homes.userId, userId))
+      .groupBy(sql`date_format(createdAt, '%m-%y')`);
+      
+    console.log(homesStat);
+
+    const sortedHomeStat = homesStat.sort((a, b) => {
+      const mmyyA = a.month!.toString().split('-');
+      const mmyyB = b.month!.toString().split('-');
+
+      if(mmyyA[0] == mmyyB[0]) {
+        if(mmyyA[1] < mmyyB[1]) 
+          return -1
+        else if(mmyyA[1] < mmyyB[1])
+          return 1
+        else 
+          return 0
+      } else if(mmyyA[0] == mmyyB[0])
+        return -1
+      else 
+        return 1
+
+    });
+
+    // console.log(sortedHomeStat);
+
+    const mmyy1 = sortedHomeStat[sortedHomeStat.length - 1].month!.toString().split("-");
+    const newMonths: { month: string, resCount: number, resSales: number }[] = [];
+    let y = parseInt(mmyy1[1]);
+    let m = parseInt(mmyy1[0]);
+    let month = 1;
+
+    while(month <= 12) {
+      const exitingCount = sortedHomeStat.findIndex((r) => {
+        const mmyy = r.month!.toString().split('-');
+        return parseInt(mmyy[0]) == m && parseInt(mmyy[1]) == y;
+      })
+
+      const resCount = { 
+        month: String(m).padStart(2, '0') + "-" + y.toString().trim(),
+        resCount: exitingCount != -1 ? sortedHomeStat[exitingCount].resCount : 0,
+        resSales: exitingCount != -1 ? parseFloat(sortedHomeStat[exitingCount].resSales!) : 0
+      }
+
+      newMonths.push(resCount);
+
+      month++;
+
+      y = m === 1 ? y-1 : y;
+      m = m === 1 ? 12 : m-1;
+
+      console.log(month, m, y);
+        
+    }
+
+    // console.log("NewMonths: ", newMonths);
+
+    const newSortedHomeStat = newMonths.sort((a, b) => {
+      const mmyyA = a.month!.toString().split('-');
+      const mmyyB = b.month!.toString().split('-');
+
+      if(mmyyA[0] == mmyyB[0]) {
+        if(mmyyA[1] < mmyyB[1]) 
+          return 1
+        else if(mmyyA[1] < mmyyB[1])
+          return -1
+        else 
+          return 0
+      } else if(mmyyA[0] == mmyyB[0])
+        return 1
+      else 
+        return -1
+
+    });
+
+    const logObj: ILogObject = {
+        level: ELogLevel.Info,
+        message: `Collecting Listings Statistics. userId: ${userId}`,
+        metaData: {
+          service: "ESM-bnb-14",
+          module: "Server Actions - getReservationsStatistics",
+          category: "Home Details",
+        },
+      };
+      Logger.log(logObj);
+
+    return newSortedHomeStat;
+
+  } catch (ex) {
+    const logObj: ILogObject = {
+		level: ELogLevel.Error,
+		message: `Error: ${(ex as Error).message}`,
+		metaData: {
+		  service: "ESM-bnb-14",
+		  module: "Server Actions - getReservationsStatistics",
+		  category: "Home Details",
+		  stackdump: (ex as Error).stack,
+		},
+	  };
+    Logger.log(logObj);
+
+    return redirect(`/Error`);
+  }
 }

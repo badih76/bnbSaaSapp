@@ -4,13 +4,16 @@ import React from 'react'
 import NoItemsFound from '../my-components/NoItemsFound';
 import ListingCard from '../my-components/ListingCard';
 import { unstable_noStore as noStore } from 'next/cache'
-import DashboardBarChart from '../my-components/DashboardBarChart';
+// import DashboardBarChart from '../my-components/DashboardBarChart';
 import { Homes } from '@/drizzle/schema';
 import { and, eq, not, desc } from 'drizzle-orm';
-import { getReservationsStatistics } from '../actions/actions';
+import { getReservationsStatisticsEx
+    // , getReservationsStatistics
+ } from '../actions/actions';
 import { ELogLevel, ILogObject } from '@/loggerServices/loggerInterfaces';
 import { Logger } from '@/loggerServices/logger';
 import { db } from '@/drizzle';
+import { InteractiveBarchart } from '../my-components/DashboardBarChart/InteractiveBarchart';
   
 
 const useAPI = process.env.USE_API === "1" ? true : false;
@@ -19,10 +22,10 @@ const getStatistics = async (userId: string) => {
     noStore();
 
     try {
-        const reservationsStatistics = await getReservationsStatistics(userId);
+        const reservationsStatistics = await getReservationsStatisticsEx(userId);
     
-        const chartData: {monthyear: string, count: number}[] = reservationsStatistics.map(r => {
-            return { monthyear: r.month as string, count: r.resCount }
+        const chartData: {monthyear: string, count: number, sales: number}[] = reservationsStatistics.map(r => {
+            return { monthyear: r.month as string, count: r.resCount, sales: r.resSales }
         })
     
         return chartData;
@@ -169,7 +172,8 @@ async function MyHomes() {
                 <h2 className='text-md font-semibold tracking-tight text-primary'>Upcoming Reservations</h2>
             </div>
 
-            <DashboardBarChart chartData={reservationsStatistics}/>
+            {/* <DashboardBarChart chartData={reservationsStatistics}/> */}
+            <InteractiveBarchart myChartData={reservationsStatistics} />
             
         </div>
 

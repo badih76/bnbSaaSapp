@@ -15,8 +15,8 @@ interface ISocialMedia {
 }
 
 function SocialMediaButtons(params: ISocialMedia) {
-    const h = "8"
-    const w = "8" 
+    const h = "6"
+    const w = "6" 
   return (
     <div className='m-4 text-white flex flex-row gap-4 justify-center items-center'> 
         { 
