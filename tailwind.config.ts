@@ -58,28 +58,61 @@ const config: Config = {
   			md: 'calc(var(--radius) - 2px)',
   			sm: 'calc(var(--radius) - 4px)'
   		},
-		  animation: {
-			fadeIn: 'fadeIn 1s ease-in-out',
-			fadeout: 'fadeOut 1s ease-in-out',
-			fade: 'fade 5s ease-in-out'
-		},
-
-		keyframes: {
-			fadeIn: {
-				from: { opacity: "0" },
-				to: { opacity: "1" },
-			},
-			fadeOut: {
-				from: { opacity: "1" },
-				to: { opacity: "0" },
-			},
-			fade: {
-				"0%": { opacity: "0" },
-				"30%": { opacity: "1" },
-				"70%": { opacity: "1" },
-				"100%": { opacity: "0" }
-			},
-		},
+  		animation: {
+  			fadeIn: 'fadeIn 1s ease-in-out',
+  			fadeout: 'fadeOut 1s ease-in-out',
+  			fade: 'fade 5s ease-in-out',
+  			'accordion-down': 'accordion-down 0.2s ease-out',
+  			'accordion-up': 'accordion-up 0.2s ease-out'
+  		},
+  		keyframes: {
+  			fadeIn: {
+  				from: {
+  					opacity: '0'
+  				},
+  				to: {
+  					opacity: '1'
+  				}
+  			},
+  			fadeOut: {
+  				from: {
+  					opacity: '1'
+  				},
+  				to: {
+  					opacity: '0'
+  				}
+  			},
+  			fade: {
+  				'0%': {
+  					opacity: '0'
+  				},
+  				'30%': {
+  					opacity: '1'
+  				},
+  				'70%': {
+  					opacity: '1'
+  				},
+  				'100%': {
+  					opacity: '0'
+  				}
+  			},
+  			'accordion-down': {
+  				from: {
+  					height: '0'
+  				},
+  				to: {
+  					height: 'var(--radix-accordion-content-height)'
+  				}
+  			},
+  			'accordion-up': {
+  				from: {
+  					height: 'var(--radix-accordion-content-height)'
+  				},
+  				to: {
+  					height: '0'
+  				}
+  			}
+  		}
   	}
   },
   plugins: [require("tailwindcss-animate"),nextui()],

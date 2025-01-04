@@ -2,12 +2,12 @@
 
 import { supabase } from "@/data/supabase";
 import { db } from "@/drizzle";
-import { Favorites, Homes, Reservations } from "@/drizzle/schema";
+import { Favorites, Homes, Reservations, Users } from "@/drizzle/schema";
 import { IFilesUploadType, IHomeImages } from "@/lib/thumnailsInterface";
 import { dataURItoBlob } from "@/lib/utilsCode";
 import { Logger } from "@/loggerServices/logger";
 import { ELogLevel, ILogObject } from "@/loggerServices/loggerInterfaces";
-import { count, sum, desc, eq, sql } from "drizzle-orm";
+import { count, sum, desc, eq, sql, and, not, gte } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { isRedirectError } from "next/dist/client/components/redirect";
 import { redirect } from "next/navigation";
@@ -728,58 +728,6 @@ export async function updateHomeDetails(formData: FormData) {
   return redirect(`/home/${homeId}`);
 }
 
-export async function getReservationsStatistics(userId: string) {
-  try {
-    const homesStat = await db
-      .select({
-        month: sql`date_format(reservations.createdAt, '%m-%y')`,
-        resCount: count(Reservations.id),
-      })
-      .from(Homes)
-      .innerJoin(Reservations, eq(Homes.id, Reservations.homeId))
-      .where(eq(Homes.userId, userId))
-      .groupBy(sql`date_format(createdAt, '%m-%y')`);
-
-    const logObj: ILogObject = {
-        level: ELogLevel.Info,
-        message: `Collecting Listings Statistics. userId: ${userId}`,
-        metaData: {
-          service: "ESM-bnb-14",
-          module: "Server Actions - getReservationsStatistics",
-          category: "Home Details",
-        },
-      };
-      Logger.log(logObj);
-
-      
-
-    // console.log(homesStat);
-
-    return homesStat;
-  } catch (ex) {
-    const logObj: ILogObject = {
-		level: ELogLevel.Error,
-		message: `Error: ${(ex as Error).message}`,
-		metaData: {
-		  service: "ESM-bnb-14",
-		  module: "Server Actions - getReservationsStatistics",
-		  category: "Home Details",
-		  stackdump: (ex as Error).stack,
-		},
-	  };
-    Logger.log(logObj);
-
-    return redirect(`/Error`);
-  }
-}
-
-
-export const log = (logObj: ILogObject) => {
-  
-  Logger.log(logObj);
-
-}
-
 export async function getReservationsStatisticsEx(userId: string) {
   try {
     const homesStat = await db
@@ -813,8 +761,6 @@ export async function getReservationsStatisticsEx(userId: string) {
 
     });
 
-    // console.log(sortedHomeStat);
-
     const mmyy1 = sortedHomeStat[sortedHomeStat.length - 1].month!.toString().split("-");
     const newMonths: { month: string, resCount: number, resSales: number }[] = [];
     let y = parseInt(mmyy1[1]);
@@ -844,8 +790,6 @@ export async function getReservationsStatisticsEx(userId: string) {
         
     }
 
-    // console.log("NewMonths: ", newMonths);
-
     const newSortedHomeStat = newMonths.sort((a, b) => {
       const mmyyA = a.month!.toString().split('-');
       const mmyyB = b.month!.toString().split('-');
@@ -863,7 +807,7 @@ export async function getReservationsStatisticsEx(userId: string) {
         return -1
 
     });
-
+    
     const logObj: ILogObject = {
         level: ELogLevel.Info,
         message: `Collecting Listings Statistics. userId: ${userId}`,
@@ -892,4 +836,98 @@ export async function getReservationsStatisticsEx(userId: string) {
 
     return redirect(`/Error`);
   }
+}
+
+export async function getListingsCount(userId: string) {
+  try {
+    // select other statistics data
+    const listedHomesCount = await db.select({
+        listedHomes: count(Homes.id)
+      }).from(Homes)
+      .where(and(eq(Homes.userId, userId), not(Homes.deleted)));
+
+    const logObj: ILogObject = {
+      level: ELogLevel.Info,
+      message: `Collecting Listings Count. userId: ${userId}`,
+      metaData: {
+        service: "ESM-bnb-14",
+        module: "Server Actions - getListingsCount",
+        category: "Home Details",
+      },
+    };
+    Logger.log(logObj); 
+
+    return parseInt(listedHomesCount[0].listedHomes.toString());
+
+  } catch(ex) {
+    const logObj: ILogObject = {
+      level: ELogLevel.Error,
+      message: `Error: ${(ex as Error).message}`,
+      metaData: {
+        service: "ESM-bnb-14",
+        module: "Server Actions - getListingsCount",
+        category: "Home Details",
+        stackdump: (ex as Error).stack,
+      },
+      };
+      Logger.log(logObj);
+  
+      return redirect(`/Error`);
+  }
+
+  
+}
+
+export async function getUpcomingReservations(userId: string) {
+  try {
+    // select other statistics data
+    const upcomingReservations = await db.select({
+        title: Homes.title,
+        startDate: Reservations.startDate,
+        endDate: Reservations.endDate,
+        rate: Reservations.rate,
+        userName: sql<string>`firstName + ' ' + lastName`,
+        paid: sql<boolean>`true`
+      }).from(Reservations)
+      .innerJoin(Homes, and(eq(Homes.id, Reservations.homeId), eq(Homes.userId, userId)))
+      .innerJoin(Users, eq(Reservations.userId, Users.id))
+      .where(and(eq(Homes.userId, userId), gte(Reservations.startDate, new Date())));
+
+    const logObj: ILogObject = {
+      level: ELogLevel.Info,
+      message: `Collecting Upcoming Reservations. userId: ${userId}`,
+      metaData: {
+        service: "ESM-bnb-14",
+        module: "Server Actions - getUpcomingReservations",
+        category: "Home Details",
+      },
+    };
+    Logger.log(logObj); 
+
+    return upcomingReservations;
+
+  } catch(ex) {
+    const logObj: ILogObject = {
+      level: ELogLevel.Error,
+      message: `Error: ${(ex as Error).message}`,
+      metaData: {
+        service: "ESM-bnb-14",
+        module: "Server Actions - getUpcomingReservations",
+        category: "Home Details",
+        stackdump: (ex as Error).stack,
+      },
+      };
+      Logger.log(logObj);
+  
+      return redirect(`/Error`);
+  }
+
+  
+}
+
+export async function log(logObj: ILogObject) {
+  Logger.log(logObj);
+  
+  return redirect(`/Error`);
+
 }

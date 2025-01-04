@@ -45,9 +45,9 @@ export function InteractiveBarchart({myChartData }: {myChartData: {monthyear: st
 
   return (
     <Card>
-      <CardHeader className="flex flex-col items-stretch space-y-0 border-b p-0 sm:flex-row">
+      <CardHeader className="flex flex-col items-stretch space-y-0 border-b-3 p-0 sm:flex-row">
         <div className="flex flex-1 flex-col justify-center gap-1 px-6 py-5 sm:py-6">
-          <CardTitle>Reservations</CardTitle>
+          <CardTitle className="text-primary font-medium">Reservations</CardTitle>
           <CardDescription>
             YTD Reservations
           </CardDescription>
@@ -65,8 +65,8 @@ export function InteractiveBarchart({myChartData }: {myChartData: {monthyear: st
                 <span className="text-xs text-muted-foreground">
                   {chartConfig[chart].label}
                 </span>
-                <span className="text-lg font-bold leading-none sm:text-3xl">
-                  {total[key as keyof typeof total].toLocaleString()}
+                <span className="text-lg font-bold leading-none text-center sm:text-lg">
+                  {total[key as keyof typeof total].toLocaleString("en-IN", key === 'sales' ? { style: "currency", currency: "AUD"} : {})}
                 </span>
               </button>
             )
