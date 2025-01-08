@@ -6,7 +6,7 @@ import { Dialog, DialogHeader,
         DialogContent, DialogTrigger, DialogClose } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Settings } from 'lucide-react'
-import { showHideDeletedListings } from '@/app/actions/actions'
+import { showHideDeletedListingsForm } from '@/app/actions/actions'
 import { IUserSettings } from '@/lib/interfaces'
 import { HomeListingButton } from '../ListingCard/HomeListingButtons'
 import { cn } from '@/lib/utils'
@@ -37,7 +37,7 @@ function UserSettings(props: IProps) {
                     <DialogHeader>
                         User Settings
                     </DialogHeader>
-                    <form action={showHideDeletedListings}>
+                    <form action={showHideDeletedListingsForm}>
                         <input type='hidden' name="userId" value={props.userId} />
                         <input type="hidden" name="checked" value={props.userSettings.hideDeletedListings ? 1 : 0} />
                         {/* <div className="flex flex-col gap-y-2 mt-3 mb-3">
