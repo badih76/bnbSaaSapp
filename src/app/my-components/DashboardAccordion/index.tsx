@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { unstable_noStore as noStore } from 'next/cache'
 
 import {
@@ -153,12 +153,12 @@ function DashboardAccordion() {
                                     Hide deleted listings: 
                                 </div>        
                                 <div>
-                                    <Switch checked={userSettings?.hideDeletedListings} onCheckedChange={(e) => {
-                                        const newUserSettings: IUserSettings = { currency: userSettings?.currency!, 
-                                                hideDeletedListings: !userSettings?.hideDeletedListings };
+                                    <Switch checked={userSettings!.hideDeletedListings} onCheckedChange={() => {
+                                        const newUserSettings: IUserSettings = { currency: userSettings!.currency!, 
+                                                hideDeletedListings: !userSettings!.hideDeletedListings };
                                         setUserSettings(newUserSettings);
 
-                                        showHideDeletedListings(userId, !userSettings?.hideDeletedListings);
+                                        showHideDeletedListings(userId, !userSettings!.hideDeletedListings);
 
                                     }} />
                                 </div>

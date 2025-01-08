@@ -9,8 +9,6 @@ import {
 import { convertToSubcurrency } from '@/lib/paymentGWUtils';
 import { IReservationDetails } from '@/lib/interfaces';
 import { getDomainName } from '@/lib/utils';
-import { createReservation } from '@/app/actions/actions';
-
 
 function CheckoutComponent({ amount, reservationDetails }: {
     amount: number,
