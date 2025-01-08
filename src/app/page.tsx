@@ -6,7 +6,7 @@ import NoItemsFound from "./my-components/NoItemsFound";
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import { unstable_noStore as noStore } from 'next/cache'
 import { Favorites, Homes, Reservations } from "@/drizzle/schema";
-import { and, eq, gte, like, lte, not, gt } from "drizzle-orm";
+import { and, eq, like, not, gt, or, between, isNull, isNotNull } from "drizzle-orm";
 import { Logger } from "@/loggerServices/logger";
 import { ELogLevel, ILogObject } from "@/loggerServices/loggerInterfaces";
 import { db } from "@/drizzle";
@@ -31,9 +31,19 @@ async function getListingsData({
 
   try {
 
+    const { startDate, endDate } = searchParams!;
+
     const data = await db.select()
       .from(Homes)
       .leftJoin(Favorites, and(eq(Homes.id, Favorites.homeId), eq(Favorites.userId, userId!)))
+      .leftJoin(Reservations, and(eq(Homes.id, Reservations.homeId), 
+          or(
+            between(Reservations.startDate, startDate ? new Date(startDate!) : new Date(), 
+              endDate ? new Date(endDate!) : new Date('2100-01-01')),
+            between(Reservations.endDate, startDate ? new Date(startDate!) : new Date(), 
+              endDate ? new Date(endDate!) : new Date('2100-01-01'))
+          )
+      ))
       .where(and(Homes.addedCategory, 
           Homes.addedDescription,
           Homes.addedLocation,
@@ -42,7 +52,8 @@ async function getListingsData({
           rooms ? eq(Homes.bedrooms, parseInt(rooms)) : gt(Homes.bedrooms, 0),
           bathrooms ? eq(Homes.bathrooms, parseInt(bathrooms)) : gt(Homes.bathrooms, 0),
           guests ? eq(Homes.guests, parseInt(guests)) : gt(Homes.guests, 0),
-          not(Homes.deleted)
+          not(Homes.deleted),
+          searchParams?.startDate ? isNull(Reservations.id) : or(isNull(Reservations.id), isNotNull(Reservations.id))
       ))
 
     const logObj: ILogObject = {
@@ -55,42 +66,8 @@ async function getListingsData({
         },
       };
     Logger.log(logObj);
-  
-    if(searchParams?.startDate) {
-      const filteredData = data.filter(async d => {
-  
-        const resData = await db.select({ 
-            id: Reservations.id,
-            startDate: Reservations.startDate,
-            endDate: Reservations.endDate
-          })
-          .from(Reservations)        
-          .where(and(eq(Reservations.homeId, d.homes.id),
-            lte(Reservations.startDate, new Date(searchParams.startDate!)),
-            gte(Reservations.endDate, new Date(searchParams.endDate!))
-          ))
-  
-        return resData.length == 0;
-      });
-  
-      const logObj: ILogObject = {
-        level: ELogLevel.Info,
-        message: `Homes Listings filtered.`,
-        metaData: {
-          service: "ESM-bnb-14",
-          module: "Main Page - getListingsData",
-          category: "Home Details",
-        },
-      };
-      Logger.log(logObj);
 
-      return filteredData;
-  
-    } else {
-
-      return data;
-
-    }
+    return data;
 
   } catch(ex) {
 

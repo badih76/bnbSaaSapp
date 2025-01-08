@@ -55,7 +55,7 @@ function SearchModalComponent() {
             </div>
         </DialogTrigger>
         <DialogContent className='sm:max-x-[425px]'>
-            <form className='gap-4 flex flex-col'>
+            <form className='gap-4 flex flex-col' action={"/"}>
                 <input type='hidden' name="country" value={selectedCountry} />
                 <input type='hidden' name='startDate' value={state1[0].startDate.toISOString()} />
                 <input type='hidden' name='endDate' value={state1[0].endDate.toISOString()} />

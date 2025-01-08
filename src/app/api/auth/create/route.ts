@@ -8,6 +8,7 @@ import { ELogLevel, ILogObject } from "@/loggerServices/loggerInterfaces";
 import { redirect } from "next/navigation";
 import { isRedirectError } from "next/dist/client/components/redirect";
 import { db } from "@/drizzle";
+import { IUserSettings } from "@/lib/interfaces";
 
 export async function GET() {
     noStore();
@@ -37,6 +38,11 @@ export async function GET() {
         } else {
             
             const dbUser = await db.select().from(Users).where(eq(Users.id, user.id));
+
+            const userSettings: IUserSettings = {
+              hideDeletedListings: true,
+              currency: "AUD"
+            }
         
             if(dbUser.length === 0) {
                 const newUser: typeof Users.$inferInsert = {
@@ -44,7 +50,8 @@ export async function GET() {
                     email: user.email!,
                     firstName: user.given_name!,
                     lastName: user.family_name!,
-                    profileImage: user.picture ? user.picture : `https://avatar.vercel.sh/${user.given_name}`
+                    profileImage: user.picture ? user.picture : `https://avatar.vercel.sh/${user.given_name}`,
+                    userSettings: JSON.stringify(userSettings)
                 }
                 await db.insert(Users).values(newUser);
 

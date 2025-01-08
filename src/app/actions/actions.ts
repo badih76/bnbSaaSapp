@@ -3,7 +3,9 @@
 import { supabase } from "@/data/supabase";
 import { db } from "@/drizzle";
 import { Favorites, Homes, Reservations, Users } from "@/drizzle/schema";
+import { IReservationDetails, IUserSettings } from "@/lib/interfaces";
 import { IFilesUploadType, IHomeImages } from "@/lib/thumnailsInterface";
+import { isJson } from "@/lib/utils";
 import { dataURItoBlob } from "@/lib/utilsCode";
 import { Logger } from "@/loggerServices/logger";
 import { ELogLevel, ILogObject } from "@/loggerServices/loggerInterfaces";
@@ -428,7 +430,7 @@ export async function removeFromFavorites(formData: FormData) {
   revalidatePath(pathName);
 }
 
-export async function createReservation(formData: FormData) {
+export async function createReservationForm(formData: FormData) {
   try {
     const userId = formData.get("userId") as string;
     const homeId = formData.get("homeId") as string;
@@ -453,13 +455,68 @@ export async function createReservation(formData: FormData) {
         message: `New Home Reservation create. homeId: ${homeId}, userId: ${userId}`,
         metaData: {
           service: "ESM-bnb-14",
-          module: "Server Actions - createReservation",
+          module: "Server Actions - createReservationForm",
           category: "Reservations",
         },
       };
     Logger.log(logObj);
 
     
+
+  } catch (ex) {
+    const logObj: ILogObject = {
+		level: ELogLevel.Error,
+		message: `Error: ${(ex as Error).message}`,
+		metaData: {
+		  service: "ESM-bnb-14",
+		  module: "Server Actions - createReservationForm",
+		  category: "Reservations",
+		  stackdump: (ex as Error).stack,
+		},
+	  };
+    Logger.log(logObj);
+
+    return redirect(`/Error`);
+  }
+
+  return redirect("/reservations");
+}
+
+export async function createReservation(reservationDetails: IReservationDetails) {
+  console.log('*** Adding reservation ***')
+  try {
+    const userId = reservationDetails.userId as string;
+    const homeId = reservationDetails.homeId as string;
+    const startDate = reservationDetails.startDate;
+    const endDate = reservationDetails.endDate;
+    const rate = parseFloat(reservationDetails.rate);
+    const guests = reservationDetails.guests;
+    const resToken = reservationDetails.resToken as string;
+
+    const nightsCount = Math.round((new Date(endDate).getTime() - new Date(startDate).getTime()) / (1000 * 3600 * 24));
+    const totalCharged = rate * nightsCount;
+
+    await db.insert(Reservations).values({
+      homeId: homeId,
+      userId: userId,
+      startDate: new Date(startDate),
+      endDate: new Date(endDate),
+      rate: rate,
+      totalCharged: totalCharged,
+      guests: guests,
+      resToken: resToken
+    });
+
+    const logObj: ILogObject = {
+        level: ELogLevel.Info,
+        message: `New Home Reservation create. homeId: ${homeId}, userId: ${userId}`,
+        metaData: {
+          service: "ESM-bnb-14",
+          module: "Server Actions - createReservation",
+          category: "Reservations",
+        },
+      };
+    Logger.log(logObj);
 
   } catch (ex) {
     const logObj: ILogObject = {
@@ -477,7 +534,6 @@ export async function createReservation(formData: FormData) {
     return redirect(`/Error`);
   }
 
-  return redirect("/reservations");
 }
 
 export async function removeFromHomeListing(formData: FormData) {
@@ -930,4 +986,133 @@ export async function log(logObj: ILogObject) {
   
   return redirect(`/Error`);
 
+}
+
+export async function showHideDeletedListingsForm(formData: FormData) {
+  try {
+    const userId = formData.get("userId") as string;
+    const checked = formData.get("checked") as string;
+
+    const userSettings:IUserSettings = await getUserSettings(userId);
+    const newUserSettings: IUserSettings = {
+      ...userSettings, hideDeletedListings: !userSettings.hideDeletedListings
+    }
+
+    await db
+      .update(Users)
+      .set({ userSettings: JSON.stringify(newUserSettings) })
+      .where(eq(Users.id, userId));
+
+    const logObj: ILogObject = {
+        level: ELogLevel.Info,
+        message: `User Settings - hideDeletedListings set to ${checked === "1" ? "Show" : "Hide"}. userId: ${userId}`,
+        metaData: {
+          service: "ESM-bnb-14",
+          module: "Server Actions - showHideDeletedListingsForm",
+          category: "Home Details",
+        },
+      };
+    Logger.log(logObj);
+
+  } catch (ex) {
+    const logObj: ILogObject = {
+		level: ELogLevel.Error,
+		message: `Error: ${(ex as Error).message}`,
+		metaData: {
+		  service: "ESM-bnb-14",
+		  module: "Server Actions - showHideDeletedListingsForm",
+		  category: "Home Details",
+		  stackdump: (ex as Error).stack,
+		},
+	  };
+    Logger.log(logObj);
+
+    return redirect(`/Error`);
+  }
+
+  revalidatePath("/myHomes");
+}
+
+export async function showHideDeletedListings(userId: string, hideDeletedListings: boolean) {
+  try {
+    const checked = hideDeletedListings;
+
+    const userSettings:IUserSettings = await getUserSettings(userId);
+    const newUserSettings: IUserSettings = {
+      ...userSettings, hideDeletedListings: hideDeletedListings
+    }
+
+    await db
+      .update(Users)
+      .set({ userSettings: JSON.stringify(newUserSettings) })
+      .where(eq(Users.id, userId));
+
+    const logObj: ILogObject = {
+        level: ELogLevel.Info,
+        message: `User Settings - hideDeletedListings set to ${checked ? "Show" : "Hide"}. userId: ${userId}`,
+        metaData: {
+          service: "ESM-bnb-14",
+          module: "Server Actions - showHideDeletedListings",
+          category: "Home Details",
+        },
+      };
+    Logger.log(logObj);
+
+  } catch (ex) {
+    const logObj: ILogObject = {
+		level: ELogLevel.Error,
+		message: `Error: ${(ex as Error).message}`,
+		metaData: {
+		  service: "ESM-bnb-14",
+		  module: "Server Actions - showHideDeletedListings",
+		  category: "Home Details",
+		  stackdump: (ex as Error).stack,
+		},
+	  };
+    Logger.log(logObj);
+
+    return redirect(`/Error`);
+  }
+
+  revalidatePath("/myHomes");
+}
+
+export const getUserSettings = async (userId: string) => {
+  try {
+    const userSettings = await db.select({
+        userSettings: Users.userSettings
+    }).from(Users).where(eq(Users.id, userId));
+    
+    console.log("UserSettings: ", 
+        userSettings, 
+        isJson(userSettings[0].userSettings!),
+      JSON.parse(userSettings[0].userSettings!));
+  
+    if(userSettings.length === 0) return { hideDeletedListings: true, Currency: "AUD" };
+    else return isJson(userSettings[0].userSettings!) ?  
+        JSON.parse(userSettings[0].userSettings!) : { hideDeletedListings: true, Currency: "AUD" };
+
+  } catch(ex) {
+    const logObj: ILogObject = {
+      level: ELogLevel.Error,
+      message: `Error: ${(ex as Error).message}`,
+      metaData: {
+        service: "ESM-bnb-14",
+        module: "Server Actions - showHideDeletedListings",
+        category: "Home Details",
+        stackdump: (ex as Error).stack,
+      },
+      };
+      Logger.log(logObj);
+  
+      return redirect(`/Error`);
+  }
+}
+
+export const validResToken = async (resToken: string) => {
+  // check if this reservation token was used to create a reservation before.
+  const data = await db.select({ resToken: Reservations.resToken})
+    .from(Reservations).where(eq(Reservations.resToken, resToken));
+
+  return data.length === 0;
 }

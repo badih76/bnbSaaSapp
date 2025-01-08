@@ -26,3 +26,19 @@ export interface IAddress {
     lon: number,
     lat: number,
 }
+
+export interface IUserSettings {
+    hideDeletedListings: boolean,
+    currency: string
+}
+
+export interface IReservationDetails {
+    homeId: string | undefined,
+    userId: string | undefined,
+    rate: string,
+    startDate: string,
+    endDate: string,
+    guests: number,
+    success?: number,
+    resToken?: string
+}

@@ -1,12 +1,9 @@
-import { createReservation } from '@/app/actions/actions';
 import SelectCalender from '@/app/my-components/SelectCalender';
-import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { getCountryByValue } from '@/data/getWorldCountries';
 import { FlagSize, getFlagURL } from '@/lib/utilsCode';
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
 import { Bed, ShowerHead, Users } from 'lucide-react';
-import Link from 'next/link';
 import React from 'react'
 import HomeMap from './HomeMap';
 import CategoryShowCase from './CategoryShowCase';
@@ -20,6 +17,7 @@ import NoItemsFound from '@/app/my-components/NoItemsFound';
 import { ELogLevel, ILogObject } from '@/loggerServices/loggerInterfaces';
 import { Logger } from '@/loggerServices/logger';
 import { db } from '@/drizzle';
+import { uuid4 } from '@/lib/utils';
 
 const getHomeData = async (homeId: string) => {
     noStore();
@@ -78,6 +76,9 @@ async function HomeRoute({ params }: { params: { id: string }}) {
     
     const { getUser } = getKindeServerSession();
     const user = await getUser();
+
+    const reservationToken = uuid4();
+
 
     if (data) {
         const country = getCountryByValue(data.home.country!);        // data?.country!
@@ -163,25 +164,14 @@ async function HomeRoute({ params }: { params: { id: string }}) {
                       <HomeMap locationValue={ country?.value as string } defaultValue={data.home.address} zoom={13} />
                           
                   </div>
-                  <form action={createReservation} className='flex flex-col items-center mt-5 lg:mt-0'>
+                  {/* <form action={createReservation} className='flex flex-col items-center mt-5 lg:mt-0'> */}
+                  <form action={"/ReservePage"} className='flex flex-col items-center mt-5 lg:mt-0'>
                       <input type='hidden' name="homeId" value={params.id} />
                       <input type='hidden' name="userId" value={user?.id} />
                       <input type='hidden' name="rate" value={data.home.price?.toString()} />
-      
-                      <SelectCalender reservation={data.reservations} />
-                      {
-                          user?.id ? (
-                              <Button className='w-full' type='submit'>
-                                  Make a Reservation
-                              </Button>
-                          ) : (
-                              <Button className='w-full' asChild>
-                                  <Link href="/api/auth/login">
-                                      Make a Reservation
-                                  </Link>
-                              </Button>
-                          )
-                      }
+                      <input type='hidden' name='resToken' value={reservationToken} />
+       
+                      <SelectCalender reservation={data.reservations} userId={user.id} />
       
                   </form>
               </div>

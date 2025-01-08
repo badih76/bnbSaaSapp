@@ -4,18 +4,20 @@ import ListingCard from '@/app/my-components/ListingCard';
 import { unstable_noStore as noStore } from 'next/cache'
 // import DashboardBarChart from '../my-components/DashboardBarChart';
 import { Homes } from '@/drizzle/schema';
-import { and, eq, not, desc } from 'drizzle-orm';
+import { and, eq, not, desc, or } from 'drizzle-orm';
 import { ELogLevel, ILogObject } from '@/loggerServices/loggerInterfaces';
 import { Logger } from '@/loggerServices/logger';
 import { db } from '@/drizzle';
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
 import { redirect } from 'next/navigation';
+import { getUserSettings } from '@/app/actions/actions';
+import { IUserSettings } from '@/lib/interfaces';
   
 
 const useAPI = process.env.USE_API === "1" ? true : false;
 
 
-const getMyHomesData = async (userId: string, accessToken: Object | undefined)  => {
+const getMyHomesData = async (userId: string, accessToken: Object | undefined, withDeleted: boolean)  => {
     noStore();
 
     try { 
@@ -29,7 +31,7 @@ const getMyHomesData = async (userId: string, accessToken: Object | undefined)  
                     {
                       method: 'post',
                       cache: "no-cache",
-                      body: JSON.stringify({ userId, accessToken })
+                      body: JSON.stringify({ userId, accessToken, withDeleted })
                     });
         
                 const data = await res.json();
@@ -75,7 +77,7 @@ const getMyHomesData = async (userId: string, accessToken: Object | undefined)  
                     Homes.addedCategory, 
                     Homes.addedDescription, 
                     Homes.addedLocation, 
-                    not(Homes.deleted)))
+                    !withDeleted ? not(Homes.deleted) : or(Homes.deleted, not(Homes.deleted))))
                 .orderBy(desc(Homes.createdAt))
 
             const logObj: ILogObject = {
@@ -118,6 +120,8 @@ async function Listings() {
     // // if(!user) return redirect("/");
     if(!user || !user.id) redirect("api/auth/login?");
     
+    const userSettings: IUserSettings = await getUserSettings(user.id);
+
     const data: {
         photo: string | null;
         id: string;
@@ -126,7 +130,7 @@ async function Listings() {
         description: string | null;
         deleted: boolean | null;
         enabled: boolean | null;
-    }[] = await getMyHomesData(user.id, accessToken);
+    }[] = await getMyHomesData(user.id, accessToken, !userSettings.hideDeletedListings);
 
     return (
         <>
@@ -137,7 +141,7 @@ async function Listings() {
                     <div className='grid xl:grid-cols-5 lg:grid-cols-3 sm:grid-cols-3 md-grid-cols-3 gap-8 mt-8'>
                         {
                             data.map((item: any) => {
-                                const { id, photo, description, country, price, enabled } = item;
+                                const { id, photo, description, country, price, enabled, deleted } = item;
                                 return (
                                     <ListingCard 
                                         key={id}
@@ -155,6 +159,7 @@ async function Listings() {
                                         deleteButton={true} 
                                         enableButton={true}
                                         editButton={true}
+                                        deleted={deleted}
                                     />
                                 )
                             })

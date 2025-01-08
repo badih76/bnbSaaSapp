@@ -3,7 +3,7 @@ import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
 import { unstable_noStore as noStore } from 'next/cache'
 import { Favorites, Homes } from "@/drizzle/schema";
-import { eq, and, not } from "drizzle-orm";
+import { eq, and, not, or } from "drizzle-orm";
 import { ELogLevel, ILogObject } from "@/loggerServices/loggerInterfaces";
 import { Logger } from "@/loggerServices/logger";
 import { redirect } from "next/navigation";
@@ -15,7 +15,7 @@ export async function POST(req: NextRequest) {
     console.log("Using API Calls");
 
     try {
-        const { userId, accessToken } = await req.json();
+        const { userId, accessToken, withDeleted } = await req.json();
         
         const { getUser
             // , getIdToken, getAccessToken 
@@ -47,7 +47,9 @@ export async function POST(req: NextRequest) {
                 enabled: Homes.enabled,
                 favId: Favorites.id
             }).from (Homes).leftJoin(Favorites, eq(Homes.id, Favorites.homeId))        
-            .where(and(eq(Homes.userId, userId), Homes.addedCategory, Homes.addedDescription, Homes.addedLocation, not(Homes.deleted)))
+            .where(and(eq(Homes.userId, userId), Homes.addedCategory, 
+                Homes.addedDescription, Homes.addedLocation, 
+                !withDeleted ? not(Homes.deleted) : or(Homes.deleted, not(Homes.deleted))))
     
         const logObj: ILogObject = {
             level: ELogLevel.Info,

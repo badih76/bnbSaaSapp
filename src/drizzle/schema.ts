@@ -8,6 +8,7 @@ export const Users = mysqlTable('users', {
     firstName: varchar({ length: 255 }).notNull(),
     lastName: varchar({ length: 255 }).notNull(),
     profileImage: varchar({ length: 255 }).notNull(),
+    userSettings: text().default(''),
 
     createdAt: datetime().default(new Date())
 
@@ -55,6 +56,8 @@ export const Reservations = mysqlTable('reservations', {
     endDate: datetime().default(new Date()),
     rate: float().default(0),
     totalCharged: float().default(0),
+    guests: int().default(0),
+    resToken: varchar({ length: 40 }).default(''),
 
     createdAt: datetime().default(new Date()),
 
@@ -74,4 +77,11 @@ export const Logs = mysqlTable('logs', {
     category: varchar({ length: 100 }).default(''),
     moreinfo: text().default(''),
     stackdump: text().default('')
+})
+
+export const Currencies = mysqlTable('currencies', {
+    id: varchar({ length: 255 }).$defaultFn(() => uuidv4()).primaryKey(),
+    currLocal: varchar({ length: 5 }).default('en-US'),
+    CurrName: varchar({ length: 100 }).default(''),
+    currCode: varchar({ length: 3 }).default('')
 })

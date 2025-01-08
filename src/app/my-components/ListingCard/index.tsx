@@ -28,6 +28,7 @@ interface IListingData {
     deleteButton?: boolean,
     enableButton?: boolean,
     enabled?: boolean,
+    deleted?: boolean,
     editButton?: boolean
 }
 
@@ -46,7 +47,8 @@ function ListingCard({
     deleteButton,
     enableButton,
     editButton,
-    enabled
+    enabled,
+    deleted
 }: IListingData) {
     const { getCountryByValue } = useCountries();
     const cntry = getCountryByValue(country);
@@ -54,8 +56,19 @@ function ListingCard({
     const [ imageFiles ] = useState<IHomeImages[]>(JSON.parse(imagePath));
     const [ imgNumber ] = useState<number>(0);
 
+    const classAttributes = !deleted ? 
+        'flex flex-col border-2 rounded-lg border-gray-300 p-3 flex-shrink-0 justify-between' 
+        : 'relative flex flex-col border-2 rounded-lg border-gray-300 p-3 flex-shrink-0 justify-between bg-gray-300' 
+        
+// 'flex flex-col border-2 rounded-lg border-gray-300 p-3 flex-shrink-0 justify-between'
+
   return (
-    <div className='flex flex-col border-2 rounded-lg border-gray-300 p-3 flex-shrink-0 justify-between'>
+    <div className={classAttributes}>
+        {
+            deleted ? 
+                <div className='absolute top-[50%] left-[25%] text-red-500 font-bold text-3xl z-50 -rotate-45'>DELETED</div>
+                : null
+        }
         <div className='relative h-56'>
             { userId && (
                 <div className='z-10 absolute right-0'>
@@ -178,10 +191,11 @@ function ListingCard({
                 ) : null 
             }
             {
-                deleteButton ? (
-                    <DeleteHomeListing userId={userId!} homeId={homeId} />
-                    
-                ) : null
+                !deleted ?
+                    deleteButton ? (
+                            <DeleteHomeListing userId={userId!} homeId={homeId} />
+                        ) : null
+                    : null
             }
         </div>
     </div>
