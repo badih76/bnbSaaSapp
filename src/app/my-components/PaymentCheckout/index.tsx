@@ -31,7 +31,7 @@ export default function PaymentCheckout({ amount, reservationDetails }: {
         flex flex-col justify-center items-center gap-3 text-lg">
           <p>You reached this page through non-standard or unrecognized referrer.</p>
           <p className='italic'>This reservation cannot be completed!</p>
-          <p>Please, go to the desired home page and use the "Make a Reservation" button to make a reservation or click the button below to go back to Main page.</p>
+          <p>Please, go to the desired home page and use the &ldquo;Make a Reservation&rdquo; button to make a reservation or click the button below to go back to Main page.</p>
           <Button 
             variant={"outline"} 
             size={"lg"} 
