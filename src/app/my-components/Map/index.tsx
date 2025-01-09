@@ -21,7 +21,7 @@ interface IParams {
 
 function Map({ country, lon = null, lat = null, zoom = null }: IParams) {
     const { getCountryByValue } = useCountries();
-    const defCoords = getCountryByValue(country ?? "OM");
+    const defCoords = getCountryByValue(country && country !== "" ? country : "OM");
     const [ markerLocation ] = useState<LatLngExpression>(
         [ 
             lat === null ? defCoords!.latLang[0]! : lat, 

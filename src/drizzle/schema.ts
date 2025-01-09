@@ -85,3 +85,14 @@ export const Currencies = mysqlTable('currencies', {
     CurrName: varchar({ length: 100 }).default(''),
     currCode: varchar({ length: 3 }).default('')
 })
+
+export const Messages = mysqlTable('messages', {
+    id: varchar({ length: 255 }).$defaultFn(() => uuidv4()).primaryKey(),
+
+    msgDateTime: datetime().default(new Date()),
+    msgFrom: varchar({ length: 40 }).default(''),
+    msgTo: varchar({ length: 40 }).default(''),
+    msgMessage: text().default(''),
+    msgAttachments: text().default(''),
+    msgSeen: boolean().default(false)
+})

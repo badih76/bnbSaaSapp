@@ -39,6 +39,11 @@ export async function UserNave() {
                                 </form>
                             </DropdownMenuItem>
                             <DropdownMenuItem asChild>
+                                <Link href="/messages" className="w-full">
+                                    My Messages
+                                </Link>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem asChild>
                                 <Link href="/myHomes" className="w-full">
                                     My Listings
                                 </Link>

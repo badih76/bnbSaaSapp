@@ -2,14 +2,14 @@
 
 import { supabase } from "@/data/supabase";
 import { db } from "@/drizzle";
-import { Favorites, Homes, Reservations, Users } from "@/drizzle/schema";
+import { Favorites, Homes, Messages, Reservations, Users } from "@/drizzle/schema";
 import { IReservationDetails, IUserSettings } from "@/lib/interfaces";
 import { IFilesUploadType, IHomeImages } from "@/lib/thumnailsInterface";
 import { isJson } from "@/lib/utils";
 import { dataURItoBlob } from "@/lib/utilsCode";
 import { Logger } from "@/loggerServices/logger";
 import { ELogLevel, ILogObject } from "@/loggerServices/loggerInterfaces";
-import { count, sum, desc, eq, sql, and, not, gte } from "drizzle-orm";
+import { count, sum, desc, eq, sql, and, or, not, gte } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { isRedirectError } from "next/dist/client/components/redirect";
 import { redirect } from "next/navigation";
@@ -1116,4 +1116,32 @@ export const validResToken = async (resToken: string) => {
     .from(Reservations).where(eq(Reservations.resToken, resToken));
 
   return data.length === 0;
+}
+
+export const getChattingUsers = async (uid: string) => {
+    /*
+        select users.firstName, users.email 
+        from messages
+            inner join users on users.id = messages.msgFrom or users.id = messages.msgTo
+        group by users.firstname , users.email;
+    */
+   const data = await db.select({
+            uid: Users.id,
+            firstName: Users.firstName,
+            lastName: Users.lastName,
+            email: Users.email
+        }).from(Messages)
+        .innerJoin(Users, or(eq(Users.id, Messages.msgFrom), eq(Users.id, Messages.msgTo)))
+        .where(or(eq(Messages.msgFrom, uid), eq(Messages.msgTo, uid)))
+        .groupBy(Users.firstName, Users.email)
+
+    return data;
+}
+
+export const getMessages = async (uid: string) => {
+  const data = await db.select().from(Messages)
+      .where(or(eq(Messages.msgFrom, uid), eq(Messages.msgTo, uid)))
+      .orderBy(Messages.msgDateTime);
+
+  return data;
 }

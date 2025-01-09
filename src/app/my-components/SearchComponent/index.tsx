@@ -19,7 +19,7 @@ import 'react-date-range/dist/theme/default.css'; // theme css file
 
 function SearchModalComponent() {
     const [ step, setStep ] = useState(1);
-    const [ selectedCountry, setSelectedCountry ] = useState("OM");
+    const [ selectedCountry, setSelectedCountry ] = useState("");
     const [ state1, setState1 ] = useState([{
         startDate: new Date(),
         endDate: new Date(),
