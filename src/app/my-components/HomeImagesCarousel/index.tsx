@@ -11,6 +11,10 @@ import {
 } from "@/components/ui/carousel"
 import { useState } from 'react';
 
+const supabaseUrl = process.env.SUPABASE_URL ?? '';
+const supabaseStorageBucketName = process.env.SUPABASE_STORAGE_BUCKET_NAME ?? '';
+
+
 function HomeImagesCarousel({ images, homeId } : {
     images: string[],
     homeId: string
@@ -22,7 +26,7 @@ function HomeImagesCarousel({ images, homeId } : {
         <div className='relative h-[60vw] w-[60vw] lg:h-[550px]'>
             <Image 
                 alt={ selectedImage }
-                src={`https://vihbisloauhjiimyfhfu.supabase.co/storage/v1/object/public/esm-bnb-images/${homeId}/${selectedImage}`}
+                src={`${supabaseUrl}/storage/v1/object/public/${supabaseStorageBucketName}/${homeId}/${selectedImage}`}
                 fill
                 className='rounded-lg  h-full object-cover w-full'
             />

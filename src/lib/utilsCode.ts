@@ -29,6 +29,18 @@ export enum FlagSize {
     FS256x192 = '256x192'
 }
 
+export const ImageStyles = {
+    "normal": "mt-5 overflow-hidden hidden",
+    "censorSexy": "mt-5 overflow-hidden blur-md border border-pink-300",
+    "censorPorn": "mt-5 overflow-hidden blur-xl border border-red-500"
+  }
+
+export enum ECensorLevels {
+    Normal = "normal",
+    CensorSexy = "censorSexy",
+    CensorPorn = "censorPorn"
+}
+
 export const getFlagURL = ((countryCode: string, size: FlagSize = FlagSize.FS20x15 ) => {
     // const arrSize: string[] = [ '20x15',  ]
     const cc: string = countryCode;

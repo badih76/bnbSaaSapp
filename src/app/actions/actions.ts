@@ -1145,3 +1145,17 @@ export const getMessages = async (uid: string) => {
 
   return data;
 }
+
+export const sendMessageToHost = async (message: string, uid: string, hostId: string) => {
+  const data = await db.insert(Messages)
+    .values({
+      msgMessage: message,
+      msgFrom: uid,
+      msgTo: hostId,
+      msgDateTime: new Date(),
+      msgSeen: false,
+    })
+    .$returningId();
+
+    return data;
+}

@@ -1,8 +1,12 @@
 'use client'
-import { fileToDataUri, resizeImage } from '@/lib/thumbnailsComponent';
+
+import { 
+    // fileToDataUri, 
+    resizeImage } from '@/lib/thumbnailsComponent';
 import { IFilesUploadType } from '@/lib/thumnailsInterface';
 import { Trash2 } from 'lucide-react';
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
+import CleanFileInput from '../CleanFileInput';
 
 function ThumnailsComponent({ 
     customComponentClassName = "border border-gray-300 p-5 w-full bg-gray-200",
@@ -19,16 +23,44 @@ function ThumnailsComponent({
     const [ resizedImageFile, setResizedImageFile ] = useState<IFilesUploadType[]>([]);
     // const [ resizeImageFilesStringify, setResizeImageFilesStringify ] = useState('');
     const [ imagesCount, setImagesCount ] = useState<number>(0);
+    const [ clean, setClean ] = useState<boolean | null>(null);
+    const [ fileUrl, setFileUrl ] = useState<string | null>(null);
 
     let thumbNailHeight = 224;
     if(process.env) {
       if(process.env.THUMBNAIL_HEIGHT) thumbNailHeight = parseInt(process.env.THUMBNAIL_HEIGHT);
     }
 
+  useEffect(() => {
+
+    if(clean) {
+      imgToResizeRef.current!.src = fileUrl ? fileUrl : '';
+    }
+  }, [ fileUrl ]);
+
+  useEffect(() => {
+
+    if(clean) {
+      imgToResizeRef.current!.src = fileUrl ? fileUrl : '';
+    } else {
+      setFileUrl(null);
+    }
+
+  }, [ clean ]);
+
   return (
     <div className={customComponentClassName}>
-        <input type='hidden' name='imagesCount' value={imagesCount} />
-      <input id="upload" type="file" accept="image/*" ref={imgFileRef}
+      <input type='hidden' name='imagesCount' value={imagesCount} />
+
+      <CleanFileInput setCleanFlag={setClean} id="upload" setFileUrl={setFileUrl} 
+        clasnName='text-sm text-stone-500
+                  file:mr-5 file:py-1 file:px-3 file:border-[1px] file:rounded-md
+                  file:text-xs file:font-medium
+                  file:bg-stone-50 file:text-stone-700
+                  hover:file:cursor-pointer hover:file:bg-blue-50
+                  hover:file:text-blue-700' />
+
+      {/* <input id="upload" type="file" accept="image/*" ref={imgFileRef}
         className='text-sm text-stone-500
                   file:mr-5 file:py-1 file:px-3 file:border-[1px] file:rounded-md
                   file:text-xs file:font-medium
@@ -45,7 +77,7 @@ function ThumnailsComponent({
           imgToResizeRef.current!.src = await fileToDataUri(files![0]) as string;
 
         }}
-      />
+      /> */}
         <div id="images" ref={imgDivRef} >
             <img id="imgToResize" ref={imgToResizeRef} hidden={true}
             onLoad={(e) => {

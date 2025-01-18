@@ -18,6 +18,7 @@ import { ELogLevel, ILogObject } from '@/loggerServices/loggerInterfaces';
 import { Logger } from '@/loggerServices/logger';
 import { db } from '@/drizzle';
 import { uuid4 } from '@/lib/utils';
+import ContactHost from './ContactHost';
 
 const getHomeData = async (homeId: string) => {
     noStore();
@@ -161,7 +162,12 @@ async function HomeRoute({ params }: { params: { id: string }}) {
       
                       <Separator className='my-7 w-full' /> 
       
+                      <ContactHost uid={user.id} hostId={data.user.id} />
+
+                      <Separator className='my-7 w-full' /> 
+                      
                       <HomeMap locationValue={ country?.value as string } defaultValue={data.home.address} zoom={13} />
+
                           
                   </div>
                   {/* <form action={createReservation} className='flex flex-col items-center mt-5 lg:mt-0'> */}

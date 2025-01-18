@@ -25,7 +25,7 @@ const HomeMap = ({ locationValue, zoom, defaultValue }: { locationValue: string,
         if(defaultValue) {
             foundAddress = foundAddresses.find(a => a.value == defaultValue.trim());
         
-        console.log(foundAddress);
+        // console.log(foundAddress);
 
         if(foundAddress) {
             setLon(foundAddress.lon);
@@ -33,7 +33,7 @@ const HomeMap = ({ locationValue, zoom, defaultValue }: { locationValue: string,
         }
         else 
             if(foundAddresses.length === 1) {
-                console.log(foundAddresses[0]);
+                // console.log(foundAddresses[0]);
                 setLon(foundAddresses[0].lon);
                 setLat(foundAddresses[0].lat);
             }

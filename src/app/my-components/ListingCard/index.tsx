@@ -14,6 +14,9 @@ import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious
 import Autoplay from 'embla-carousel-autoplay'
 import { Card, CardContent } from '@/components/ui/card'
 
+const supabaseUrl = process.env.SUPABASE_URL ?? '';
+const supabaseStorageBucketName = process.env.SUPABASE_STORAGE_BUCKET_NAME ?? '';
+
 interface IListingData {
     imagePath: string,
     id: string,
@@ -118,7 +121,7 @@ function ListingCard({
                                 <div className="p-1">
                                 <Card>
                                     <CardContent className="flex aspect-square items-center justify-center p-2">
-                                        <img src={`https://vihbisloauhjiimyfhfu.supabase.co/storage/v1/object/public/esm-bnb-images/thumbnails/${homeId}/${img.thumbnailImagePath}`} 
+                                        <img src={`${supabaseUrl}/storage/v1/object/public/${supabaseStorageBucketName}/thumbnails/${homeId}/${img.thumbnailImagePath}`} 
                                         alt={`Image ${index}`}
                                         className='h-full w-auto' />
                                     </CardContent>

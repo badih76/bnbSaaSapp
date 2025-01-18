@@ -20,15 +20,13 @@ function ChattingUsers({ userId, setSelectedChatUser }
     const [ data, setData ] = useState<IData[]>();
 
     useEffect(() => {
-        const data = getChattingUsers(userId)
+        getChattingUsers(userId)
             .then(res => {
                 setData(res);
             })
             .catch(ex => {
                 console.log('Error: ', ex);
             })
-
-        console.log(data);
 
     }, [])
     

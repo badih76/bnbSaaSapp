@@ -14,6 +14,12 @@ import { redirect } from "next/navigation";
 import { ELogLevel, ILogObject } from "@/loggerServices/loggerInterfaces";
 import DescriptionPageLoading from "./loading";
 import { isRedirectError } from "next/dist/client/components/redirect";
+import { useRef, useState } from "react";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, 
+    // DialogTrigger 
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { checkProfane } from "@/lib/utils";
 
 const useAPI = process.env.USE_API === "1" ? true : false;
 
@@ -23,6 +29,11 @@ export default function Decription (
     const { isLoading, isAuthenticated, user
         // , getToken 
     } = useKindeBrowserClient();
+
+    const refDescription = useRef<HTMLTextAreaElement>(null);
+    const refTitle = useRef<HTMLInputElement>(null);
+
+    const [ openProfaneWarning, setOpenProfaneWarning ] = useState<boolean>(false);
 
     try {
         if(!isLoading) {
@@ -42,14 +53,16 @@ export default function Decription (
                                     <div className="mx-auto w-full mt-10 flex flex-col gap-y-5 pb-16 ">
                                         <div className="flex flex-col gap-y-2">
                                             <Label>Title</Label>
-                                            <Input name="title" 
+                                            <Input name="title" ref={refTitle}
+                                                onChange={(e) => checkProfane(e.currentTarget.value, setOpenProfaneWarning)}
                                                 required 
                                                 placeholder="Short and simple..."
                                             />
                                         </div>
                                         <div className="flex flex-col gap-y-2">
                                             <Label>Description</Label>
-                                            <Textarea 
+                                            <Textarea ref={refDescription}
+                                                onChange={(e) => checkProfane(e.currentTarget.value, setOpenProfaneWarning)}
                                                 name="description"
                                                 required
                                                 placeholder="Please describe your home..." 
@@ -115,6 +128,26 @@ export default function Decription (
                             <CreateScreenBottomBar homeId={params.id} userId={user?.id} enabled={true} />
                             </form>
                         </div>
+                        <Dialog open={openProfaneWarning} onOpenChange={setOpenProfaneWarning}>
+                            {/* <DialogTrigger asChild>
+                                <Button variant="outline">Edit Profile</Button>
+                            </DialogTrigger> */}
+                            <DialogContent className="sm:max-w-[425px]">
+                                <DialogHeader>
+                                <DialogTitle>Warning: Inappropriate Language Detected 🚫</DialogTitle>
+                                    <DialogDescription>
+                                        <>
+                                            <p>Please note that the use of offensive or profane language is prohibited on this website.</p>
+                                            <p>Your text will not be accepted until it is cleaned.</p>
+                                            <p>Let&lsquos keep our community positive and respectful for everyone. Thank you for your understanding!</p>
+                                        </>
+                                    </DialogDescription>
+                                </DialogHeader>                                
+                                <DialogFooter>
+                                    <Button type="button" onClick={() => setOpenProfaneWarning(false) }>Ok</Button>
+                                </DialogFooter>
+                            </DialogContent>
+                        </Dialog>
                     </>
                 )
 
@@ -153,3 +186,4 @@ export default function Decription (
 
     
 }
+
