@@ -73,10 +73,14 @@ const getHomeData = async (homeId: string) => {
 }
 
 async function HomeRoute({ params }: { params: { id: string }}) {
+    console.log("Params.id: ", params.id);
+
     const data = await getHomeData(params.id);
     
     const { getUser } = getKindeServerSession();
     const user = await getUser();
+
+    console.log("User.id: ", user.id);
 
     const reservationToken = uuid4();
 
