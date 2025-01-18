@@ -182,6 +182,8 @@ export async function CreateDescription(formData: FormData) {
         "image" + (n + 1).toString().trim()
       ) as string;
 
+      console.log(imgFileStringified);
+
       const imgFileParsed = JSON.parse(imgFileStringified);
 
       uploadedFilesParsed.push(imgFileParsed);
