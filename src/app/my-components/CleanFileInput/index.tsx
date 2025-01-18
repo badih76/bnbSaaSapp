@@ -3,7 +3,7 @@
 import { ECensorLevels, getObjectURLFromFile, ImageStyles } from '@/lib/utils';
 import React, { useEffect, useRef, useState } from 'react'
 import Image from "next/image";
-import Photo from '@/../public/Logo Large.png';
+import Photo from '@/../public/Logo3.png';
 import * as nsfwjs from "nsfwjs";
 import { fileToDataUri } from '@/lib/thumbnailsComponent';
 
