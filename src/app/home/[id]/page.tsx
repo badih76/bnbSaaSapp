@@ -7,34 +7,76 @@ import { Bed, ShowerHead, Users } from 'lucide-react';
 import React from 'react'
 import HomeMap from './HomeMap';
 import CategoryShowCase from './CategoryShowCase';
-// import { unstable_noStore as noStore } from 'next/cache'
+import { unstable_noStore as noStore } from 'next/cache'
 import FacilitiesBlock from './FacilitiesBlock';
 import { IHomeImages } from '@/lib/thumnailsInterface';
 import HomeImagesCarousel from '@/app/my-components/HomeImagesCarousel';
-// import { Homes, Reservations, Users as tblUsers } from '@/drizzle/schema';
-// import { eq } from 'drizzle-orm';
+import { Homes, Reservations, Users as tblUsers } from '@/drizzle/schema';
+import { eq } from 'drizzle-orm';
 import NoItemsFound from '@/app/my-components/NoItemsFound';
-// import { ELogLevel, ILogObject } from '@/loggerServices/loggerInterfaces';
-// import { Logger } from '@/loggerServices/logger';
-// import { db } from '@/drizzle';
+import { ELogLevel, ILogObject } from '@/loggerServices/loggerInterfaces';
+import { Logger } from '@/loggerServices/logger';
+import { db } from '@/drizzle';
 import { uuid4 } from '@/lib/utils';
 import ContactHost from './ContactHost';
-import { getHomeData } from './funcs';
-import { redirect } from 'next/navigation';
 
+const getHomeData = async (homeId: string) => {
+    noStore();
+
+    try {
+
+        const data = await db.select()
+            .from(Homes)
+            .leftJoin(Reservations, eq(Homes.id, Reservations.homeId))
+            .innerJoin(tblUsers, eq(Homes.userId, tblUsers.id))
+            .where(eq(Homes.id, homeId))
+    
+        const logObj: ILogObject = {
+            level: ELogLevel.Info,
+            message: `Home details fetched for homeId: ${homeId}.`,
+            metaData: {
+                service: "ESM-bnb-14",
+                module: "Home Details Page",
+                category: "Home Details",
+            }};
+        Logger.log(logObj);
+
+        if(data.length > 0) {
+            const home = data[0].homes;
+            const user = data[0].users;
+            const reservations: typeof Reservations.$inferInsert[] = [];
+    
+            data.map(d => {
+                reservations.push(d.reservations!)
+            })
+    
+            return { home, user, reservations }
+        } else {
+            
+            return null;
+        }
+
+    } catch(ex) {
+        const logObj: ILogObject = {
+            level: ELogLevel.Error,
+            message: `Error: ${(ex as Error).message}`,
+            metaData: {
+                service: "ESM-bnb-14",
+                module: "Home Details Page",
+                category: "Home Details",
+                stackdump: (ex as Error).stack,
+            }};
+        Logger.log(logObj);
+
+    }
+
+}
 
 async function HomeRoute({ params }: { params: { id: string }}) {
-    console.log("Params.id: ", params.id);
-    const homeId = params.id;
-
-    const data = await getHomeData(homeId);
+    const data = await getHomeData(params.id);
     
     const { getUser } = getKindeServerSession();
     const user = await getUser();
-
-    if(!user || !user.id) redirect("/api/auth/login?");
-
-    console.log("User.id: ", user.id);
 
     const reservationToken = uuid4();
 
@@ -131,7 +173,7 @@ async function HomeRoute({ params }: { params: { id: string }}) {
                   {/* <form action={createReservation} className='flex flex-col items-center mt-5 lg:mt-0'> */}
                   <form action={"/ReservePage"} className='flex flex-col items-center mt-5 lg:mt-0'>
                       <input type='hidden' name="homeId" value={params.id} />
-                      <input type='hidden' name="userId" value={user ? user.id : ""} />
+                      <input type='hidden' name="userId" value={user?.id} />
                       <input type='hidden' name="rate" value={data.home.price?.toString()} />
                       <input type='hidden' name='resToken' value={reservationToken} />
        
