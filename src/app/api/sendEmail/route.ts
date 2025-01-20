@@ -3,7 +3,8 @@ import { Resend } from 'resend';
 // import { AppleReceiptEmail } from '@/components/receiptEmail'
 
 export async function GET() {
-    const resend = new Resend(process.env.RESEND_API_KEY);
+    const resendAPIKey = process.env.RESEND_API_KEY;
+    const resend = new Resend(resendAPIKey);
 
     try {
         const { data } = await resend.emails.send({
