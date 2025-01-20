@@ -5,8 +5,8 @@ const nextConfig = {
     reactStrictMode: false,
 
     env: {
-        KINDE_SITE_URL: 'http://localhost:3000',
-        KINDE_POST_LOGOUT_REDIRECT_URL: 'http://localhost:3000',
+        // KINDE_SITE_URL: 'http://localhost:3000',
+        // KINDE_POST_LOGOUT_REDIRECT_URL: 'http://localhost:3000',
         KINDE_POST_LOGIN_REDIRECT_URL: 'http://localhost:3000/api/auth/create',
 
         GEOAPIFY_API_KEY: "91d279c8ff464a518a59585456b179be",
