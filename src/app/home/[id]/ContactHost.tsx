@@ -24,9 +24,10 @@ function ContactHost({ uid, hostId, homeId }: {
 
   }, [ profaneWarning ]);
 
-  const defaultPostRedirectURL = process.env.KINDE_POST_LOGIN_REDIRECT_URL;
+  const defaultPostRedirectURL = process.env.NEXT_PUBLIC_KINDE_POST_LOGIN_REDIRECT_URL;
+
   console.log('Redirect URL: ', `${defaultPostRedirectURL}?redirect_url=/home/${homeId}`);
-  
+
   return (
     <div className='w-full mt-5 flex flex-col gap-2'>
         <h1 className='font-medium'>Contact Host</h1>

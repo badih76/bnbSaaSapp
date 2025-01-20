@@ -18,7 +18,7 @@ function SelectCalender({ reservation, userId, homeId }: {
     userId: string | null | undefined,
     homeId: string
 }) {
-    const defaultPostRedirectURL = process.env.KINDE_POST_LOGIN_REDIRECT_URL;
+    const defaultPostRedirectURL = process.env.NEXT_PUBLIC_KINDE_POST_LOGIN_REDIRECT_URL;
 
     const [ state, setState ] = useState([{
         startDate: new Date(),
