@@ -160,9 +160,17 @@ async function HomeRoute({ params }: { params: { id: string }}) {
       
                       <p className='w-fill'>{ data.home.description as string }</p>      
       
-                      <Separator className='my-7 w-full' /> 
       
-                      <ContactHost uid={user.id} hostId={data.user.id} />
+                    {
+                        (!user || !user.id) || ((user && user.id) && (user.id !== data.user.id))
+                            ? (
+                                <>
+                                    <Separator className='my-7 w-full' /> 
+                                    <ContactHost uid={user?.id} hostId={data.user.id} homeId={params.id} />
+                                </>
+                            )
+                            : null
+                    }
 
                       <Separator className='my-7 w-full' /> 
                       
@@ -177,7 +185,7 @@ async function HomeRoute({ params }: { params: { id: string }}) {
                       <input type='hidden' name="rate" value={data.home.price?.toString()} />
                       <input type='hidden' name='resToken' value={reservationToken} />
        
-                      <SelectCalender reservation={data.reservations} userId={user.id} />
+                      <SelectCalender reservation={data.reservations} userId={user?.id} homeId={params.id} />
       
                   </form>
               </div>

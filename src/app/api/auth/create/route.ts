@@ -1,5 +1,5 @@
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { unstable_noStore as noStore } from 'next/cache'
 import { Users } from "@/drizzle/schema";
 import { eq } from "drizzle-orm";
@@ -10,13 +10,18 @@ import { isRedirectError } from "next/dist/client/components/redirect";
 import { db } from "@/drizzle";
 import { IUserSettings } from "@/lib/interfaces";
 
-export async function GET() {
+export async function GET(req: NextRequest) {
     noStore();
 
+    
     try {
+        const redirectUrl = req.nextUrl.searchParams.get('redirect_url');
+      // console.log("Redirect URL: ", redirectUrl);
+
         const { getUser } = getKindeServerSession();
-        const returnUrl = process.env.KINDE_SITE_URL;
-        
+        const returnUrl = redirectUrl ? process.env.KINDE_SITE_URL! + redirectUrl : process.env.KINDE_SITE_URL ;
+        // const returnUrl = process.env.KINDE_SITE_URL ;
+
         const user = await getUser();
         
         if(!user || user === null || !user.id) {

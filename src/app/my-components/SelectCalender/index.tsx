@@ -8,15 +8,17 @@ import { DateRange } from 'react-date-range';
 import { eachDayOfInterval } from 'date-fns';
 import { Reservations } from '@/drizzle/schema';
 import { Button } from '@/components/ui/button';
-import Link from 'next/link';
+// import Link from 'next/link';
+import { LoginLink } from '@kinde-oss/kinde-auth-nextjs';
 import Counter from '../Counter';
 
 
-function SelectCalender({ reservation, userId }: {
+function SelectCalender({ reservation, userId, homeId }: {
     reservation: typeof Reservations.$inferInsert[] | undefined | null,
-    userId: string | null | undefined
+    userId: string | null | undefined,
+    homeId: string
 }) {
-
+    const defaultPostRedirectURL = process.env.KINDE_POST_LOGIN_REDIRECT_URL;
 
     const [ state, setState ] = useState([{
         startDate: new Date(),
@@ -86,11 +88,19 @@ function SelectCalender({ reservation, userId }: {
                     Make a Reservation
                 </Button>
             ) : (
-                <Button className='w-full' asChild>
-                    <Link href="/api/auth/login">
-                        Make a Reservation
-                    </Link>
-                </Button>
+                <LoginLink 
+                    postLoginRedirectURL={`${defaultPostRedirectURL}?redirect_url=/home/${homeId}`}
+                    className='border border-gray-400 rounded-md 
+                        p-2 pl-4 pr-4 bg-primary text-white
+                        hover:bg-teal-700 text-center w-full'
+                >
+                    Login to make a reservation
+                </LoginLink>
+                // <Button className='w-full' asChild>
+                //     <Link href="/api/auth/login">
+                //         Make a Reservation
+                //     </Link>
+                // </Button>
             )
         }
     </>
