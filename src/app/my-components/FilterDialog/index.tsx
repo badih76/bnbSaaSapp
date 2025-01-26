@@ -4,37 +4,37 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
 import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
 import { SlidersHorizontal } from 'lucide-react';
-import React, { useCallback, useState } from 'react'
+import React, { useState } from 'react'
 
 import { Slider } from "@nextui-org/slider"
 import { Card, CardHeader } from '@/components/ui/card';
 import Counter from '../Counter';
 import SelectFacilities from '@/app/create/[id]/description/facilities';
 import { Button } from '@/components/ui/button';
-import { usePathname, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 // import Link from 'next/link';
-import { IFilters } from '@/lib/interfaces';
+// import { IFilters } from '@/lib/interfaces';
 
 
   
 
 function FilterDialog() {
     const searchParams = useSearchParams();
-    const pathname = usePathname();
+    // const pathname = usePathname();
     
-    const createQueryString = useCallback(
-            (filtersObj: IFilters) => {
-                const params = new URLSearchParams(searchParams.toString());
+    // const createQueryString = useCallback(
+    //         (filtersObj: IFilters) => {
+    //             const params = new URLSearchParams(searchParams.toString());
 
-                Object.entries(filtersObj).forEach(val => {
-                    console.log(val[0], '-> ', val[1]);
-                    params.set(val[0], val[1]);
+    //             Object.entries(filtersObj).forEach(val => {
+    //                 console.log(val[0], '-> ', val[1]);
+    //                 params.set(val[0], val[1]);
 
-                })
+    //             })
 
-                return params.toString();
-            }, [searchParams]
-        );
+    //             return params.toString();
+    //         }, [searchParams]
+    //     );
         
     const [ priceRange, setPriceRange ] = useState<number | number[]>([0, 500]);
 

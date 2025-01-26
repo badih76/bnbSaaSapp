@@ -1,10 +1,10 @@
 export interface iAppProps {
-    name: string;
-    title: string;
-    imageUrl: string;
-    description: string;
-    id: number;
-    imgStyle?: {}
+    name: string,
+    title: string,
+    imageUrl: string,
+    description: string,
+    id: number,
+    imgStyle?: object,
   }
 
   import Beach from "@/../public/icons/beachChair.png";
@@ -21,7 +21,7 @@ export interface iAppProps {
   import OMG from "@/../public/icons/omg.png";
   import Surf from "@/../public/icons/surfboard.png";
 
-  const iconBackGroundColor = "rgb(201, 159, 0, 1)"
+  // const iconBackGroundColor = "rgb(201, 159, 0, 1)"
   
   export const categoryItems: iAppProps[] = [
     {
