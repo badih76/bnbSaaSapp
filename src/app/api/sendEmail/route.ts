@@ -1,8 +1,11 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { Resend } from 'resend';
 // import { AppleReceiptEmail } from '@/components/receiptEmail'
 
-export async function GET() {
+export async function POST(req: NextRequest) {
+    const params = await req.json();
+    console.log(params);
+
     const resendAPIKey = process.env.RESEND_API_KEY;
     const resend = new Resend(resendAPIKey);
 
