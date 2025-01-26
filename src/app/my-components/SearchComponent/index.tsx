@@ -46,12 +46,12 @@ function SearchModalComponent() {
     <Dialog>
         <DialogTrigger asChild>
             <div className='rounded-full lg:py-2 lg:px-5 border flex items-center cursor-pointer sm:py-3 sm:px-2'>
-                <div className='flex h-full divide-x lg:text-lg sm:text-xs'>
+                <div className='flex h-full divide-x font-medium text-primary lg:text-lg sm:text-xs'>
                     <p className='px-4'>Where</p>
                     <p className='px-4'>When</p>
                     <p className='px-4'>Guests</p>
                 </div>
-                <Search className='bg-primary text-white p-1 h-8 w-8 rounded-full' />
+                <Search className='bg-golden-icon text-white p-1 h-8 w-8 rounded-full' />
             </div>
         </DialogTrigger>
         <DialogContent className='sm:max-x-[425px]'>

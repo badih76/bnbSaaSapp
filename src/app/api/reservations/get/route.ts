@@ -45,11 +45,16 @@ export async function POST(req: NextRequest) {
                 description: Homes.description,
                 price: Homes.price,
                 deleted: Homes.deleted,
-                favId: Favorites.id
+                favId: Favorites.id,
+                rate: Reservations.rate,
+                startDate: Reservations.startDate,
+                endDate: Reservations.endDate,
+                guests: Reservations.guests
             }).from(Reservations)
             .innerJoin(Homes, eq(Homes.id, Reservations.homeId))
             .leftJoin(Favorites, and(eq(Homes.id, Favorites.homeId), eq(Favorites.userId, userId)))
             .where(eq(Reservations.userId, userId))
+            .orderBy(Reservations.startDate, Reservations.endDate);
     
         const logObj: ILogObject = {
             level: ELogLevel.Info,

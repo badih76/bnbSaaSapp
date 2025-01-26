@@ -6,32 +6,24 @@ import NoItemsFound from "./my-components/NoItemsFound";
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import { unstable_noStore as noStore } from 'next/cache'
 import { Favorites, Homes, Reservations } from "@/drizzle/schema";
-import { and, eq, like, not, gt, or, isNull, lte, gte } from "drizzle-orm";
+import { and, eq, like, not, gt, or, isNull, lte, gte, between } from "drizzle-orm";
 import { Logger } from "@/loggerServices/logger";
 import { ELogLevel, ILogObject } from "@/loggerServices/loggerInterfaces";
 import { db } from "@/drizzle";
+import { IFilters } from "@/lib/interfaces";
+import { filterByFacilities } from "@/lib/utils";
 // import { redirect } from "next/navigation";
 
 
 async function getListingsData({
   userId, searchParams }: {
    userId: string | undefined,  
-   searchParams?: { 
-    filter? : string,
-    country?: string,
-    guests?: string,
-    rooms?: string,
-    bathrooms?: string,
-    startDate?: Date,
-    endDate?: Date
-  }
+   searchParams?: IFilters
  }) {
-  const { filter, country, rooms, bathrooms, guests } = searchParams!;
+  const { filter, country, rooms, bathrooms, guests, priceMin, priceMax, startDate, endDate, facilities } = searchParams!;
   noStore();
 
   try {
-
-    const { startDate, endDate } = searchParams!;
 
   let data: any[] = [];
 
@@ -54,6 +46,7 @@ async function getListingsData({
           rooms && parseInt(rooms) > 0 ? eq(Homes.bedrooms, parseInt(rooms)) : gt(Homes.bedrooms, 0),
           bathrooms && parseInt(bathrooms) > 0 ? eq(Homes.bathrooms, parseInt(bathrooms)) : gt(Homes.bathrooms, 0),
           guests && parseInt(guests) > 0 ? eq(Homes.guests, parseInt(guests)) : gt(Homes.guests, 0),
+          between(Homes.price, priceMin ? priceMin : 0, priceMax ? priceMax : 999999),
           not(Homes.deleted),
           isNull(Reservations.id)
       ))
@@ -74,6 +67,7 @@ async function getListingsData({
             rooms && parseInt(rooms) > 0 ? eq(Homes.bedrooms, parseInt(rooms)) : gt(Homes.bedrooms, 0),
             bathrooms && parseInt(bathrooms) > 0 ? eq(Homes.bathrooms, parseInt(bathrooms)) : gt(Homes.bathrooms, 0),
             guests && parseInt(guests) > 0 ? eq(Homes.guests, parseInt(guests)) : gt(Homes.guests, 0),
+            between(Homes.price, priceMin ? priceMin : 0, priceMax ? priceMax : 999999),
             not(Homes.deleted),
         ))
     }
@@ -89,7 +83,8 @@ async function getListingsData({
       };
     Logger.log(logObj);
 
-    return data;
+    if(facilities !== undefined) return filterByFacilities(data, facilities);
+    else return data;
 
   } catch(ex) {
 

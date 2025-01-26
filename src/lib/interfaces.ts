@@ -42,3 +42,21 @@ export interface IReservationDetails {
     success?: number,
     resToken?: string
 }
+
+export enum EListingCardMode {
+    Home,
+    Reservation
+}
+
+export interface IFilters {
+    filter? : string,
+    country?: string,
+    guests?: string,
+    rooms?: string,
+    bathrooms?: string,
+    startDate?: Date,
+    endDate?: Date,
+    priceMin?: number,
+    priceMax?: number,
+    facilities?: string
+  }

@@ -9,6 +9,7 @@ import { eq, and } from 'drizzle-orm'
 import { ELogLevel, ILogObject } from '@/loggerServices/loggerInterfaces';
 import { Logger } from '@/loggerServices/logger';
 import { db } from '@/drizzle';
+import { EListingCardMode } from '@/lib/interfaces';
 
 const useAPI = process.env.USE_API === "1" ? true : false;
 
@@ -67,11 +68,16 @@ async function getData(userId: string, accessToken: Object | undefined) {
                     description: Homes.description,
                     price: Homes.price,
                     deleted: Homes.deleted,
-                    favId: Favorites.id
+                    favId: Favorites.id,
+                    rate: tblReservations.rate,
+                    startDate: tblReservations.startDate,
+                    endDate: tblReservations.endDate,
+                    guests: tblReservations.guests
                 }).from(tblReservations)
                 .innerJoin(Homes, eq(Homes.id, tblReservations.homeId))
                 .leftJoin(Favorites, and(eq(Homes.id, Favorites.homeId), eq(Favorites.userId, userId)))
                 .where(eq(tblReservations.userId, userId))
+                .orderBy(tblReservations.startDate, tblReservations.endDate);
 
             const logObj: ILogObject = {
                 level: ELogLevel.Info,
@@ -125,8 +131,8 @@ async function Reservations() {
                 <div className='grid xl:grid-cols-5 lg:grid-cols-3 sm:grid-cols-3 md-grid-cols-3 gap-8 mt-8'>
                     {
                         data.map((item: any) => {
-                            const { id, homeId, photo, description, country, price, favId } = item!;
-                            console.log("Photo: ", JSON.parse(photo));
+                            const { id, homeId, photo, description, country, price, favId, rate, startDate, endDate, guests } = item!;
+                            // console.log("Photo: ", JSON.parse(photo));
 
                             return (
                                 <ListingCard 
@@ -141,6 +147,8 @@ async function Reservations() {
                                     favoriteId={favId as string} 
                                     homeId={homeId} 
                                     pathName={'/favorites'} 
+                                    reservationDetails={ { startDate, endDate, rate, guests } }
+                                    mode={EListingCardMode.Reservation}
                                 />
                             )
                         })

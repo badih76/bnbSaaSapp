@@ -5,11 +5,12 @@ import { Minus, Plus } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
 
 function Counter(
-    { name, defaultValue=undefined, setOk }: 
+    { name, defaultValue=undefined, setOk, setDefaultValue }: 
     {
         name: string, 
         defaultValue?: number | undefined,
-        setOk?: (val: boolean) => void
+        setOk?: (val: boolean) => void,
+        setDefaultValue?: (n: number) => void
     }) {
     const [ amount, setAmount ] = useState(0);
 
@@ -23,6 +24,10 @@ function Counter(
         if(setOk) {
             setOk(amount + 1> 0);
         }
+
+        if(setDefaultValue) {
+            setDefaultValue(amount+1);
+        }
     }
 
     const decrease = () => {
@@ -30,6 +35,10 @@ function Counter(
         if(setOk) {
 
             setOk(amount - 1 > 0);
+        }
+
+        if(setDefaultValue) {
+            setDefaultValue(amount+1);
         }
     }
 

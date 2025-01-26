@@ -98,3 +98,23 @@ export const checkProfane = (text: string, setWarning: (state: boolean) => void)
     setWarning(false);
   }
 }
+
+export const filterByFacilities = (data: any[], facilitiesFilter: string) => {
+  const filteredData = data.filter(d => {
+    let suitable = true;
+    const dFacilities = JSON.parse(d.facilities);
+    const fFacilities = JSON.parse(facilitiesFilter);
+
+    fFacilities.map((f:number, i: number) => {
+      if(f === 0) return;
+      else { 
+        if(dFacilities[i] === 0) suitable = false;
+        else return; 
+      }
+    })
+
+    return suitable;
+  });
+
+  return filteredData;
+}

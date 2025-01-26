@@ -62,7 +62,7 @@
 
 @layer base {
   :root {
-    --background: 204 41.67% 95.29%;
+    --background: 204 41.67% 100%;
     --foreground: 199 78% 1%;
     --muted: 169 5% 87%;
     --muted-foreground: 169 5% 31%;
@@ -87,6 +87,8 @@
     --chart-4: 176.67 74.23% 41.04%;
     --chart-5: 199 62% 14%;
     --radius: 0.5rem;
+    --golden-icon: rgb(201, 159, 0, 1);
+    --golden-button: rgb(251, 209, 0, 1);
   }
 
   .dark {
@@ -114,6 +116,8 @@
     --chart-3: 229 59% 14%;
     --chart-4: 169 59% 17%;
     --chart-5: 199 62% 14%;
+    --golden-icon: rgb(201, 159, 0, 1);
+    --golden-button: rgb(251, 209, 0, 1);
   }
 }
 

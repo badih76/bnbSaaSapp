@@ -13,9 +13,17 @@ import { IHomeImages } from '@/lib/thumnailsInterface'
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel'
 import Autoplay from 'embla-carousel-autoplay'
 import { Card, CardContent } from '@/components/ui/card'
+import { EListingCardMode } from '@/lib/interfaces'
 
 const supabaseUrl = process.env.SUPABASE_URL ?? '';
 const supabaseStorageBucketName = process.env.SUPABASE_STORAGE_BUCKET_NAME ?? '';
+
+interface IReservationDetails {
+    startDate: string,
+    endDate: string,
+    rate: number,
+    guests: number
+}
 
 interface IListingData {
     imagePath: string,
@@ -32,10 +40,21 @@ interface IListingData {
     enableButton?: boolean,
     enabled?: boolean,
     deleted?: boolean,
-    editButton?: boolean
+    editButton?: boolean,
+    reservationDetails?: IReservationDetails,
+    mode?: EListingCardMode
 }
 
+
 // const useAPI = process.env.USE_API === "1" ? true : false;
+
+const getTotalReservationCharge = (reservationDetails: IReservationDetails) => {
+    // console.log('Res Details: ', reservationDetails);
+    const nightsCount = Math.round((new Date(reservationDetails.endDate).getTime() - new Date(reservationDetails.startDate).getTime()) 
+        / (1000 * 3600 * 24));
+    return reservationDetails.rate * nightsCount;
+
+}
 
 function ListingCard({ 
     imagePath, 
@@ -51,7 +70,9 @@ function ListingCard({
     enableButton,
     editButton,
     enabled,
-    deleted
+    deleted,
+    reservationDetails,
+    mode = EListingCardMode.Home 
 }: IListingData) {
     const { getCountryByValue } = useCountries();
     const cntry = getCountryByValue(country);
@@ -60,8 +81,8 @@ function ListingCard({
     const [ imgNumber ] = useState<number>(0);
 
     const classAttributes = !deleted ? 
-        'flex flex-col border-2 rounded-lg border-gray-300 p-3 flex-shrink-0 justify-between' 
-        : 'relative flex flex-col border-2 rounded-lg border-gray-300 p-3 flex-shrink-0 justify-between bg-gray-300' 
+        'flex flex-col border-2 rounded-lg border-2 border-teal-200 p-3 flex-shrink-0 justify-between' 
+        : 'relative flex flex-col border-2 rounded-lg border-2 border-teal-200 p-3 flex-shrink-0 justify-between bg-gray-300' 
         
 // 'flex flex-col border-2 rounded-lg border-gray-300 p-3 flex-shrink-0 justify-between'
 
@@ -155,7 +176,7 @@ function ListingCard({
             <div className='flex flex-col justify-between'>
                 <h3 className='font-medium text-base mt-2 p-2'>
                     {
-                        <div className='w-full flex flex-row gap-2'>
+                        <div className='w-full flex flex-row gap-2 text-primary text-sm'>
                             <div className='flex flex-col justify-center items-center'>
                                 <img  
                                     src={getFlagURL(country)}
@@ -169,16 +190,62 @@ function ListingCard({
                     }
                 </h3>
             </div>
-            <p className='text-muted-foreground text-xs line-clamp-3'>
-                {description}
-            </p>
-            <div className='flex flex-col justify-between mt-5'>
-                <div className='flex flex-col'>
-                    <p className='text-muted-foreground'>
-                        {<span className='font-medium text-black'>{"AUD " + price}</span>} {" per night"}
-                    </p>
-                </div>
-            </div>
+            {
+                mode == EListingCardMode.Home ? (
+                    <>
+                        <p className='text-muted-foreground text-xs line-clamp-3'>
+                            {description}
+                        </p>
+                        <div className='flex flex-col justify-between mt-5'>
+                            <div className='flex flex-col'>
+                                <p className='text-muted-foreground'>
+                                    {<span className='font-medium text-black'>{"AUD " + price}</span>} {" per night"}
+                                </p>
+                            </div>
+                        </div>
+                    </>
+
+                ) : (
+                    <div className='flex flex-col justify-between'>
+                        <div className='flex flex-col'>
+                            <p className='text-muted-foreground'>
+                                {
+                                    reservationDetails ? (
+                                        <span className='font-medium text-black'>
+                                            {`Total Charge: $${getTotalReservationCharge(reservationDetails).toFixed(2)}`}
+                                        </span>
+                                    ) : (
+                                        null
+                                    )
+                                }
+                            </p>                            
+                            <div className='flex flex-col'>
+                                <p className='text-muted-foreground text-xs'>
+                                    {<span className='font-medium text-black'>{"$" + price}</span>} {" per night"}
+                                </p>
+                            </div>
+                        </div>
+                        <div className='flex flex-col mt-2'>
+                            <p className='text-muted-foreground text-xs'>
+                                {<span className='font-medium text-black'>{"Start Date: "}</span>} {new Date(reservationDetails!.startDate!).toLocaleDateString()}
+                            </p>
+                            <p className='text-muted-foreground text-xs'>
+                                {<span className='font-medium text-black'>{"End Date: "}</span>} {new Date(reservationDetails!.endDate!).toLocaleDateString()}
+                            </p>
+                            <p className='text-muted-foreground text-xs'>
+                                {<span className='font-medium text-black'>{"Nights: "}</span>} 
+                                {Math.round((new Date(reservationDetails!.endDate).getTime() 
+                                    - new Date(reservationDetails!.startDate).getTime())
+                                    / (1000 * 3600 * 24))}
+                            </p>
+                            <p className='text-muted-foreground text-xs'>
+                                {<span className='font-medium text-black'>{"Guests: "}</span>} 
+                                {reservationDetails!.guests}
+                            </p>
+                        </div>
+                    </div>
+                )
+            }
         </Link>
         <div className='flex flex-row justify-between mt-5'>
             {

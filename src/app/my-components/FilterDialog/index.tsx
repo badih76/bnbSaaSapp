@@ -1,16 +1,41 @@
+'use client'
+
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
 import { SlidersHorizontal } from 'lucide-react';
-import React, { useState } from 'react'
+import React, { useCallback, useState } from 'react'
 
 import { Slider } from "@nextui-org/slider"
 import { Card, CardHeader } from '@/components/ui/card';
 import Counter from '../Counter';
 import SelectFacilities from '@/app/create/[id]/description/facilities';
 import { Button } from '@/components/ui/button';
+import { usePathname, useSearchParams } from 'next/navigation';
+// import Link from 'next/link';
+import { IFilters } from '@/lib/interfaces';
+
+
+  
 
 function FilterDialog() {
+    const searchParams = useSearchParams();
+    const pathname = usePathname();
+    
+    const createQueryString = useCallback(
+            (filtersObj: IFilters) => {
+                const params = new URLSearchParams(searchParams.toString());
+
+                Object.entries(filtersObj).forEach(val => {
+                    console.log(val[0], '-> ', val[1]);
+                    params.set(val[0], val[1]);
+
+                })
+
+                return params.toString();
+            }, [searchParams]
+        );
+        
     const [ priceRange, setPriceRange ] = useState<number | number[]>([0, 500]);
 
   return (
@@ -21,10 +46,12 @@ function FilterDialog() {
             />
         </DialogTrigger>
         <DialogContent className={cn('max-w-[60vw]')}>
-            <form>
+            <form action="/">
+                <input type='hidden' name='priceMin' value={(priceRange as number[])[0]} />
+                <input type='hidden' name='priceMax' value={(priceRange as number[])[1]} />
             <DialogHeader>
                 <DialogTitle className='text-primary font-medium mb-5'>
-                    <h1 className='text-lg font-bold text-primary pb-3'>Edit Home Details</h1>
+                    <h1 className='text-lg font-bold text-primary pb-3'>Edit Filters</h1>
                 </DialogTitle>
                 <DialogDescription className='flex flex-col gap-2 w-full overflow-y-scroll max-h-[65vh]'>
                     <div className='mr-5'>
@@ -41,9 +68,11 @@ function FilterDialog() {
                                     maxValue={1000}
                                     minValue={0}
                                     step={10}
+                                    // value={priceRange}
                                     value={priceRange}
                                     onChange={(e) => {
                                         setPriceRange(e);
+                                        
                                     }}
                                     classNames={{
                                         thumb: [
@@ -69,7 +98,7 @@ function FilterDialog() {
                                                 How many guests for this property?</p>
                                         </div>
                                         <div>
-                                            <Counter name="guests" />
+                                            <Counter name="guests" defaultValue={searchParams.get('guests') !== null ? parseInt(searchParams.get('guests')!) : 0} />
                                         </div>
                                     </div>
                                     <div className="flex items-center justify-between">
@@ -81,7 +110,7 @@ function FilterDialog() {
                                                 How many rooms in this property?</p>
                                         </div>
                                         <div>
-                                            <Counter name="rooms" />
+                                            <Counter name="rooms" defaultValue={searchParams.get('rooms') !== null ? parseInt(searchParams.get('rooms')!) : 0} />
                                         </div>
                                     </div>
                                     <div className="flex items-center justify-between">
@@ -93,7 +122,7 @@ function FilterDialog() {
                                                 How many bathrooms in this property?</p>
                                         </div>
                                         <div>
-                                            <Counter name="bathrooms" />
+                                            <Counter name="bathrooms" defaultValue={searchParams.get('bathrooms') !== null ? parseInt(searchParams.get('bathrooms')!) : 0} />
                                         </div>
                                     </div>
                                 </CardHeader>
@@ -101,7 +130,7 @@ function FilterDialog() {
                         </div>
                         <Separator className='mb-5' />
                         <div>
-                            <SelectFacilities />
+                            <SelectFacilities defaultValue={searchParams.get('facilities') !== null ? searchParams.get('facilities')! : undefined} />
                         </div>
                     </div>
                 </DialogDescription>
@@ -130,9 +159,13 @@ const LocalSubmitButton = () => {
                 </Button>
             </div>
             <div>
-                <Button variant="default" type='submit'>
+                {/* <Link className={buttonVariants({ variant: "default" })} 
+                    href={
+                        pathname + "?" + queryString
+                    }>
                     Submit
-                </Button>
+                </Link> */}
+                <Button variant="default" type='submit'>Submit</Button>
             </div>
         </div>
     )

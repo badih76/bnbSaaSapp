@@ -4,8 +4,9 @@ import GetFacilityIconById, { FacilityTooltip } from '@/app/my-components/getFac
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import React, { useEffect, useState } from 'react'
 
-function SelectFacilities({ defaultValue }: {
-    defaultValue?: string | undefined
+function SelectFacilities({ defaultValue, setDefaultValue }: {
+    defaultValue?: string | undefined,
+    setDefaultValue?: (val: string) => void
 } ) {
     const [ selectedFacilities, setSelectedFacilities ] = useState<number[]>([]);
 
@@ -48,6 +49,10 @@ return (
                                             selectedFac[i] = selectedFac[i] === 1 ? 0 : 1;
 
                                             setSelectedFacilities(selectedFac);
+
+                                            if(setDefaultValue) {
+                                                setDefaultValue(JSON.stringify(selectedFac));
+                                            }
                                         }}>
                                     <CardHeader className='flex flex-col items-center text-sm'>
                                         <GetFacilityIconById facilityIconId={i} />

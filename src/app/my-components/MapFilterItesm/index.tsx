@@ -8,7 +8,7 @@ import {
   } from "@/components/ui/tooltip";
 import { categoryItems, iAppProps } from '@/data/categoryItems';
 import { cn } from '@/lib/utils';
-import Image from 'next/image';
+// import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname, useSearchParams } from 'next/navigation';
 import React, { useCallback } from 'react'
@@ -49,11 +49,8 @@ function MapFilterItems() {
                             <TooltipProvider>
                                 <Tooltip>
                                     <TooltipTrigger>
-                                        <div className='relative lg:w-8 lg:h-8 md:w-6 md:h-6 sm:w-4 sm:h-4'>
-                                            <Image src={item.imageUrl} alt="Category image"
-                                                className='lg:w-8 lg:h-8 md:w-6 md:h-6 sm:w-4 sm:h-4'
-                                                width={24} height={24}
-                                            />
+                                        <div className='relative lg:w-12 lg:h-12 md:w-6 md:h-6 sm:w-4 sm:h-4'>
+                                            <div style={item.imgStyle} className="bg-golden-icon lg:w-10 lg:h-10 md:w-6 md:h-6 sm:w-4 sm:h-4" />
                                         </div>
                                     </TooltipTrigger>
                                     <TooltipContent>
@@ -69,8 +66,19 @@ function MapFilterItems() {
                 
             }
         </div>
-        <div className="flex justify-center items-center border-l pl-3 text-primary">             
-            <FilterDialog />
+        <div className="flex justify-center items-center border-l pl-3 text-primary">     
+            <TooltipProvider>
+                <Tooltip>
+                    <TooltipTrigger>        
+                        <FilterDialog />
+                    </TooltipTrigger>
+                    <TooltipContent>
+                        <p className='text-xs font-medium'>
+                            {"Filters"}
+                        </p>
+                    </TooltipContent>
+                </Tooltip>
+            </TooltipProvider>
             
         </div>
     </div>
