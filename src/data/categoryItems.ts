@@ -32,7 +32,6 @@ export interface iAppProps {
       imageUrl: Beach.src,
         // "https://a0.muscache.com/pictures/10ce1091-c854-40f3-a2fb-defc2995bcaf.jpg",
       imgStyle: {
-        width: "50px",
         aspectRatio: "1",
         display: "inline-block",
         // // background: iconBackGroundColor,
@@ -48,7 +47,6 @@ export interface iAppProps {
       imageUrl: Trending.src,
         // "https://a0.muscache.com/pictures/3726d94b-534a-42b8-bca0-a0304d912260.jpg",
       imgStyle: {
-        width: "50px",
         aspectRatio: "1",
         display: "inline-block",
         // background: iconBackGroundColor,
@@ -64,7 +62,6 @@ export interface iAppProps {
       imageUrl: BeachFront.src,
         // "https://a0.muscache.com/pictures/bcd1adc0-5cee-4d7a-85ec-f6730b0f8d0c.jpg",
       imgStyle: {
-        width: "50px",
         aspectRatio: "1",
         display: "inline-block",
         // background: iconBackGroundColor,
@@ -80,7 +77,6 @@ export interface iAppProps {
       imageUrl: EarthHome.src,
         // "https://a0.muscache.com/pictures/d7445031-62c4-46d0-91c3-4f29f9790f7a.jpg",
       imgStyle: {
-        width: "50px",
         aspectRatio: "1",
         display: "inline-block",
         // background: iconBackGroundColor,
@@ -96,7 +92,6 @@ export interface iAppProps {
       imageUrl: Luxe.src,
         // "https://a0.muscache.com/pictures/c8e2ed05-c666-47b6-99fc-4cb6edcde6b4.jpg",
       imgStyle: {
-        width: "50px",
         aspectRatio: "1",
         display: "inline-block",
         // background: iconBackGroundColor,
@@ -112,7 +107,6 @@ export interface iAppProps {
       imageUrl: AmazingView.src,
         // "https://a0.muscache.com/pictures/3b1eb541-46d9-4bef-abc4-c37d77e3c21b.jpg",
       imgStyle: {
-        width: "50px",
         aspectRatio: "1",
         display: "inline-block",
         // background: iconBackGroundColor,
@@ -128,7 +122,6 @@ export interface iAppProps {
       imageUrl: Design.src,
         // "https://a0.muscache.com/pictures/50861fca-582c-4bcc-89d3-857fb7ca6528.jpg",
       imgStyle: {
-        width: "50px",
         aspectRatio: "1",
         display: "inline-block",
         // background: iconBackGroundColor,
@@ -144,7 +137,6 @@ export interface iAppProps {
       imageUrl: Pool.src,
         // "https://a0.muscache.com/pictures/3fb523a0-b622-4368-8142-b5e03df7549b.jpg",
       imgStyle: {
-        width: "50px",
         aspectRatio: "1",
         display: "inline-block",
         // background: iconBackGroundColor,
@@ -160,7 +152,6 @@ export interface iAppProps {
       imageUrl: TinyHome.src,
         // "https://a0.muscache.com/pictures/3271df99-f071-4ecf-9128-eb2d2b1f50f0.jpg",
       imgStyle: {
-        width: "50px",
         aspectRatio: "1",
         display: "inline-block",
         // background: iconBackGroundColor,
@@ -176,7 +167,6 @@ export interface iAppProps {
       imageUrl: HistoricHome.src,
         // "https://a0.muscache.com/pictures/33dd714a-7b4a-4654-aaf0-f58ea887a688.jpg",
       imgStyle: {
-        width: "50px",
         aspectRatio: "1",
         display: "inline-block",
         // background: iconBackGroundColor,
@@ -192,7 +182,6 @@ export interface iAppProps {
       imageUrl: CountrySide.src,
         // "https://a0.muscache.com/pictures/6ad4bd95-f086-437d-97e3-14d12155ddfe.jpg",
       imgStyle: {
-        width: "50px",
         aspectRatio: "1",
         display: "inline-block",
         // background: iconBackGroundColor,
@@ -208,7 +197,6 @@ export interface iAppProps {
       imageUrl: OMG.src,
         // "https://a0.muscache.com/pictures/c5a4f6fc-c92c-4ae8-87dd-57f1ff1b89a6.jpg",
       imgStyle: {
-        width: "50px",
         aspectRatio: "1",
         display: "inline-block",
         // background: iconBackGroundColor,
@@ -224,7 +212,6 @@ export interface iAppProps {
       imageUrl: Surf.src,
         // "https://a0.muscache.com/pictures/957f8022-dfd7-426c-99fd-77ed792f6d7a.jpg",
       imgStyle: {
-        width: "50px",
         aspectRatio: "1",
         display: "inline-block",
         // background: iconBackGroundColor,
