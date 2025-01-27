@@ -35,7 +35,7 @@ import {
     </Preview>
     <Body style={main}>
       <Container style={container}>
-        <img
+        <Img
           src={`${baseUrl}/Logo3.png`}
           width="42"
           height="42"
