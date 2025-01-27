@@ -6,9 +6,9 @@ import {
     Hr,
     Html,
     Img,
-    Link,
+    // Link,
     Preview,
-    Row,
+    // Row,
     Section,
     Text,
   } from "@react-email/components";
@@ -78,9 +78,9 @@ import {
     padding: "20px 0 48px",
   };
   
-  const logo = {
-    margin: "0 auto",
-  };
+  // const logo = {
+  //   margin: "0 auto",
+  // };
   
   const paragraph = {
     fontSize: "16px",
