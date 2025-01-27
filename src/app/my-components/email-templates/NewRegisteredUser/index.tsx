@@ -14,8 +14,8 @@ import {
   } from "@react-email/components";
   import * as React from "react";
   
-  const baseUrl = process.env.KINDE_SITE_URL
-                ? `https://${process.env.KINDE_SITE_URL}`
+  const baseUrl = process.env.BUSINESS_URL
+                ? `https://${process.env.BUSINESS_URL}`
                 : "";
   const businessName = process.env.BUSINESS_NAME
                 ? `https://${process.env.BUSINESS_NAME}`
@@ -35,7 +35,7 @@ import {
     </Preview>
     <Body style={main}>
       <Container style={container}>
-        <Img
+        <img
           src={`${baseUrl}/Logo3.png`}
           width="42"
           height="42"
