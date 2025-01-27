@@ -13,7 +13,7 @@ const client = jwksClient({
 export async function POST(req: NextRequest) {
     try{
         const token = await req.text();
-        console.log(token);
+        console.log("Token: ", token);
 
         // Decode the token
         const { header } = jwt.decode(token, { complete: true })!;
@@ -29,12 +29,12 @@ export async function POST(req: NextRequest) {
             case "user.updated":
             // handle user updated event
             // e.g update database with event.data
-            console.log((event as JwtPayload).data);
+            console.log((event as JwtPayload)?.type, (event as JwtPayload).data);
             break;
             case "user.created":
             // handle user created event
             // e.g add user to database with event.data
-            console.log((event as JwtPayload).data);
+            console.log((event as JwtPayload)?.type, (event as JwtPayload).data);
             break;
             default:
             // other events that we don't handle
