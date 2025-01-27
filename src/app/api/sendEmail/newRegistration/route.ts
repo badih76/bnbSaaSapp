@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { Resend } from 'resend';
 import jwksClient from "jwks-rsa";
 import jwt, { JwtPayload } from "jsonwebtoken";
+import NewRegisteredUser from '@/app/my-components/email-templates/NewRegisteredUser';
 
 // import { AppleReceiptEmail } from '@/components/receiptEmail'
 
@@ -49,8 +50,8 @@ export async function POST(req: NextRequest) {
             from: 'badih.barakat@badihbarakat.info',
             to: 'badih76@gmail.com',
             subject: 'Welcome to ESM B&B',
-            html: '<h1>Hello from Next.js Resend</h1>'
-            // react: AppleReceiptEmail()
+            // html: '<h1>Hello from Next.js Resend</h1>'
+            react: NewRegisteredUser((event as JwtPayload).data.user.first_name)
         });
 
 
