@@ -10,6 +10,8 @@ import { Logger } from "@/loggerServices/logger";
 import { isRedirectError } from "next/dist/client/components/redirect";
 import { db } from "@/drizzle";
 
+const redirectUrl = process.env.KINDE_SITE_URL ? process.env.KINDE_SITE_URL : "https://localhost:3000/"
+
 export async function POST() {
     noStore();
 
@@ -87,7 +89,7 @@ export async function POST() {
             redirectPath = `/create/${newHome[0].id}/structure`;
         }
 
-        return NextResponse.redirect(new URL("http://localhost:3000/"+redirectPath));
+        return NextResponse.redirect(new URL(redirectUrl+redirectPath));
 
     } catch(ex) {
         
@@ -109,7 +111,7 @@ export async function POST() {
 
         redirectPath = "/Error";
         
-        return NextResponse.redirect("http://localhost:3000/"+redirectPath);
+        return NextResponse.redirect(redirectUrl+redirectPath);
 
     }     
  

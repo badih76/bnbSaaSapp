@@ -9,6 +9,8 @@ import NewRegisteredUser from '@/app/my-components/email-templates/NewRegistered
 const client = jwksClient({
     jwksUri: `${process.env.KINDE_ISSUER_URL}/.well-known/jwks.json`,
   });
+
+const fromEmail = process.env.BUSINESS_EMAIL ? process.env.BUSINESS_EMAIL : "some-email@email.com";
   
 
 export async function POST(req: NextRequest) {
@@ -47,8 +49,8 @@ export async function POST(req: NextRequest) {
 
    
         const { data } = await resend.emails.send({
-            from: 'badih.barakat@badihbarakat.info',
-            to: 'badih76@gmail.com',
+            from: fromEmail,
+            to: (event as JwtPayload).data.email,
             subject: 'Welcome to ESM B&B',
             // html: '<h1>Hello from Next.js Resend</h1>'
             react: NewRegisteredUser((event as JwtPayload).data.user.first_name)

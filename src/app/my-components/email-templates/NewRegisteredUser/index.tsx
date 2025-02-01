@@ -17,12 +17,8 @@ import {
   const baseUrl = process.env.BUSINESS_URL
                 ? `https://${process.env.BUSINESS_URL}`
                 : "";
-  const businessName = process.env.BUSINESS_NAME
-                ? `https://${process.env.BUSINESS_NAME}`
-                : "";
-  const businessAddress = process.env.BUSINESS_ADDRESS
-  ? `https://${process.env.BUSINESS_ADDRESS}`
-  : "";              
+  const businessName = process.env.BUSINESS_NAME ? process.env.BUSINESS_NAME : "";
+  const businessAddress = process.env.BUSINESS_ADDRESS ? process.env.BUSINESS_ADDRESS : "";              
   // 'https://demo.react.email'
   
   export const NewRegisteredUser = ({ userFirstname}: {
@@ -37,8 +33,8 @@ import {
       <Container style={container}>
         <Img
           src={`${baseUrl}/Logo3.png`}
-          width="42"
-          height="42"
+          width="62"
+          // height="62"
           alt="Compan Logo"
         />
         <Text style={paragraph}>Hi {userFirstname},</Text>

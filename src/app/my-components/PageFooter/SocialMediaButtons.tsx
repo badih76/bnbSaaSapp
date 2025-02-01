@@ -110,7 +110,6 @@ const Behance = ({ h, w }: { h: string, w: string }) =>  {
         <>
             {/* <!-- Behance --> */}
             <svg
-                xmlns="http://www.w3.org/2000/svg"
                 className={`h-${h} w-${w}`}
                 fill="currentColor"
                 viewBox="0 0 24 24"
@@ -129,7 +128,6 @@ const Discord = ({ h, w }: { h: string, w: string }) =>  {
                 className={`h-${h} w-${w}`}
                 fill="currentColor"
                 viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
                 fillRule="evenodd"
                 clipRule="evenodd"
             >
@@ -145,7 +143,6 @@ const Facebook = ({ h, w }: { h: string, w: string }) =>  {
         <>
             {/* <!-- Facebook --> */}
             <svg
-                xmlns="http://www.w3.org/2000/svg"
                 className={`h-${h} w-${w}`}
                 fill="currentColor"
                 viewBox="0 0 24 24"
@@ -165,7 +162,6 @@ const Messenger = ({ h, w }: { h: string, w: string }) =>  {
                 className={`h-${h} w-${w}`}
                 fill="currentColor"
                 viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
                 fillRule="evenodd"
                 clipRule="evenodd"
             >
@@ -182,7 +178,6 @@ const Twitter = ({ h, w }: { h: string, w: string }) =>  {
                 className={`h-${h} w-${w}`} 
                 fill="currentcolor" 
                 viewBox="0 0 512 512"
-                xmlns="http://www.w3.org/2000/svg"
                 fillRule="evenodd"
                 clipRule="evenodd"
             >
@@ -194,7 +189,6 @@ const Twitter = ({ h, w }: { h: string, w: string }) =>  {
 
     // {/* <!-- Twitter --> */}
     // <svg
-    //   xmlns="http://www.w3.org/2000/svg"
     //   className={`h-${h} w-${w}`}
     //   fill="currentColor"
     //   viewBox="0 0 24 24"
@@ -207,7 +201,6 @@ const Google = ({ h, w }: { h: string, w: string }) =>  {
         <>
             {/* <!-- Google --> */}
             <svg
-                xmlns="http://www.w3.org/2000/svg"
                 className={`h-${h} w-${w}`}
                 fill="currentColor"
                 viewBox="0 0 24 24"
@@ -227,7 +220,6 @@ const Instagram = ({ h, w }: { h: string, w: string }) =>  {
         <>
             {/* <!-- Instagram --> */}
             <svg
-                xmlns="http://www.w3.org/2000/svg"
                 className={`h-${h} w-${w}`}
                 fill="currentColor"
                 viewBox="0 0 24 24"
@@ -243,7 +235,6 @@ const LinkedIn = ({ h, w }: { h: string, w: string }) =>  {
         <>
             {/* <!-- Linkedin --> */}
             <svg
-                xmlns="http://www.w3.org/2000/svg"
                 className={`h-${h} w-${w}`}
                 fill="currentColor"
                 viewBox="0 0 24 24"
@@ -256,7 +247,6 @@ const LinkedIn = ({ h, w }: { h: string, w: string }) =>  {
 
     // {/* <!-- Pinterest --> */}
     // <svg
-    //   xmlns="http://www.w3.org/2000/svg"
     //   className={`h-${h} w-${w}`}
     //   fill="currentColor"
     //   viewBox="0 0 24 24"
@@ -270,7 +260,6 @@ const LinkedIn = ({ h, w }: { h: string, w: string }) =>  {
 
     // {/* <!-- Vkontakte --> */}
     // <svg
-    //   xmlns="http://www.w3.org/2000/svg"
     //   className={`h-${h} w-${w}`}
     //   fill="currentColor"
     //   viewBox="0 0 24 24"
@@ -283,7 +272,6 @@ const LinkedIn = ({ h, w }: { h: string, w: string }) =>  {
 
     // {/* <!-- Stack overflow --> */}
     // <svg
-    //   xmlns="http://www.w3.org/2000/svg"
     //   className={`h-${h} w-${w}`}
     //   fill="currentColor"
     //   viewBox="0 0 24 24"
@@ -297,8 +285,6 @@ const LinkedIn = ({ h, w }: { h: string, w: string }) =>  {
     //   fill="currentColor"
     //   viewBox="0 0 24 24"
     //   version="1.1"
-    //   xmlns="http://www.w3.org/2000/svg"
-    //   xmlnsXlink="http://www.w3.org/1999/xlink"
     //   xmlSpace="preserve"
     //   style={{
     //     fillRule: "evenodd",
@@ -318,7 +304,6 @@ const YouTube = ({ h, w }: { h: string, w: string }) =>  {
         <>
             {/* <!-- Youtube --> */}
             <svg
-                xmlns="http://www.w3.org/2000/svg"
                 className={`h-${h} w-${w}`}
                 fill="currentColor"
                 viewBox="0 0 24 24"
@@ -334,7 +319,6 @@ const TikTok = ({ h, w }: { h: string, w: string }) =>  {
         <>
             {/* <!-- TikTok --> */}
             <svg
-                xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 448 512"
                 className={`h-${h} w-${w}`}
             >
@@ -350,7 +334,6 @@ const TikTok = ({ h, w }: { h: string, w: string }) =>  {
 
     // {/* <!-- Snapchat --> */}
     // <svg
-    //   xmlns="http://www.w3.org/2000/svg"
     //   className={`h-${h} w-${w}`}
     //   fill="currentColor"
     //   viewBox="0 0 24 24"
@@ -363,7 +346,6 @@ const TikTok = ({ h, w }: { h: string, w: string }) =>  {
     //   className={`h-${h} w-${w}`}
     //   fill="currentColor"
     //   viewBox="0 0 24 24"
-    //   xmlns="http://www.w3.org/2000/svg"
     //   fillRule="evenodd"
     //   clipRule="evenodd"
     // >
@@ -372,7 +354,6 @@ const TikTok = ({ h, w }: { h: string, w: string }) =>  {
 
     // {/* <!-- Github --> */}
     // <svg
-    //   xmlns="http://www.w3.org/2000/svg"
     //   className={`h-${h} w-${w}`}
     //   fill="currentColor"
     //   viewBox="0 0 24 24"
@@ -382,7 +363,6 @@ const TikTok = ({ h, w }: { h: string, w: string }) =>  {
 
     // {/* <!-- Dribbble --> */}
     // <svg
-    //   xmlns="http://www.w3.org/2000/svg"
     //   className={`h-${h} w-${w}`}
     //   fill="currentColor"
     //   viewBox="0 0 24 24"
@@ -392,7 +372,6 @@ const TikTok = ({ h, w }: { h: string, w: string }) =>  {
 
     // {/* <!-- Reddit --> */}
     // <svg
-    //   xmlns="http://www.w3.org/2000/svg"
     //   className={`h-${h} w-${w}`}
     //   fill="currentColor"
     //   viewBox="0 0 24 24"
@@ -402,7 +381,6 @@ const TikTok = ({ h, w }: { h: string, w: string }) =>  {
 
     // {/* <!-- Whatsapp --> */}
     // <svg
-    //   xmlns="http://www.w3.org/2000/svg"
     //   className={`h-${h} w-${w}`}
     //   fill="currentColor"
     //   viewBox="0 0 24 24"
@@ -412,7 +390,6 @@ const TikTok = ({ h, w }: { h: string, w: string }) =>  {
 
     // {/* <!-- Twitch --> */}
     // <svg
-    //   xmlns="http://www.w3.org/2000/svg"
     //   className={`h-${h} w-${w}`}
     //   fill="currentColor"
     //   viewBox="0 0 24 24"
