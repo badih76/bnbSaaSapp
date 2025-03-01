@@ -20,6 +20,8 @@ export async function POST(req: NextRequest) {
         // const token = await req.text();
         const reqParams: IReceiptEmailParams = await req.json();
 
+        console.log(reqParams);
+
         // console.log("Params: ", reqParams);
 
         // Decode the token

@@ -97,9 +97,9 @@ import {
               </Column>
               <Column style={informationTableColumn} colSpan={2}>
                 <Text style={informationTableLabel}>BILLED TO</Text>
-                <Text style={informationTableValue}>
+                {/* <Text style={informationTableValue}>
                   Card .... { cardLast4Digits }
-                </Text>
+                </Text> */}
                 <Text style={informationTableValue}>{ clientName }</Text>
                 {/* <Text style={informationTableValue}>2125 Chestnut St</Text>
                 <Text style={informationTableValue}>San Francisco, CA 94123</Text>
