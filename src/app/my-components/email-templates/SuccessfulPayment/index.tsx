@@ -30,7 +30,7 @@ import {
         homeTitle,
         homeAddress,
         orderId,
-        cardLast4Digits
+        // cardLast4Digits
     }: IReceiptEmailParams
   ) => (
     <Html>
