@@ -18,19 +18,19 @@ import {
     const baseUrl = process.env.BUSINESS_URL ? `https://${process.env.BUSINESS_URL}` : "";
     const businessName = process.env.BUSINESS_NAME ? process.env.BUSINESS_NAME : "";
     const businessAddress = process.env.BUSINESS_ADDRESS ? process.env.BUSINESS_ADDRESS : "";              
-    const currentDate = new Date().toLocaleDateString();
+    // const currentDate = new Date().toLocaleDateString();
 
   const ReservationEmail = ({ 
         nightsCount, 
         clientName, 
+        guests,
         rate, 
         totalCharge,
         fromDate, 
         toDate,
         homeTitle,
         homeAddress,
-        orderId,
-        cardLast4Digits
+        reservationId
     }: IReceiptEmailParams
   ) => (
     <Html>
@@ -51,64 +51,30 @@ import {
               </Column>
   
               <Column align="right" style={tableCell}>
-                <Text style={heading}>Receipt</Text>
+                <Text style={heading}>Reservation Confirmation</Text>
               </Column>
             </Row>
           </Section>
-          {/* <Section>
-            <Text style={cupomText}>
-              Save 3% on all your Apple purchases with Apple Card.
-              <sup style={supStyle}>1</sup>{" "}
-              <Link href="https://www.apple.com/apple-card">
-                Apply and use in minutes
-              </Link>
-              <sup style={supStyle}>2</sup>
+          <Section>
+            <Text>
+              {`Thank you, ${clientName}, for your reservation of ${homeTitle}.`}
             </Text>
-          </Section> */}
-          <Section style={informationTable}>
-            <Row style={informationTableRow}>
-              <Column colSpan={2}>
-                <Section>
-                    <Row>
-                        <Column style={informationTableColumn}>
-                        <Text style={informationTableLabel}>ORDER ID</Text>
-                        <Text
-                            style={{
-                            ...informationTableValue,
-                            color: "#15c",
-                            textDecoration: "underline",
-                            }}
-                        >
-                            { orderId }
-                        </Text>
-                        </Column>
-                        {/* <Column style={informationTableColumn}>
-                            <Text style={informationTableLabel}>DOCUMENT NO.</Text>
-                            <Text style={informationTableValue}>186623754793</Text>
-                        </Column> */}
-                  </Row>
-                  <Row>
-                    <Column style={informationTableColumn}>
-                      <Text style={informationTableLabel}>INVOICE DATE</Text>
-                      <Text style={informationTableValue}>{ currentDate }</Text>
-                    </Column>
-                  </Row>
-                </Section>
-              </Column>
-              <Column style={informationTableColumn} colSpan={2}>
-                <Text style={informationTableLabel}>BILLED TO</Text>
-                <Text style={informationTableValue}>
-                  Card .... { cardLast4Digits }
-                </Text>
-                <Text style={informationTableValue}>{ clientName }</Text>
-                {/* <Text style={informationTableValue}>2125 Chestnut St</Text>
-                <Text style={informationTableValue}>San Francisco, CA 94123</Text>
-                <Text style={informationTableValue}>USA</Text> */}
-              </Column>
-            </Row>
+            <Text>{`Your reservation details are below.`}</Text>
           </Section>
           <Section style={productTitleTable}>
-            <Text style={productsTitle}>App Store</Text>
+            <Text style={productsTitle}>{`${businessName} Reservation`}</Text>
+            <Column style={informationTableColumn}>
+              <Text style={informationTableLabel}>Reservation ID</Text>
+              <Text
+                  style={{
+                  ...informationTableValue,
+                  color: "#15c",
+                  textDecoration: "underline",
+                  }}
+              >
+                  { reservationId }
+              </Text>
+            </Column>
           </Section>
           <Section>
             <Row>
@@ -116,8 +82,9 @@ import {
                     <Text style={informationTableLabel}>{`${nightsCount} nights reservation`}</Text>
                     <Text style={informationTableLabel}>{`from ${fromDate.toLocaleDateString()}`}</Text>
                     <Text style={informationTableLabel}>{`to ${toDate.toLocaleDateString()}`}</Text>
+                    <Text style={informationTableLabel}>{`for ${guests} guests`}</Text>
                     <Text style={informationTableLabel}>{`at ${homeTitle}`}</Text>
-                    <Text style={informationTableLabel}>{`from ${homeAddress}`}</Text>
+                    <Text style={informationTableLabel}>{`${homeAddress}`}</Text>
                     <Text style={informationTableLabel}>{`at rate of $${rate} per night.`}</Text>
                 </Column>
                 <Column>{`$${totalCharge}`}</Column>
@@ -194,9 +161,9 @@ import {
     fontSize: "12px",
   };
   
-  const informationTableRow = {
-    height: "46px",
-  };
+  // const informationTableRow = {
+  //   height: "46px",
+  // };
   
   const informationTableColumn = {
     paddingLeft: "20px",

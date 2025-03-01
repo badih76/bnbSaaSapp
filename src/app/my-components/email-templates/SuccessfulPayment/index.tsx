@@ -23,6 +23,7 @@ import {
   const ReceiptEmail = ({ 
         nightsCount, 
         clientName, 
+        guests, 
         rate, 
         totalCharge,
         fromDate, 
@@ -108,7 +109,7 @@ import {
             </Row>
           </Section>
           <Section style={productTitleTable}>
-            <Text style={productsTitle}>App Store</Text>
+            <Text style={productsTitle}>{`${businessName} Receipt`}</Text>
           </Section>
           <Section>
             <Row>
@@ -116,8 +117,9 @@ import {
                     <Text style={informationTableLabel}>{`${nightsCount} nights reservation`}</Text>
                     <Text style={informationTableLabel}>{`from ${new Date(fromDate).toLocaleDateString()}`}</Text>
                     <Text style={informationTableLabel}>{`to ${new Date(toDate).toLocaleDateString()}`}</Text>
+                    <Text style={informationTableLabel}>{`for ${guests} guests`}</Text>
                     <Text style={informationTableLabel}>{`at ${homeTitle}`}</Text>
-                    <Text style={informationTableLabel}>{`from ${homeAddress}`}</Text>
+                    <Text style={informationTableLabel}>{`${homeAddress}`}</Text>
                     <Text style={informationTableLabel}>{`at rate of $${rate} per night.`}</Text>
                 </Column>
                 <Column>{`$${totalCharge}`}</Column>
