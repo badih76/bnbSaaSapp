@@ -64,7 +64,7 @@ export async function POST(req: NextRequest) {
             react: ReceiptEmail(reqParams)
         });
 
-        console.log(data);
+        console.log("Email Sending:", data);
 
         return NextResponse.json({
             reqParams
