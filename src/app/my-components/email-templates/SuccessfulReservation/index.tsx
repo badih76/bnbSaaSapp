@@ -80,8 +80,8 @@ import {
             <Row>
                 <Column style={informationTableColumn}>
                     <Text style={informationTableLabel}>{`${nightsCount} nights reservation`}</Text>
-                    <Text style={informationTableLabel}>{`from ${fromDate.toLocaleDateString()}`}</Text>
-                    <Text style={informationTableLabel}>{`to ${toDate.toLocaleDateString()}`}</Text>
+                    <Text style={informationTableLabel}>{`from ${new Date(fromDate).toLocaleDateString()}`}</Text>
+                    <Text style={informationTableLabel}>{`to ${new Date(toDate).toLocaleDateString()}`}</Text>
                     <Text style={informationTableLabel}>{`for ${guests} guests`}</Text>
                     <Text style={informationTableLabel}>{`at ${homeTitle}`}</Text>
                     <Text style={informationTableLabel}>{`${homeAddress}`}</Text>
