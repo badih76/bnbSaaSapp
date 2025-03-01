@@ -46,7 +46,8 @@ export async function POST(req: NextRequest) {
             country: Homes.country,
             description: Homes.description,
             deleted: Homes.deleted,
-            enabled: Homes.enabled
+            enabled: Homes.enabled,
+            favId: Favorites.id
         }).from(Favorites)
             .innerJoin(Homes, and(eq(Homes.id, Favorites.homeId), eq(Favorites.userId, userId)));
 

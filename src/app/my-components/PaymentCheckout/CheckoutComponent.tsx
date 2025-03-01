@@ -70,8 +70,8 @@ function CheckoutComponent({ amount, reservationDetails }: {
 
         } else {
             // The payment UI automatically closes with success animation.
-            // add the reservation to db
             // Your customer is redirected to your `return_url`.
+            
         }
         
         if(!error) alert('Payment was successful');
@@ -109,7 +109,7 @@ function CheckoutComponent({ amount, reservationDetails }: {
                 className='bg-white p-2 rounded-md'>
                 { clientSecret && <PaymentElement />}
                 
-                { errorMessage && <div>{ errorMessage }</div>}
+                { errorMessage && <div className='text-red-600'>{ errorMessage }</div>}
                 <button
                     disabled={ !stripe || loading }
                     className='text-white w-full p-5 

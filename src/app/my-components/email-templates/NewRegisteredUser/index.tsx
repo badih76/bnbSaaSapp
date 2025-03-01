@@ -19,9 +19,9 @@ import {
                 : "";
   const businessName = process.env.BUSINESS_NAME ? process.env.BUSINESS_NAME : "";
   const businessAddress = process.env.BUSINESS_ADDRESS ? process.env.BUSINESS_ADDRESS : "";              
-  // 'https://demo.react.email'
+
   
-  export const NewRegisteredUser = ({ userFirstname}: {
+  export const NewRegisteredUser = ({ userFirstname }: {
     userFirstname: string
   }) => (
     <Html>

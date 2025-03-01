@@ -29,7 +29,7 @@ function AddToFavoriteButton() {
 
 export default AddToFavoriteButton;
 
-export function RemoveFromFavoriteButton () {
+export function RemoveFromFavoriteButton () {    
     const { pending } = useFormStatus();
   return (
     <>

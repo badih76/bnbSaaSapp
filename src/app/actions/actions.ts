@@ -395,10 +395,13 @@ export async function removeFromFavorites(formData: FormData) {
   const pathName = formData.get("pathName") as string;
 
   try {
+    
     const favoriteId = formData.get("favoriteId") as string;
+    console.log('Removing Favorite', "-", favoriteId, "-");
     // const userId = formData.get("userId") as string;
 
-    await db.delete(Favorites).where(eq(Favorites.id, favoriteId));
+    const data = await db.delete(Favorites).where(eq(Favorites.id, favoriteId));
+    console.log(data);
 
     const logObj: ILogObject = {
         level: ELogLevel.Info,
