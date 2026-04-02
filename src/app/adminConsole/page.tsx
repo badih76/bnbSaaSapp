@@ -93,7 +93,7 @@ function AdminConsole() {
                 </div>
             </div>
         </form>
-        <div className="w-full text-primary border-red-600 border-3">
+        <div className="w-full text-primary flex justify-center items-center">
             {
                 newImage && newImage.length !== 0 
                 ? <img src={newImage} alt='Loaded image' />

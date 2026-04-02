@@ -4,6 +4,8 @@ import { Separator } from '@/components/ui/separator'
 import Link from 'next/link'
 
 function PageFooter() {
+    const businessName = process.env.BUSINESS_NAME ?? 'Dar B&B';
+
   return (
     <div className='w-full lg:h-[25vh] 
         bg-primary text-white 
@@ -11,7 +13,7 @@ function PageFooter() {
         border-t-5 border-gray-500'>
         <div className='h-full flex flex-col items-center'>
             <div className='flex justify-center items-center w-full'>
-                <h1 className='text-2xl font-medium m-3'>ESM bnb Services</h1>
+                <h1 className='text-2xl font-medium m-3'>{businessName}</h1>
             </div>
             <Separator className='w-[80%]' />
             <SocialMediaButtons 
@@ -24,7 +26,7 @@ function PageFooter() {
             />
             
             <div>
-                © 2025 ESM bnb Services        
+                © 2025 {businessName}        
             </div>
 
         </div>

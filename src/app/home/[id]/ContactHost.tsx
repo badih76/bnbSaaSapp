@@ -45,7 +45,9 @@ function ContactHost({ uid, hostId, homeId }: {
                 ) 
               : (
                   <>
-                    <textarea className='w-full min-h-[20vh] rounded-md' ref={refMessageToHost}
+                    <textarea 
+                      className='w-full min-h-[20vh] rounded-md border-3 border-golden-icon' 
+                      ref={refMessageToHost}
                       onChange={(e) => {
                           checkProfane(e.currentTarget.value, setProfaneWarning);
                           checkProfane(e.currentTarget.value, setOpenProfaneWarning);
