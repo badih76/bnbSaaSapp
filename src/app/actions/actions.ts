@@ -1228,7 +1228,7 @@ export const getLogoImageFromSettings = async () => {
 
     }).from(Settings);
 
-    const dbData2: any = await db.execute(sql`SELECT * FROM settings`);
+    // const dbData2: any = await db.execute(sql`SELECT * FROM settings`);
     // console.log(dbData2[0][0].setLogo!.toString());
 
     // split at " and get the first array element
@@ -1245,7 +1245,7 @@ export const getAppNameFromSettings = async () => {
 
     }).from(Settings);
 
-    const dbData2: any = await db.execute(sql`SELECT * FROM settings`);
+    // const dbData2: any = await db.execute(sql`SELECT * FROM settings`);
     // console.log(dbData2[0][0].setLogo!.toString());
 
 

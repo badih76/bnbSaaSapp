@@ -1,18 +1,11 @@
 'use client'
 
 import { Label } from '@/components/ui/label';
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import ThumnailsComponent from '../my-components/ThumbnailsComponent';
 import { Button } from '@/components/ui/button';
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-
 import { checkProfane } from "@/lib/utils";
-
-import { db } from "@/drizzle";
-import { Settings } from '@/drizzle/schema';
-import Image from 'next/image';
-import { and, sql } from 'drizzle-orm';
 import { getAppNameFromSettings, getLogoImageFromSettings } from '../actions/actions';
 
 
@@ -28,7 +21,7 @@ function AdminConsole() {
     
 
     // const [ dbImage, setDbImage ] = useState<string>('');
-    let dbImage = '';
+    // let dbImage = '';
     // useEffect(() => {
 
     useEffect(() => {
@@ -53,6 +46,7 @@ function AdminConsole() {
 
         getLogo();
         getAppName();
+        console.log(openProfaneWarning)
     }, []);
 
     //     async function getData () {

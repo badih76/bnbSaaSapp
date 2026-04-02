@@ -34,7 +34,7 @@ export async function POST(request: NextRequest) {
 
         console.log(ordData)
         const newOrderNumber = ordData[0].maxNumber !== null 
-            ? parseInt(ordData[0].maxNumber?.toString()!) + 1 
+            ? parseInt(ordData[0].maxNumber.toString()!) + 1 
             : ordNumPreFix + '01';
         console.log('MaxNumber: ',newOrderNumber, ordNumPreFix, new Date());
 
@@ -45,7 +45,7 @@ export async function POST(request: NextRequest) {
         })
 
         return NextResponse.json({
-            clientSecret: { client_secret: paymentIntent.client_secret, ordNumber: ordData[0].maxNumber?.toString()! }
+            clientSecret: { client_secret: paymentIntent.client_secret, ordNumber: ordData[0].maxNumber?.toString() }
         });
 
     } catch(error) {

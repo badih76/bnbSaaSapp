@@ -49,7 +49,7 @@ export async function POST(req: NextRequest) {
         //     .where(eq(Settings.id, 'ed8c2a47-0abe-418b-8d21-b6e1722d1640'));
         await db.execute(sql`UPDATE settings SET setLogo = ${imgFileStringified} WHERE id='ed8c2a47-0abe-418b-8d21-b6e1722d1640'`);
 
-        let logObj: ILogObject = {
+        const logObj: ILogObject = {
             level: ELogLevel.Info,
             message: `New Home Listing description updated.`,
             metaData: {
