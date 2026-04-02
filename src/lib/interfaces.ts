@@ -40,7 +40,8 @@ export interface IReservationDetails {
     endDate: string,
     guests: number,
     success?: number,
-    resToken?: string
+    resToken?: string,
+    ordNumber?: string
 }
 
 export enum EListingCardMode {

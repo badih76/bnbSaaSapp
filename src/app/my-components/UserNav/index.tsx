@@ -38,6 +38,11 @@ export async function UserNave() {
                                     </button>
                                 </form>
                             </DropdownMenuItem>
+                            <DropdownMenuItem asChild>
+                                <Link href="/adminConsole" className="w-full">
+                                    Admin Console
+                                </Link>
+                            </DropdownMenuItem>
                             <DropdownMenuSeparator className="mx-1 border-2" />
                             <DropdownMenuItem asChild>
                                 <Link href="/messages" className="w-full">

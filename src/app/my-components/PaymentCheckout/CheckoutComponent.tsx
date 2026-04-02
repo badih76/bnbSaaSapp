@@ -19,6 +19,7 @@ function CheckoutComponent({ amount, reservationDetails }: {
     
     const [ errorMessage, setErrorMessage ] = useState<string>();
     const [ clientSecret, setClientSecret ] = useState("");
+    const [ ordNumber, setOrdNumber ] = useState('');
     const [ loading, setLoading ] = useState(false);
 
     const { homeId, userId, rate, startDate, endDate, guests, resToken } = reservationDetails;
@@ -30,14 +31,15 @@ function CheckoutComponent({ amount, reservationDetails }: {
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify({ amount: convertToSubcurrency(amount) })
+                body: JSON.stringify({ amount: convertToSubcurrency(amount), userId })
             }
         )
         .then( res => res.json())
         .then( data => { 
             // console.log("Data: ", data);
 
-            setClientSecret(data.clientSecret)
+            setClientSecret(data.clientSecret);
+            setOrdNumber(data.ordNumber);
         });
 
     }, [ amount ]);
@@ -61,7 +63,7 @@ function CheckoutComponent({ amount, reservationDetails }: {
             elements,
             clientSecret,
             confirmParams: {
-                return_url: `${getDomainName()}/ReservePage?amount=${amount}&success=1&homeId=${homeId}&userId=${userId}&rate=${rate}&startDate=${startDate}&endDate=${endDate}&guests=${guests}&resToken=${resToken}`
+                return_url: `${getDomainName()}/ReservePage?amount=${amount}&success=1&homeId=${homeId}&userId=${userId}&rate=${rate}&startDate=${startDate}&endDate=${endDate}&guests=${guests}&resToken=${resToken}&ordNumber=${ordNumber}`
             }
         })
 

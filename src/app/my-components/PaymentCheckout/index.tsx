@@ -9,6 +9,7 @@ import { cn, getDomainName } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import Image from "next/image";
 import DeskTopLogo from "@/../public/Logo3.png";
+import { useSearchParams } from 'next/navigation';
 
 if(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY === undefined) {
   throw new Error("NEXT-PUBLIC_STRIPE_PUBLIC_KEY is not defined");
@@ -20,7 +21,13 @@ export default function PaymentCheckout({ amount, reservationDetails }: {
     amount: number,
     reservationDetails: IReservationDetails
 }) {
-  const referrer = document ? document.referrer : '';
+  const params = useSearchParams();
+  const ordNumber = params.get('ordNumber') ? params.get('ordNumber') : null;
+  console.log(ordNumber);
+
+  const referrer = document.referrer;
+
+  console.log("Referrer: ", referrer);
   
   const referrerSplit = referrer.split('/');
   console.log(referrer, referrerSplit, getDomainName());

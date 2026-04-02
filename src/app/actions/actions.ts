@@ -2,7 +2,7 @@
 
 import { supabase } from "@/data/supabase";
 import { db } from "@/drizzle";
-import { Favorites, Homes, Messages, Reservations, Users } from "@/drizzle/schema";
+import { Favorites, Homes, Messages, Orders, Reservations, Settings, Users } from "@/drizzle/schema";
 import { IReservationDetails, IUserSettings } from "@/lib/interfaces";
 import { IFilesUploadType, IHomeImages } from "@/lib/thumnailsInterface";
 import { isJson } from "@/lib/utils";
@@ -284,7 +284,7 @@ export async function CreateDescription(formData: FormData) {
   } catch (ex) {
     const logObj: ILogObject = {
         level: ELogLevel.Error,
-        message: `Error: ${(ex as Error).message}`,
+        message: `Error: ${(ex as Error).message} +--- ${(ex as Error).cause}`,
         metaData: {
           service: "ESM-bnb-14",
           module: "Server Actions - CreateDescription",
@@ -501,7 +501,7 @@ export async function createReservation(reservationDetails: IReservationDetails)
     const nightsCount = Math.round((new Date(endDate).getTime() - new Date(startDate).getTime()) / (1000 * 3600 * 24));
     const totalCharged = rate * nightsCount;
 
-    await db.insert(Reservations).values({
+    const newResData = await db.insert(Reservations).values({
       homeId: homeId,
       userId: userId,
       startDate: new Date(startDate),
@@ -510,11 +510,51 @@ export async function createReservation(reservationDetails: IReservationDetails)
       totalCharged: totalCharged,
       guests: guests,
       resToken: resToken
-    });
+    }).$returningId();
+
+    console.log('NewResData:', newResData);
 
     const logObj: ILogObject = {
         level: ELogLevel.Info,
         message: `New Home Reservation create. homeId: ${homeId}, userId: ${userId}`,
+        metaData: {
+          service: "ESM-bnb-14",
+          module: "Server Actions - createReservation",
+          category: "Reservations",
+        },
+      };
+    Logger.log(logObj);
+
+    return newResData[0].id ? newResData[0].id : null;
+
+  } catch (ex) {
+    const logObj: ILogObject = {
+		level: ELogLevel.Error,
+		message: `Error: ${(ex as Error).message}`,
+		metaData: {
+		  service: "ESM-bnb-14",
+		  module: "Server Actions - createReservation",
+		  category: "Reservations",
+		  stackdump: (ex as Error).stack,
+		},
+	  };
+    Logger.log(logObj);
+
+    return redirect(`/Error`);
+  }
+
+}
+
+export async function updateReservationOrder(OrderNumber: string, success: boolean, newResRef: string) {
+  try {
+    await db.update(Orders).set({
+      ordSuccessfulPayment: success,
+      ordReservRef: newResRef
+    }).where(eq(Orders.id, OrderNumber));
+
+    const logObj: ILogObject = {
+        level: ELogLevel.Info,
+        message: `Order ${OrderNumber} details updated with success = ${success ? 'True' : 'False'} and Reservation Ref: ${newResRef}.`,
         metaData: {
           service: "ESM-bnb-14",
           module: "Server Actions - createReservation",
@@ -538,7 +578,6 @@ export async function createReservation(reservationDetails: IReservationDetails)
 
     return redirect(`/Error`);
   }
-
 }
 
 export async function removeFromHomeListing(formData: FormData) {
@@ -790,6 +829,8 @@ export async function updateHomeDetails(formData: FormData) {
 }
 
 export async function getReservationsStatisticsEx(userId: string) {
+  const newMonths: { month: string, resCount: number, resSales: number }[] = [];
+
   try {
     const homesStat = await db
       .select({
@@ -802,85 +843,100 @@ export async function getReservationsStatisticsEx(userId: string) {
       .where(eq(Homes.userId, userId))
       .groupBy(sql`date_format(createdAt, '%m-%y')`);
       
-    console.log(homesStat);
+    console.log("HomeStats: ", homesStat);
 
-    const sortedHomeStat = homesStat.sort((a, b) => {
-      const mmyyA = a.month!.toString().split('-');
-      const mmyyB = b.month!.toString().split('-');
+    if(homesStat.length > 0) {
+      const sortedHomeStat = homesStat.sort((a, b) => {
+        const mmyyA = a.month!.toString().split('-');
+        const mmyyB = b.month!.toString().split('-');
 
-      if(mmyyA[0] == mmyyB[0]) {
-        if(mmyyA[1] < mmyyB[1]) 
+        if(mmyyA[0] == mmyyB[0]) {
+          if(mmyyA[1] < mmyyB[1]) 
+            return -1
+          else if(mmyyA[1] < mmyyB[1])
+            return 1
+          else 
+            return 0
+        } else if(mmyyA[0] == mmyyB[0])
           return -1
-        else if(mmyyA[1] < mmyyB[1])
-          return 1
         else 
-          return 0
-      } else if(mmyyA[0] == mmyyB[0])
-        return -1
-      else 
-        return 1
+          return 1
 
-    });
+      });
 
-    const mmyy1 = sortedHomeStat[sortedHomeStat.length - 1].month!.toString().split("-");
-    const newMonths: { month: string, resCount: number, resSales: number }[] = [];
-    let y = parseInt(mmyy1[1]);
-    let m = parseInt(mmyy1[0]);
-    let month = 1;
+      const mmyy1 = sortedHomeStat[sortedHomeStat.length - 1].month!.toString().split("-");
+      let y = parseInt(mmyy1[1]);
+      let m = parseInt(mmyy1[0]);
+      let month = 1;
 
-    while(month <= 12) {
-      const exitingCount = sortedHomeStat.findIndex((r) => {
-        const mmyy = r.month!.toString().split('-');
-        return parseInt(mmyy[0]) == m && parseInt(mmyy[1]) == y;
-      })
+      while(month <= 12) {
+        const exitingCount = sortedHomeStat.findIndex((r) => {
+          const mmyy = r.month!.toString().split('-');
+          return parseInt(mmyy[0]) == m && parseInt(mmyy[1]) == y;
+        })
 
-      const resCount = { 
-        month: String(m).padStart(2, '0') + "-" + y.toString().trim(),
-        resCount: exitingCount != -1 ? sortedHomeStat[exitingCount].resCount : 0,
-        resSales: exitingCount != -1 ? parseFloat(sortedHomeStat[exitingCount].resSales!) : 0
+        const resCount = { 
+          month: String(m).padStart(2, '0') + "-" + y.toString().trim(),
+          resCount: exitingCount != -1 ? sortedHomeStat[exitingCount].resCount : 0,
+          resSales: exitingCount != -1 ? parseFloat(sortedHomeStat[exitingCount].resSales!) : 0
+        }
+
+        newMonths.push(resCount);
+
+        month++;
+
+        y = m === 1 ? y-1 : y;
+        m = m === 1 ? 12 : m-1;
+
+        console.log(month, m, y);
+          
       }
 
-      newMonths.push(resCount);
+      const newSortedHomeStat = newMonths.sort((a, b) => {
+        const mmyyA = a.month!.toString().split('-');
+        const mmyyB = b.month!.toString().split('-');
 
-      month++;
-
-      y = m === 1 ? y-1 : y;
-      m = m === 1 ? 12 : m-1;
-
-      console.log(month, m, y);
-        
-    }
-
-    const newSortedHomeStat = newMonths.sort((a, b) => {
-      const mmyyA = a.month!.toString().split('-');
-      const mmyyB = b.month!.toString().split('-');
-
-      if(mmyyA[0] == mmyyB[0]) {
-        if(mmyyA[1] < mmyyB[1]) 
+        if(mmyyA[0] == mmyyB[0]) {
+          if(mmyyA[1] < mmyyB[1]) 
+            return 1
+          else if(mmyyA[1] < mmyyB[1])
+            return -1
+          else 
+            return 0
+        } else if(mmyyA[0] == mmyyB[0])
           return 1
-        else if(mmyyA[1] < mmyyB[1])
-          return -1
         else 
-          return 0
-      } else if(mmyyA[0] == mmyyB[0])
-        return 1
-      else 
-        return -1
+          return -1
 
-    });
+      });
+
+      const logObj: ILogObject = {
+          level: ELogLevel.Info,
+          message: `Collecting Listings Statistics. userId: ${userId}`,
+          metaData: {
+            service: "ESM-bnb-14",
+            module: "Server Actions - getReservationsStatistics",
+            category: "Home Details",
+          },
+        };
+        Logger.log(logObj);
+  
+      return newSortedHomeStat;
+    } else {
+      const logObj: ILogObject = {
+          level: ELogLevel.Info,
+          message: `Collecting Listings Statistics. userId: ${userId}`,
+          metaData: {
+            service: "ESM-bnb-14",
+            module: "Server Actions - getReservationsStatistics",
+            category: "Home Details",
+          },
+        };
+        Logger.log(logObj);
+  
+      return newMonths;
+    }
     
-    const logObj: ILogObject = {
-        level: ELogLevel.Info,
-        message: `Collecting Listings Statistics. userId: ${userId}`,
-        metaData: {
-          service: "ESM-bnb-14",
-          module: "Server Actions - getReservationsStatistics",
-          category: "Home Details",
-        },
-      };
-      Logger.log(logObj);
-
-    return newSortedHomeStat;
 
   } catch (ex) {
     const logObj: ILogObject = {
@@ -1163,4 +1219,35 @@ export const sendMessageToHost = async (message: string, uid: string, hostId: st
     .$returningId();
 
     return data;
+}
+
+export const getLogoImageFromSettings = async () => {
+  const mydata = await db.select({
+      id: Settings.id,
+      setLogo: Settings.setLogo
+
+    }).from(Settings);
+
+    const dbData2: any = await db.execute(sql`SELECT * FROM settings`);
+    // console.log(dbData2[0][0].setLogo!.toString());
+
+    // split at " and get the first array element
+    const img = mydata[0].setLogo!.toString().substring('{"srcOriginal":"'.length).split('"');
+    // console.log(img[0]);
+
+    return img[0] // mydata[0].setLogo!.toString().substring('{"srcOriginal":"'.length);
+}
+
+export const getAppNameFromSettings = async () => {
+  const mydata = await db.select({
+      id: Settings.id,
+      setAppName: Settings.setAppName,
+
+    }).from(Settings);
+
+    const dbData2: any = await db.execute(sql`SELECT * FROM settings`);
+    // console.log(dbData2[0][0].setLogo!.toString());
+
+
+    return mydata[0].setAppName!.toString();
 }

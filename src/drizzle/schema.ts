@@ -96,3 +96,19 @@ export const Messages = mysqlTable('messages', {
     msgAttachments: text().default(''),
     msgSeen: boolean().default(false)
 })
+
+export const Orders = mysqlTable('orders', {
+    id: varchar({ length: 255 }).$defaultFn(() => uuidv4()).primaryKey(),
+    ordNumber: varchar({ length: 255 }).default(''),
+    ordDate: datetime().default(new Date()),
+    ordCustId: varchar({ length: 255 }).default(''),
+    ordAmount: float().default(0),
+    ordReservRef: varchar({ length: 255 }).default(''),
+    ordSuccessfulPayment: boolean().default(false)
+})
+
+export const Settings = mysqlTable('settings', {
+    id: varchar({ length: 255 }).$defaultFn(() => uuidv4()).primaryKey(),
+    setAppName: varchar({ length: 100 }).default('Dar B&B'),
+    setLogo: text()
+})
